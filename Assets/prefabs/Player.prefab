@@ -563,7 +563,7 @@ MonoBehaviour:
   BlockingMovementStates: 
   BlockingConditionStates: 
   BlockingWeaponStates: 
-  NumberOfJumps: 2
+  NumberOfJumps: 1
   JumpHeight: 3.025
   JumpRestrictions: 2
   ResetCameraOffsetOnJump: 0
@@ -651,7 +651,7 @@ MonoBehaviour:
   BlockingWeaponStates: 
   HorizontalInputThreshold: 0.5
   MoveCameraTarget: 1
-  CameraTargetOffset: {x: 0, y: 6, z: 0}
+  CameraTargetOffset: {x: 0, y: 0.5, z: 0}
 --- !u!114 &2222609356085666869
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -161,8 +161,8 @@ MonoBehaviour:
     m_Bits: 768
   ApplyDamageOnTriggerEnter: 1
   ApplyDamageOnTriggerStay: 1
-  MinDamageCaused: 10
-  MaxDamageCaused: 10
+  MinDamageCaused: 1
+  MaxDamageCaused: 1
   TypedDamages: []
   DamageCausedKnockbackType: 1
   DamageCausedKnockbackDirection: 0
