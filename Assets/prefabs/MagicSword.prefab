@@ -104,9 +104,9 @@ MonoBehaviour:
   InitializeOnStart: 0
   DelayBeforeUse: 0
   DelayBeforeUseReleaseInterruption: 1
-  TimeBetweenUses: 0.8
+  TimeBetweenUses: 0.5
   TimeBetweenUsesReleaseInterruption: 1
-  CooldownDuration: 0.8
+  CooldownDuration: 0.5
   UseBurstMode: 0
   BurstLength: 3
   BurstTimeBetweenShots: 0.1
@@ -218,8 +218,8 @@ MonoBehaviour:
     m_Bits: 8192
   ApplyDamageOnTriggerEnter: 1
   ApplyDamageOnTriggerStay: 1
-  MinDamageCaused: 10
-  MaxDamageCaused: 10
+  MinDamageCaused: 3
+  MaxDamageCaused: 3
   Knockback: 2
   KnockbackForce: {x: 10, y: 2}
   InvincibilityDuration: 0.5
