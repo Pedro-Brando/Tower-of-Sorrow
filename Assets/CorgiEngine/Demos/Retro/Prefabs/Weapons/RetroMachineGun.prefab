@@ -5432,7 +5432,7 @@ MonoBehaviour:
     - rid: 1
       type: {class: MMF_Particles, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
       data:
-        Active: 1
+        Active: 0
         UniqueID: 2056833047
         Label: Particles Play
         ChannelMode: 0
@@ -5668,7 +5668,7 @@ MonoBehaviour:
     - rid: 0
       type: {class: MMF_Particles, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
       data:
-        Active: 1
+        Active: 0
         UniqueID: -322863694
         Label: Particles Play - MuzzleFlash
         ChannelMode: 0
@@ -5754,7 +5754,7 @@ MonoBehaviour:
     - rid: 1
       type: {class: MMF_Particles, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
       data:
-        Active: 1
+        Active: 0
         UniqueID: 1153657735
         Label: Particles Play - Shells
         ChannelMode: 0
@@ -5965,7 +5965,7 @@ MonoBehaviour:
     - rid: 3
       type: {class: MMF_Flash, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
       data:
-        Active: 1
+        Active: 0
         UniqueID: -1268029595
         Label: Flash
         ChannelMode: 0
@@ -6877,7 +6877,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1635614142837695842
 Transform:
   m_ObjectHideFlags: 0

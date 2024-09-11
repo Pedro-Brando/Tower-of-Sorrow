@@ -383,13 +383,14 @@ GameObject:
   - component: {fileID: 4735998030511518887}
   - component: {fileID: 9070493832377865273}
   - component: {fileID: 5538513165418198737}
+  - component: {fileID: 2840466044547872005}
   m_Layer: 13
   m_Name: Enemy1Tharos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5720238191328463215
 Transform:
   m_ObjectHideFlags: 0
@@ -963,6 +964,26 @@ MonoBehaviour:
   Label: 
   AfterTimeMin: 2
   AfterTimeMax: 2
+--- !u!114 &2840466044547872005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1377511254745352944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72de0b0360096ea41a18d17864ecb963, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BoundsBasedOn: 1
+  ExecuteOnEnable:
+    m_PersistentCalls:
+      m_Calls: []
+  ExecuteOnDisable:
+    m_PersistentCalls:
+      m_Calls: []
+  LifeTime: 0
 --- !u!1 &5438121428711912234
 GameObject:
   m_ObjectHideFlags: 0
