@@ -103,8 +103,8 @@ MonoBehaviour:
   Interruptable: 0
   InitializeOnStart: 0
   DelayBeforeUse: 0
-  DelayBeforeUseReleaseInterruption: 1
-  TimeBetweenUses: 0.5
+  DelayBeforeUseReleaseInterruption: 0
+  TimeBetweenUses: 0.1
   TimeBetweenUsesReleaseInterruption: 1
   CooldownDuration: 0.5
   UseBurstMode: 0
