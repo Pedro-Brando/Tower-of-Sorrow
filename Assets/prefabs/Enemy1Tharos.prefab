@@ -374,16 +374,16 @@ GameObject:
   - component: {fileID: 8805446292285039130}
   - component: {fileID: 1533413509462260571}
   - component: {fileID: 490139810567479230}
-  - component: {fileID: 4067250585056174125}
   - component: {fileID: 8284522497001808799}
   - component: {fileID: 7059164451127324721}
   - component: {fileID: 7351802523280786613}
-  - component: {fileID: 6508482254821537443}
   - component: {fileID: 5300659456518259033}
   - component: {fileID: 4735998030511518887}
   - component: {fileID: 9070493832377865273}
   - component: {fileID: 5538513165418198737}
   - component: {fileID: 2840466044547872005}
+  - component: {fileID: 2804289004125398734}
+  - component: {fileID: 1530694784921385318}
   m_Layer: 13
   m_Name: Enemy1Tharos
   m_TagString: Untagged
@@ -758,40 +758,6 @@ MonoBehaviour:
   TouchTheGroundFeedback: {fileID: 0}
   MinimumAirTimeBeforeFeedback: 0.2
   StopWalkingWhenCollidingWithAWall: 0
---- !u!114 &4067250585056174125
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1377511254745352944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1c1a8bab4d234998bcbc559bb58fa11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AbilityStartFeedbacks: {fileID: 0}
-  AbilityStopFeedbacks: {fileID: 0}
-  AbilityPermitted: 1
-  BlockingMovementStates: 
-  BlockingConditionStates: 
-  BlockingWeaponStates: 
-  NumberOfJumps: 3
-  JumpHeight: 2
-  JumpRestrictions: 1
-  ResetCameraOffsetOnJump: 0
-  CanJumpDownOneWayPlatforms: 1
-  FixedAerialJumpCount: 0
-  JumpIsProportionalToThePressTime: 1
-  JumpMinimumAirTime: 0.1
-  JumpReleaseForceFactor: 2
-  CoyoteTime: 0
-  InputBufferDuration: 0
-  OneWayPlatformsJumpCollisionOffDuration: 0.3
-  MovingPlatformsJumpCollisionOffDuration: 0.05
-  AirJumpFeedbacks: {fileID: 0}
-  DoubleJumpFeedbacks: {fileID: 0}
-  NumberOfJumpsLeft: 0
 --- !u!114 &8284522497001808799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -835,16 +801,7 @@ MonoBehaviour:
     Transitions:
       array:
       - Decision: {fileID: 4735998030511518887}
-        TrueState: Jump
-        FalseState: 
-  - StateName: Jump
-    Actions:
-      array:
-      - {fileID: 6508482254821537443}
-    Transitions:
-      array:
-      - Decision: {fileID: 9070493832377865273}
-        TrueState: Walk
+        TrueState: Wait
         FalseState: 
   - StateName: Walk
     Actions:
@@ -854,6 +811,15 @@ MonoBehaviour:
       array:
       - Decision: {fileID: 5538513165418198737}
         TrueState: Wait
+        FalseState: 
+  - StateName: Attack
+    Actions:
+      array:
+      - {fileID: 2804289004125398734}
+    Transitions:
+      array:
+      - Decision: {fileID: 1530694784921385318}
+        TrueState: Attack
         FalseState: 
   TimeInThisState: 0
   Target: {fileID: 0}
@@ -880,21 +846,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InitializationMode: 0
   Label: 
---- !u!114 &6508482254821537443
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1377511254745352944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13318a0083aad97498ff68bf0f5dc0a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InitializationMode: 0
-  Label: 
-  NumberOfJumps: 1
 --- !u!114 &5300659456518259033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -984,6 +935,38 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   LifeTime: 0
+--- !u!114 &2804289004125398734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1377511254745352944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45229f8c7ea74d846a7bee0c5a7baa2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InitializationMode: 0
+  Label: 
+--- !u!114 &1530694784921385318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1377511254745352944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c522f668e1b331438fd11022c69a8a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Label: 
+  Radius: 3
+  DetectionOriginOffset: {x: 0, y: 0, z: 0}
+  TargetLayer:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!1 &5438121428711912234
 GameObject:
   m_ObjectHideFlags: 0
