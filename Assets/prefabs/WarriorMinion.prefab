@@ -25,8 +25,9 @@ GameObject:
   - component: {fileID: 114505998259787332}
   - component: {fileID: 114889255539485478}
   - component: {fileID: 114568025754017870}
+  - component: {fileID: 5157599787439013159}
   m_Layer: 13
-  m_Name: RetroSwordsman
+  m_Name: WarriorMinion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -774,6 +775,28 @@ MonoBehaviour:
   Label: 
   AfterTimeMin: 2
   AfterTimeMax: 2
+--- !u!114 &5157599787439013159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1675362664273752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df1508296b0904b1ba069c225eb6482a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RespawnOnPlayerRespawn: 1
+  RepositionToInitOnPlayerRespawn: 0
+  DisableOnKill: 1
+  DisableModelOnKill: 1
+  AutoRespawnDuration: 0
+  AutoRespawnAmount: 3
+  AutoRespawnRemainingAmount: 3
+  IgnoreCheckpointsAlwaysRespawn: 1
+  AssociatedCheckpoints: []
+  RespawnFeedback: {fileID: 0}
 --- !u!1 &1731962913224454
 GameObject:
   m_ObjectHideFlags: 0

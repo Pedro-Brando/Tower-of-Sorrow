@@ -445,7 +445,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startRotationX:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 0
       minScalar: 0
       maxCurve:
@@ -498,7 +498,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startRotationY:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 0
       minScalar: 0
       maxCurve:
@@ -4776,7 +4776,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 0e1495cd2b1257b419c4c5668cd82472, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4842,6 +4841,7 @@ GameObject:
   - component: {fileID: 114587324304491438}
   - component: {fileID: 2517639059415171549}
   - component: {fileID: 3815331809413069126}
+  - component: {fileID: 7677178900563827465}
   m_Layer: 0
   m_Name: RobotWeapon
   m_TagString: Untagged
@@ -4888,7 +4888,7 @@ MonoBehaviour:
   DelayBeforeUseReleaseInterruption: 1
   TimeBetweenUses: 0.8
   TimeBetweenUsesReleaseInterruption: 1
-  CooldownDuration: 0
+  CooldownDuration: 0.8
   UseBurstMode: 0
   BurstLength: 3
   BurstTimeBetweenShots: 0.1
@@ -5061,7 +5061,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0514d297deadac74fb15a7b7326ff0d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AimControl: 2
+  AimControl: 4
   RotationMode: 0
   WeaponRotationSpeed: 1
   InstantFlip: 0
@@ -5078,6 +5078,42 @@ MonoBehaviour:
   RotateReticle: 0
   ReplaceMousePointer: 1
   DisableReticleOnDeath: 1
+--- !u!114 &7677178900563827465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000013547539612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96c88a3aa9bb5694f961c5fd51ab67f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetsMask:
+    serializedVersion: 2
+    m_Bits: 512
+  ObstacleMask:
+    serializedVersion: 2
+    m_Bits: 264448
+  AimOrigin: 0
+  ScanRadius: 15
+  LineOfFireBoxcastSize: {x: 0.1, y: 0.1}
+  DurationBetweenScans: 1
+  DetectionOriginOffset: {x: 0, y: 0, z: 0}
+  DetectTriggers: 0
+  RotationMode: 0
+  ToggleIgnoreSlopeRotation: 0
+  MoveCameraTarget: 1
+  CameraTargetDistance: 0.5
+  CameraTargetMaxDistance: 10
+  CameraTargetSpeed: 5
+  AimMarkerPrefab: {fileID: 0}
+  FirstTargetFoundFeedback: {fileID: 0}
+  NewTargetFoundFeedback: {fileID: 0}
+  NoMoreTargetsFeedback: {fileID: 0}
+  Target: {fileID: 0}
+  DrawDebugRadius: 1
 --- !u!1 &1000014251668054
 GameObject:
   m_ObjectHideFlags: 0
@@ -9779,7 +9815,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 36059a6b5a5000a469004894f2d1d69e, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10295,7 +10330,7 @@ MonoBehaviour:
     - rid: 2
       type: {class: MMF_CameraShake, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
       data:
-        Active: 1
+        Active: 0
         UniqueID: 2146727442
         Label: Camera Shake
         ChannelMode: 0
@@ -10377,7 +10412,7 @@ MonoBehaviour:
     - rid: 3
       type: {class: MMF_Flash, ns: MoreMountains.Feedbacks, asm: MoreMountains.Tools}
       data:
-        Active: 1
+        Active: 0
         UniqueID: -850291481
         Label: Flash
         ChannelMode: 0
