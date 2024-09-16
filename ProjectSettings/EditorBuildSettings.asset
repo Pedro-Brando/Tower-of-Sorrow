@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/CorgiEngine/Demos/StartScreen/SplashScreen.unity
     guid: 7b96552fd1198fa4eaae54a2f975645e
   - enabled: 1
-    path: Assets/Scenes/TestPlatforms.unity
+    path: Assets/Scenes/Tharos/TestPlatforms.unity
     guid: 28e4525a8dabf4c4cb4092c8429e1614
   - enabled: 1
     path: Assets/CorgiEngine/ThirdParty/MoreMountains/MMTools/Core/MMSceneLoading/LoadingScreens/LoadingScreen.unity

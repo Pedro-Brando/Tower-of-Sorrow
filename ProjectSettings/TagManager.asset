@@ -8,6 +8,7 @@ TagManager:
   - Music
   - Background
   - NoMask
+  - PlataformaBoss
   layers:
   - Default
   - TransparentFX
