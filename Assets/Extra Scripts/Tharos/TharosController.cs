@@ -68,6 +68,9 @@ public class TharosController : MonoBehaviour
         int indiceAleatorio = Random.Range(0, plataformasAlvo.Count);
         Transform plataformaSelecionada = plataformasAlvo[indiceAleatorio];
 
+        // Definir a posição de instânciação acima da plataforma
+        Vector3 posicaoAtaque = plataformaSelecionada.position + Vector3.up * 5f; // Ajuste a altura conforme necessário
+
         // Instanciar o aviso de ataque
         if (warningPrefab != null)
         {
@@ -85,7 +88,7 @@ public class TharosController : MonoBehaviour
         // Instanciar o ataque real
         if (attackPrefab != null)
         {
-            GameObject ataque = Instantiate(attackPrefab, plataformaSelecionada.position, Quaternion.identity);
+            GameObject ataque = Instantiate(attackPrefab, posicaoAtaque, Quaternion.identity);
             Debug.Log($"Ataque instanciado na plataforma: {plataformaSelecionada.name}");
 
             // Opcional: Configurar o ataque para saber qual plataforma está atacando
