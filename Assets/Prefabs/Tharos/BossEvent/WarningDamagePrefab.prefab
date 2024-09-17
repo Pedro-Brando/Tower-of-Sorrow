@@ -122,7 +122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f32289c55fdb92e4cb29b87ec41b81af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  raio: 3
+  raio: 4
   dano: 2
   camadaAlvo:
     serializedVersion: 2
@@ -130,7 +130,7 @@ MonoBehaviour:
   instigator: {fileID: 0}
   flickerDuration: 0.5
   invincibilityDuration: 1
-  knockbackStyle: 2
+  knockbackStyle: 1
   knockbackForce: {x: 100, y: 10}
   feedbacksExplosao: {fileID: 0}
 --- !u!50 &-7417007314966811666
