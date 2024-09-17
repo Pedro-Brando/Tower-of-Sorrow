@@ -6,6 +6,7 @@ public class TharosController : MonoBehaviour
 {
     [Header("Configurações do Ataque")]
     public GameObject warningPrefab; // Prefab do aviso de ataque
+    public float desvio_warningY = 1;
     public GameObject attackPrefab;  // Prefab do ataque real
     public float intervaloAtaque = 5f; // Intervalo entre ataques
     public float tempoAntesDeAtacar = 2f; // Tempo de preparação antes do ataque
@@ -74,7 +75,7 @@ public class TharosController : MonoBehaviour
         // Instanciar o aviso de ataque
         if (warningPrefab != null)
         {
-            Instantiate(warningPrefab, plataformaSelecionada.position, Quaternion.identity);
+            Instantiate(warningPrefab, plataformaSelecionada.position + new Vector3(0f, desvio_warningY, 0f), Quaternion.identity);
             Debug.Log($"Aviso de ataque instanciado na plataforma: {plataformaSelecionada.name}");
         }
         else

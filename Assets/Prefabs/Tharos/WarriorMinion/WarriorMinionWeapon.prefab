@@ -104,7 +104,7 @@ MonoBehaviour:
   InitializeOnStart: 0
   DelayBeforeUse: 0
   DelayBeforeUseReleaseInterruption: 0
-  TimeBetweenUses: 1
+  TimeBetweenUses: 2
   TimeBetweenUsesReleaseInterruption: 1
   CooldownDuration: 1
   UseBurstMode: 0
@@ -207,12 +207,12 @@ MonoBehaviour:
     Delay: 0
     RecoilFeedback: {fileID: 0}
   MeleeDamageAreaMode: 0
-  DamageAreaShape: 1
-  AreaOffset: {x: 0, y: 0}
-  AreaSize: {x: 2.2, y: 0.51}
+  DamageAreaShape: 0
+  AreaOffset: {x: 0.52, y: -0.1}
+  AreaSize: {x: 0.82, y: 0.93}
   ExistingDamageArea: {fileID: 0}
-  InitialDelay: 0
-  ActiveDuration: 1
+  InitialDelay: 0.2
+  ActiveDuration: 1.5
   TargetLayerMask:
     serializedVersion: 2
     m_Bits: 512
@@ -221,7 +221,7 @@ MonoBehaviour:
   MinDamageCaused: 3
   MaxDamageCaused: 3
   Knockback: 2
-  KnockbackForce: {x: 10, y: 2}
+  KnockbackForce: {x: 5, y: 2}
   InvincibilityDuration: 0.5
 --- !u!95 &3713470479737832980
 Animator:

@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 1762932990015369410}
   - component: {fileID: 8454580631857600222}
   - component: {fileID: 8611578144594701920}
-  - component: {fileID: 1743937372363305970}
   - component: {fileID: -7417007314966811666}
   - component: {fileID: 3149092478251037125}
   - component: {fileID: -8307458203698815600}
+  - component: {fileID: 8771234883327793354}
   m_Layer: 0
   m_Name: WarningDamagePrefab
   m_TagString: Untagged
@@ -110,29 +110,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1743937372363305970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2617473772642573856}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f32289c55fdb92e4cb29b87ec41b81af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  raio: 4
-  dano: 2
-  camadaAlvo:
-    serializedVersion: 2
-    m_Bits: 2560
-  instigator: {fileID: 0}
-  flickerDuration: 0.5
-  invincibilityDuration: 1
-  knockbackStyle: 1
-  knockbackForce: {x: 100, y: 10}
-  feedbacksExplosao: {fileID: 0}
 --- !u!50 &-7417007314966811666
 Rigidbody2D:
   serializedVersion: 4
@@ -192,7 +169,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.0041520298}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -203,7 +180,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.16, y: 0.32}
+  m_Size: {x: 0.16, y: 0.31169593}
   m_EdgeRadius: 0
 --- !u!114 &-8307458203698815600
 MonoBehaviour:
@@ -218,3 +195,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocidade: 10
+--- !u!114 &8771234883327793354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2617473772642573856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f32289c55fdb92e4cb29b87ec41b81af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  raio: 3
+  dano: 50
+  camadaAlvo:
+    serializedVersion: 2
+    m_Bits: 2560
+  instigator: {fileID: 0}
+  flickerDuration: 0.5
+  invincibilityDuration: 1
+  knockbackStyle: 2
+  knockbackForce: {x: 20, y: 10}
+  feedbacksExplosao: {fileID: 0}

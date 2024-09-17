@@ -25,6 +25,8 @@ public class Explosao : MonoBehaviour
     private Animator animator; // Referência ao Animator
     private bool explodiu = false;
 
+    private float tempo = 0;
+
     void Start()
     {
         // Inicializar o Animator
@@ -33,6 +35,8 @@ public class Explosao : MonoBehaviour
         {
             Debug.LogError("Animator não encontrado no attackPrefab.");
         }
+
+        AtivarExplosao();
 
         // Remover a chamada de AtivarExplosao() do Start()
     }
