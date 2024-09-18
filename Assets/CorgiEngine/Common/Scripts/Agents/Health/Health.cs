@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using MoreMountains.Tools;
 using MoreMountains.Feedbacks;
+using System;
 
 namespace MoreMountains.CorgiEngine
 {
@@ -207,8 +208,10 @@ namespace MoreMountains.CorgiEngine
 		public bool Initialized => _initialized;
 		public CorgiController AssociatedController => _controller;
 
-		// respawn
-		public delegate void OnHitDelegate();
+        public Action OnHeal { get; set; }
+
+        // respawn
+        public delegate void OnHitDelegate();
 		public delegate void OnHitZeroDelegate();
 		public delegate void OnReviveDelegate();
 		public delegate void OnDeathDelegate();

@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raio: 3
-  dano: 50
+  dano: 2
   camadaAlvo:
     serializedVersion: 2
     m_Bits: 2560
