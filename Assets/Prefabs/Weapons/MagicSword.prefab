@@ -418,7 +418,7 @@ MonoBehaviour:
         AutomatedTargetAcquisition:
           Mode: 0
           ChildIndex: 0
-        RandomizeOutput: 0
+        RandomizeOutput: 1
         RandomMultiplier: {x: 0.8, y: 1}
         RandomizeDuration: 0
         RandomDurationMultiplier: {x: 0.5, y: 2}
@@ -454,8 +454,14 @@ MonoBehaviour:
           ButtonText: Automatic Shaker Setup
         Owner: {fileID: 7030725214548166571}
         DebugActive: 0
-        Sfx: {fileID: 8300000, guid: 2d6f1b59f05ba40e3a702c2695cb86fd, type: 3}
-        RandomSfx: []
+        Sfx: {fileID: 0}
+        RandomSfx:
+        - {fileID: 8300000, guid: 599eb82e0bfdfdc4783fd4cae200c1f2, type: 3}
+        - {fileID: 8300000, guid: e8544738860223e418181ab03e4f7a95, type: 3}
+        - {fileID: 8300000, guid: 9ae7783b67074cc4383f66d2dfde3014, type: 3}
+        - {fileID: 8300000, guid: c59f45147fa0e2a48b3ff98fc603af70, type: 3}
+        - {fileID: 8300000, guid: 5a847a2dfc85ec24e87efca6dd84dc2d, type: 3}
+        - {fileID: 8300000, guid: a6ab96257a0c2c34d9947331e7f1f8b0, type: 3}
         TestPlayButton:
           ButtonText: Debug Play Sound
         TestStopButton:

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 198000013404599210}
   - component: {fileID: 199000013050840546}
   - component: {fileID: 114692714708415718}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: MachineGunShells
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4777,7 +4777,9 @@ GameObject:
   - component: {fileID: 114000013241137692}
   - component: {fileID: 114000010078180980}
   - component: {fileID: 114191819752502978}
-  m_Layer: 0
+  - component: {fileID: 4640975280264265607}
+  - component: {fileID: 3488452269100117841}
+  m_Layer: 12
   m_Name: RetroEnemyMachineGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4841,7 +4843,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000010407495960}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d7ce0b8cf4b34859b9e359283b2e7f3, type: 3}
   m_Name: 
@@ -4855,9 +4857,9 @@ MonoBehaviour:
   TimeBetweenUsesReleaseInterruption: 1
   CooldownDuration: 0
   UseBurstMode: 0
-  BurstLength: 3
-  BurstTimeBetweenShots: 0.1
-  MagazineBased: 0
+  BurstLength: 1
+  BurstTimeBetweenShots: 1
+  MagazineBased: 1
   MagazineSize: 9999
   AutoReload: 1
   ReloadTime: 1
@@ -4978,6 +4980,66 @@ MonoBehaviour:
   GameObjectToPool: {fileID: 100002, guid: 7f4bb7f9537ba4978b4751fc618bc3f5, type: 3}
   PoolSize: 20
   PoolCanExpand: 1
+--- !u!114 &4640975280264265607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000010407495960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03aaf62627f364a7d92d307729fe738d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RaycastOriginOffset: {x: 0, y: 0, z: 0}
+  LaserOriginOffset: {x: 0, y: 0, z: 0}
+  LaserMaxDistance: 50
+  LaserCollisionMask:
+    serializedVersion: 2
+    m_Bits: 512
+  LaserWidth: {x: 0.05, y: 0.05}
+  LaserMaterial: {fileID: 2100000, guid: 8300c5c2dd4a7a74fae045fc7b189935, type: 2}
+--- !u!114 &3488452269100117841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000010407495960}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76891b3b532f84acaaeed44c357bd00c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  ApplyDamageOnTriggerEnter: 1
+  ApplyDamageOnTriggerStay: 1
+  MinDamageCaused: 1
+  MaxDamageCaused: 1
+  TypedDamages: []
+  DamageCausedKnockbackType: 1
+  DamageCausedKnockbackDirection: 0
+  DamageCausedKnockbackForce: {x: 10, y: 2}
+  InvincibilityDuration: 0.5
+  RepeatDamageOverTime: 1
+  AmountOfRepeats: 5
+  DurationBetweenRepeats: 1
+  DamageOverTimeInterruptible: 1
+  RepeatedDamageType: {fileID: 0}
+  DamageTakenEveryTime: 0
+  DamageTakenDamageable: 0
+  DamageTakenNonDamageable: 0
+  DamageTakenKnockbackType: 0
+  DamageTakenKnockbackDirection: 0
+  DamageTakenKnockbackForce: {x: 0, y: 0}
+  DamageTakenInvincibilityDuration: 0.5
+  HitDamageableFeedback: {fileID: 0}
+  HitNonDamageableFeedback: {fileID: 0}
+  FreezeFramesOnHitDuration: 0
+  Owner: {fileID: 0}
 --- !u!1 &1000012097833382
 GameObject:
   m_ObjectHideFlags: 0
@@ -4989,7 +5051,7 @@ GameObject:
   - component: {fileID: 4000012754714512}
   - component: {fileID: 212000011416355666}
   - component: {fileID: 114186429735586098}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: MachineGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5091,7 +5153,7 @@ GameObject:
   - component: {fileID: 4000011789384988}
   - component: {fileID: 198000010515221402}
   - component: {fileID: 199000012607887638}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: MachineGunFlames
   m_TagString: Untagged
   m_Icon: {fileID: 796366903, guid: 0000000000000000d000000000000000, type: 0}
@@ -10034,7 +10096,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8750345636825632769}
   - component: {fileID: 4297248110479992560}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: WeaponStopFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10295,7 +10357,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5089079583969757414}
   - component: {fileID: 5432166076431232499}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: WeaponStartFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10556,7 +10618,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6434793875191708190}
   - component: {fileID: 7133780308014939554}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: WeaponUsedFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}

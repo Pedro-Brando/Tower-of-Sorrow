@@ -108,8 +108,8 @@ MonoBehaviour:
   TimeBetweenUsesReleaseInterruption: 1
   CooldownDuration: 1
   UseBurstMode: 0
-  BurstLength: 3
-  BurstTimeBetweenShots: 0.1
+  BurstLength: 1
+  BurstTimeBetweenShots: 0.5
   MagazineBased: 0
   MagazineSize: 30
   AutoReload: 0
@@ -211,18 +211,18 @@ MonoBehaviour:
   AreaOffset: {x: 0.52, y: -0.1}
   AreaSize: {x: 0.82, y: 0.93}
   ExistingDamageArea: {fileID: 0}
-  InitialDelay: 0.2
+  InitialDelay: 0.3
   ActiveDuration: 1.5
   TargetLayerMask:
     serializedVersion: 2
     m_Bits: 512
   ApplyDamageOnTriggerEnter: 1
   ApplyDamageOnTriggerStay: 1
-  MinDamageCaused: 3
-  MaxDamageCaused: 3
+  MinDamageCaused: 1
+  MaxDamageCaused: 1
   Knockback: 2
   KnockbackForce: {x: 5, y: 2}
-  InvincibilityDuration: 0.5
+  InvincibilityDuration: 1
 --- !u!95 &3713470479737832980
 Animator:
   serializedVersion: 5
@@ -454,7 +454,7 @@ MonoBehaviour:
           ButtonText: Automatic Shaker Setup
         Owner: {fileID: 7030725214548166571}
         DebugActive: 0
-        Sfx: {fileID: 8300000, guid: 2d6f1b59f05ba40e3a702c2695cb86fd, type: 3}
+        Sfx: {fileID: 8300000, guid: a5c912bd30081fb4097d17c930c0f99b, type: 3}
         RandomSfx: []
         TestPlayButton:
           ButtonText: Debug Play Sound
