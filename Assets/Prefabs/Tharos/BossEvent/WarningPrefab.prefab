@@ -61,7 +61,7 @@ MonoBehaviour:
   PlayerTimescaleMode: 1
   OnlyPlayIfWithinRange: 0
   RangeCenter: {fileID: 0}
-  RangeDistance: 5
+  RangeDistance: 10
   UseRangeFalloff: 0
   RangeFalloff:
     serializedVersion: 2
@@ -231,7 +231,7 @@ MonoBehaviour:
         Spread: 0
         RolloffMode: 0
         MinDistance: 1
-        MaxDistance: 500
+        MaxDistance: 10
         UseCustomRolloffCurve: 0
         CustomRolloffCurve:
           serializedVersion: 2
