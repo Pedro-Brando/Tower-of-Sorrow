@@ -625,9 +625,9 @@ MonoBehaviour:
   BlockingWeaponStates: 
   MovingPlatformsJumpCollisionOffDuration: 0.05
   ParticleEmitter: {fileID: 0}
-  JetpackForce: 2.5
+  JetpackForce: 10
   JetpackUnlimited: 0
-  JetpackFuelDuration: 5
+  JetpackFuelDuration: 999
   JetpackRefuelCooldown: 1
   RefuelSpeed: 0.5
   MinimumFuelRequirement: 0.2

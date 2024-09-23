@@ -4843,7 +4843,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000010407495960}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d7ce0b8cf4b34859b9e359283b2e7f3, type: 3}
   m_Name: 
@@ -4853,7 +4853,7 @@ MonoBehaviour:
   InitializeOnStart: 0
   DelayBeforeUse: 0
   DelayBeforeUseReleaseInterruption: 1
-  TimeBetweenUses: 1
+  TimeBetweenUses: 3
   TimeBetweenUsesReleaseInterruption: 1
   CooldownDuration: 0
   UseBurstMode: 0
@@ -4987,7 +4987,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000010407495960}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 03aaf62627f364a7d92d307729fe738d, type: 3}
   m_Name: 

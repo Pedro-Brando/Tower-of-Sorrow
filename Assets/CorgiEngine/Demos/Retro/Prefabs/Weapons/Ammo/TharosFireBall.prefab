@@ -33,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 7.562, y: -4.255, z: 0}
-  m_LocalScale: {x: 9.24, y: 9.24, z: 9.24}
+  m_LocalScale: {x: 20, y: 20, z: 20}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8160627890105318400}
@@ -183,10 +183,10 @@ MonoBehaviour:
   ExecuteOnDisable:
     m_PersistentCalls:
       m_Calls: []
-  LifeTime: 10
+  LifeTime: 6
   FaceDirection: 1
   FaceMovementDirection: 0
-  Speed: 50
+  Speed: 100
   Acceleration: 0
   Direction: {x: -1, y: 0, z: 0}
   DirectionCanBeChangedBySpawner: 1
