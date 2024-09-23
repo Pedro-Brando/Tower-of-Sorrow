@@ -7,8 +7,11 @@ using System.Collections;
 public class HeartsHealthDisplay : MonoBehaviour, MMEventListener<CorgiEngineEvent>
 {
     [Header("Configurações dos Corações")]
-    [Tooltip("Array de componentes Image que representam os corações de saúde.")]
-    public Image[] hearts;
+    [Tooltip("Prefab para o coração de saúde.")]
+    public GameObject heartPrefab;
+
+    [Tooltip("Transform que será o pai dos corações de saúde.")]
+    public Transform heartsContainer;
 
     [Tooltip("Sprite para coração cheio.")]
     public Sprite fullHeart;
@@ -21,7 +24,8 @@ public class HeartsHealthDisplay : MonoBehaviour, MMEventListener<CorgiEngineEve
 
     private Health playerHealth;
     private int maxHearts;
-    private int healthPerHeart;
+    private float healthPerHeart;
+    private Image[] hearts;
 
     void Start()
     {
@@ -74,9 +78,24 @@ public class HeartsHealthDisplay : MonoBehaviour, MMEventListener<CorgiEngineEve
         }
 
         // Inicializa as configurações dos corações
-        maxHearts = hearts.Length;
-        healthPerHeart = Mathf.CeilToInt(playerHealth.MaximumHealth / (float)maxHearts);
+        healthPerHeart = 1f; // Cada coração representa 1 ponto de vida
+        maxHearts = Mathf.CeilToInt(playerHealth.MaximumHealth / healthPerHeart);
         Debug.Log($"HeartsHealthDisplay: maxHearts = {maxHearts}, healthPerHeart = {healthPerHeart}");
+
+        // Limpa corações existentes
+        foreach (Transform child in heartsContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Cria novos corações
+        hearts = new Image[maxHearts];
+        for (int i = 0; i < maxHearts; i++)
+        {
+            GameObject heartGO = Instantiate(heartPrefab, heartsContainer);
+            Image heartImage = heartGO.GetComponent<Image>();
+            hearts[i] = heartImage;
+        }
 
         // Atualiza a exibição inicial dos corações
         UpdateHeartsDisplay();
@@ -126,15 +145,14 @@ public class HeartsHealthDisplay : MonoBehaviour, MMEventListener<CorgiEngineEve
 
         for (int i = 0; i < hearts.Length; i++)
         {
-            float heartThreshold = (i + 1) * healthPerHeart;
-            float previousHeartThreshold = i * healthPerHeart;
+            float heartPosition = (i + 1) * healthPerHeart;
 
-            if (currentHealth >= heartThreshold)
+            if (currentHealth >= heartPosition)
             {
                 hearts[i].sprite = fullHeart;
                 Debug.Log($"HeartsHealthDisplay: Coração {i + 1} cheio.");
             }
-            else if (currentHealth >= previousHeartThreshold + (healthPerHeart / 2f))
+            else if (currentHealth > heartPosition - (healthPerHeart / 2f))
             {
                 hearts[i].sprite = halfHeart;
                 Debug.Log($"HeartsHealthDisplay: Coração {i + 1} meio cheio.");
