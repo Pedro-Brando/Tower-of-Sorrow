@@ -785,8 +785,8 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Tower of Sorrow
-  metroPackageVersion: 
+  metroPackageName: TowerofSorrow
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
@@ -794,7 +794,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: Tower of Sorrow
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: Tower of Sorrow
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
