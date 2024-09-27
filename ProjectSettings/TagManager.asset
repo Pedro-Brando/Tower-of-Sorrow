@@ -10,6 +10,10 @@ TagManager:
   - NoMask
   - PlataformaBoss
   - Ground
+  - SpawnArea
+  - Whisps
+  - PlatformEsquerda
+  - PlatformDireita
   layers:
   - Default
   - TransparentFX
