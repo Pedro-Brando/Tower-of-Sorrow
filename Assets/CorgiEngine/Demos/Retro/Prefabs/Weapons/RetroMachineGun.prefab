@@ -5021,9 +5021,9 @@ MonoBehaviour:
   ProjectilesPerShot: 1
   Spread: {x: 0, y: 0, z: 10}
   RotateWeaponOnSpread: 0
-  RandomSpread: 1
+  RandomSpread: 0
   ObjectPooler: {fileID: 0}
-  SpawnPosition: {x: -81.42117, y: -6.2782, z: 0}
+  SpawnPosition: {x: -87.14784, y: -23.090694, z: 0}
 --- !u!114 &114191819752502978
 MonoBehaviour:
   m_ObjectHideFlags: 0

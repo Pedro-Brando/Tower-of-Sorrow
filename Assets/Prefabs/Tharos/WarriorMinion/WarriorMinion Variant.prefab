@@ -64,12 +64,12 @@ PrefabInstance:
     - target: {fileID: 114272055539470398, guid: 6679448c28127a5478df3e55020ffa8e,
         type: 3}
       propertyPath: InitialHealth
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114272055539470398, guid: 6679448c28127a5478df3e55020ffa8e,
         type: 3}
       propertyPath: MaximumHealth
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114699836559751750, guid: 6679448c28127a5478df3e55020ffa8e,
         type: 3}
@@ -79,6 +79,11 @@ PrefabInstance:
     - target: {fileID: 114738098234071618, guid: 6679448c28127a5478df3e55020ffa8e,
         type: 3}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114845530194186574, guid: 6679448c28127a5478df3e55020ffa8e,
+        type: 3}
+      propertyPath: CanPickupWeapons
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114889255539485478, guid: 6679448c28127a5478df3e55020ffa8e,

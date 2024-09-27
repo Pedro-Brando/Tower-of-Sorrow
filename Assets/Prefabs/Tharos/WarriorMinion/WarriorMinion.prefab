@@ -321,8 +321,8 @@ MonoBehaviour:
   CurrentHealth: 0
   TemporarilyInvulnerable: 0
   PostDamageInvulnerable: 0
-  InitialHealth: 20
-  MaximumHealth: 20
+  InitialHealth: 4
+  MaximumHealth: 4
   Invulnerable: 0
   ImmuneToDamage: 0
   DamageFeedbacks: {fileID: 2259935668079098484}

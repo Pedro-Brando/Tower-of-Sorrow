@@ -131,7 +131,7 @@ MonoBehaviour:
   ExecuteOnDisable:
     m_PersistentCalls:
       m_Calls: []
-  LifeTime: 5
+  LifeTime: 1
   FaceDirection: 1
   FaceMovementDirection: 0
   Speed: 100
