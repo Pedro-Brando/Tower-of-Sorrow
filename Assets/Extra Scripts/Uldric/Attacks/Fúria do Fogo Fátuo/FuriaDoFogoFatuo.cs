@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.Collections;
-using MoreMountains.Tools; // Assegure-se de que esta namespace está correta
-using MoreMountains.CorgiEngine; // Assegure-se de que esta namespace está correta
+using MoreMountains.Tools;
+using MoreMountains.CorgiEngine;
 
 namespace MoreMountains.CorgiEngine
 {
-    [AddComponentMenu("Corgi Engine/Character/Abilities/FuriaDoFogoFatuo")]
+    [AddComponentMenu("Corgi Engine/Character/Abilities/Furia Do Fogo Fátuo")]
     public class FuriaDoFogoFatuo : CharacterAbility
     {
         [Header("Configurações da Fúria do Fogo Fátuo")]
@@ -29,7 +29,10 @@ namespace MoreMountains.CorgiEngine
         public float Cooldown = 2f;
 
         [Tooltip("Delay entre o spawn de cada whisp")]
-        public float SpawnDelay = 0.2f; // Novo parâmetro para o delay
+        public float SpawnDelay = 0.2f;
+
+        [Tooltip("Velocidade dos whisps")]
+        public float WhispSpeed = 5f; // Adicionado
 
         [Header("Pooler")]
 
@@ -102,14 +105,12 @@ namespace MoreMountains.CorgiEngine
 
                 Vector3 whispPosition = new Vector3(colliderCenter.x + xOffset, yPosition, 0f);
 
-                // Opcional: Alinhar a direção do whisp para o player
-                Quaternion rotation = Quaternion.identity;
-                if (_playerTransform != null)
-                {
-                    Vector3 directionToPlayer = (_playerTransform.position - whispPosition).normalized;
-                    float angle = Mathf.Atan2(directionToPlayer.y, directionToPlayer.x) * Mathf.Rad2Deg;
-                    rotation = Quaternion.Euler(0, 0, angle - 90f); // Ajuste conforme a orientação do prefab
-                }
+                // Calcula a direção em direção ao jogador
+                Vector3 directionToPlayer = (_playerTransform.position - whispPosition).normalized;
+
+                // Calcula o ângulo para rotacionar o whisp (opcional)
+                float angle = Mathf.Atan2(directionToPlayer.y, directionToPlayer.x) * Mathf.Rad2Deg;
+                Quaternion rotation = Quaternion.Euler(0, 0, angle - 90f); // Ajuste conforme a orientação do prefab
 
                 // Recupera um whisp do pool
                 GameObject whisp = simpleObjectPooler.GetPooledGameObject();
@@ -121,14 +122,15 @@ namespace MoreMountains.CorgiEngine
                     // Reativa o whisp
                     whisp.SetActive(true);
 
-                    // Configura o dano no script Whisp
+                    // Configura o dano e a direção no script Whisp
                     Whisp whispScript = whisp.GetComponent<Whisp>();
                     if (whispScript != null)
                     {
                         whispScript.Damage = Damage;
+                        whispScript.Initialize(directionToPlayer * WhispSpeed); // Define a direção e velocidade
                     }
 
-                    Debug.Log($"Whisp {i + 1} spawnado em {whispPosition}.");
+                    Debug.Log($"Whisp {i + 1} spawnado em {whispPosition} em direção ao jogador.");
                 }
                 else
                 {

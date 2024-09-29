@@ -15,9 +15,10 @@ GameObject:
   - component: {fileID: 8326368157173348109}
   - component: {fileID: 1631850483007539180}
   - component: {fileID: 6069767528646080637}
-  m_Layer: 0
+  - component: {fileID: 9048223836705464246}
+  m_Layer: 13
   m_Name: WhispPrefab
-  m_TagString: Untagged
+  m_TagString: Whisps
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -223,7 +224,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2161910490836433640}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fab114de63baad848a7b54025110e916, type: 3}
   m_Name: 
@@ -231,3 +232,18 @@ MonoBehaviour:
   FallSpeed: 2
   ExplosionPrefab: {fileID: 100000, guid: 3cfe3f9255d7aa444ad3511f18f36a43, type: 3}
   Damage: 1
+--- !u!114 &9048223836705464246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2161910490836433640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc5cc1207c37ce0448e3e04856a01398, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Velocity: {x: 0, y: -2}
+  Damage: 1
+  ExplosionPrefab: {fileID: 100000, guid: 3cfe3f9255d7aa444ad3511f18f36a43, type: 3}
