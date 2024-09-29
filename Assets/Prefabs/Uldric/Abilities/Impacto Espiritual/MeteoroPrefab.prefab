@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8301932749413884}
-  - component: {fileID: 7737330792409983927}
   - component: {fileID: 7227130821458840056}
   - component: {fileID: 140169091328883921}
   - component: {fileID: 8425928853229152424}
   - component: {fileID: 5696429435847277028}
+  - component: {fileID: -6216867648829566485}
   m_Layer: 0
   m_Name: MeteoroPrefab
   m_TagString: Untagged
@@ -31,26 +31,11 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 51.708374, y: 22.30701, z: 7.231425}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 10, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7737330792409983927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5566399479474091705}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a2b8c1724099a04fba090354b757f0a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DropSpeed: 10
-  Damage: 1
-  ExplosaoPrefab: {fileID: 0}
 --- !u!212 &7227130821458840056
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -92,7 +77,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: d35c1d95aebdcea4fa9def3beefc9b88, type: 3}
+  m_Sprite: {fileID: 21300004, guid: 678058abcbfe36f42902c11d9e5f64fc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -139,7 +124,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -180,19 +165,36 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.35, y: 0.77}
+    oldSize: {x: 0.8, y: 0.8}
     newSize: {x: 1.35, y: 0.77}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.35, y: 0.77}
+  m_Size: {x: 0.74, y: 0.82}
   m_EdgeRadius: 0
+--- !u!114 &-6216867648829566485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5566399479474091705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c9709945fa4d745ba929bd8478f31c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VelocidadeQueda: 5
+  Dano: 1
+  GroundLayer:
+    serializedVersion: 2
+    m_Bits: 2048

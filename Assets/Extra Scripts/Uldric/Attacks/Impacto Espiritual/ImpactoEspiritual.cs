@@ -1,195 +1,139 @@
 using UnityEngine;
 using System.Collections;
-using MoreMountains.Tools;
+using System.Collections.Generic;
 using MoreMountains.CorgiEngine;
 
-[AddComponentMenu("Corgi Engine/Character/Abilities/ImpactoEspiritual")]
 public class ImpactoEspiritual : CharacterAbility
 {
-    [Header("Configurações da Habilidade")]
+    [Header("Configurações do Impacto Espiritual")]
 
-    [Tooltip("Prefab do Meteoro a ser spawnado")]
+    [Tooltip("Prefab do meteoro")]
     public GameObject MeteoroPrefab;
 
-    [Tooltip("Prefab da Onda de Choque a ser spawnada")]
+    [Tooltip("Prefab da onda de choque")]
     public GameObject OndaDeChoquePrefab;
 
-    [Tooltip("Referência ao PoolManager para meteoros")]
-    public MMSimpleObjectPooler meteoroPooler;
+    [Tooltip("Área onde o meteoro cairá (BoxCollider2D)")]
+    public BoxCollider2D MeteoroArea;
 
-    [Tooltip("Referência ao PoolManager para ondas de choque")]
-    public MMSimpleObjectPooler ondaDeChoquePooler;
+    [Tooltip("Área afetada pela onda de choque (BoxCollider2D)")]
+    public BoxCollider2D OndaDeChoqueArea;
 
-    [Tooltip("Número de ondas para cada lado (esquerda e direita)")]
-    public int NumeroDeOndas = 3;
+    [Tooltip("Tempo para o meteoro cair após ativar a habilidade")]
+    public float MeteoroDelay = 1f;
 
-    [Tooltip("Espaçamento vertical entre as plataformas")]
-    public float EspacamentoVerticalPlataformas = 1.5f;
+    [Tooltip("Altura inicial da onda de choque")]
+    public float AlturaInicialOnda = 2f;
 
-    [Tooltip("Dano causado ao jogador")]
-    public float Damage = 1f;
+    [Tooltip("Incremento de altura da onda a cada uso")]
+    public float IncrementoAlturaOnda = 1f;
 
-    [Tooltip("Tempo de espera antes de permitir outro ataque")]
-    public float Cooldown = 10f;
+    [Tooltip("Lista de plataformas a serem ativadas")]
+    public List<GameObject> Plataformas;
 
-    [Tooltip("Delay entre spawn de cada meteoro (se necessário)")]
-    public float SpawnDelay = 0.0f; // Ajuste conforme a necessidade
+    [Tooltip("Fase atual do boss")]
+    public int FaseAtual = 1;
 
-    private bool canAttack = true;
-
-    /// <summary>
-    /// Inicialização da habilidade
-    /// </summary>
-    protected override void Initialization()
-    {
-        base.Initialization();
-
-        if (MeteoroPrefab == null)
-            Debug.LogError("MeteoroPrefab não está atribuído!");
-
-        if (OndaDeChoquePrefab == null)
-            Debug.LogError("OndaDeChoquePrefab não está atribuído!");
-
-        if (meteoroPooler == null)
-            Debug.LogError("meteoroPooler não está atribuído!");
-
-        if (ondaDeChoquePooler == null)
-            Debug.LogError("ondaDeChoquePooler não está atribuído!");
-    }
+    private float _alturaAtualOnda;
 
     /// <summary>
     /// Método público para ativar a habilidade Impacto Espiritual
     /// </summary>
-    public void AtivarHabilidade()
+    public void ActivateAbility()
     {
-        if (canAttack)
-        {
-            StartCoroutine(ImpactoEspiritualRoutine());
-        }
+        StartCoroutine(ImpactoEspiritualRoutine());
     }
 
-    /// <summary>
-    /// Coroutine que gerencia a execução da habilidade
-    /// </summary>
-    /// <returns></returns>
     private IEnumerator ImpactoEspiritualRoutine()
     {
-        canAttack = false;
+        // Aguarda o delay antes de cair o meteoro
+        yield return new WaitForSeconds(MeteoroDelay);
 
-        // Instancia o meteoro no topo central
-        Vector3 spawnPosition = new Vector3(0, 10, 0); // Ajuste conforme a posição da sua arena
-        GameObject meteoro = meteoroPooler.GetPooledGameObject();
-        if (meteoro != null)
+        // Spawna o meteoro
+        SpawnMeteoro();
+
+        yield return null;
+    }
+
+    private void SpawnMeteoro()
+    {
+        // Posição do meteoro no topo da MeteoroArea
+        Vector2 spawnPosition = new Vector2(MeteoroArea.bounds.center.x, MeteoroArea.bounds.max.y);
+
+        // Instancia o meteoro
+        GameObject meteoro = Instantiate(MeteoroPrefab, spawnPosition, Quaternion.identity);
+
+        // Configura o controlador do meteoro
+        MeteoroController meteoroController = meteoro.GetComponent<MeteoroController>();
+        if (meteoroController != null)
         {
-            meteoro.transform.position = spawnPosition;
-            meteoro.transform.rotation = Quaternion.identity;
-            meteoro.SetActive(true);
-            Debug.Log("Meteoro spawnado.");
+            meteoroController.Initialize(this);
         }
         else
         {
-            Debug.LogWarning("Nenhum Meteoro disponível no pool!");
+            Debug.LogError("O prefab do meteoro não possui o script MeteoroController!");
         }
-
-        // Espera o tempo de execução da queda do meteoro
-        yield return new WaitForSeconds(1f); // 1 segundo para a queda
-
-        // A geração das ondas é gerenciada pelo script do Meteoro ao colidir
-
-        // Inicia o cooldown antes de permitir outro ataque
-        yield return new WaitForSeconds(Cooldown);
-        canAttack = true;
     }
 
     /// <summary>
-    /// Método chamado pelo meteoro ao colidir com o chão para gerar ondas de choque
+    /// Chamado pelo MeteoroController quando o meteoro atinge o chão
     /// </summary>
-    /// <param name="position">Posição da colisão</param>
-    public void GerarOndaDeChoque(Vector3 position)
+    public void OnMeteoroImpacto()
     {
-        StartCoroutine(GerarOndasRoutine(position));
+        // Spawna a onda de choque
+        SpawnOndaDeChoque();
+
+        // Se estiver na fase 1, ativa as plataformas
+        if (FaseAtual == 1)
+        {
+            AtivarPlataformas();
+        }
     }
 
-    /// <summary>
-    /// Coroutine para gerar ondas de choque nos lados esquerdo e direito
-    /// </summary>
-    /// <param name="position">Posição da colisão do meteoro</param>
-    /// <returns></returns>
-    private IEnumerator GerarOndasRoutine(Vector3 position)
+    private void SpawnOndaDeChoque()
     {
-        for (int i = 0; i < NumeroDeOndas; i++)
+        // Posição inicial da onda de choque na base da OndaDeChoqueArea
+        Vector2 spawnPosition = new Vector2(OndaDeChoqueArea.bounds.center.x, OndaDeChoqueArea.bounds.min.y);
+
+        // Instancia a onda de choque
+        GameObject onda = Instantiate(OndaDeChoquePrefab, spawnPosition, Quaternion.identity);
+
+        // Configura o controlador da onda de choque
+        OndaDeChoque ondaController = onda.GetComponent<OndaDeChoque>();
+        if (ondaController != null)
         {
-            // Calcular a posição das ondas em cada camada vertical
-            float yOffset = i * EspacamentoVerticalPlataformas;
-
-            // Esquerda
-            Vector3 posEsquerda = new Vector3(position.x - 5f, position.y - yOffset, position.z); // Ajuste a distância conforme necessário
-            GameObject ondaEsquerda = ondaDeChoquePooler.GetPooledGameObject();
-            if (ondaEsquerda != null)
-            {
-                ondaEsquerda.transform.position = posEsquerda;
-                ondaEsquerda.transform.rotation = Quaternion.Euler(0, 0, 0); // Direção para a direita
-                ondaEsquerda.SetActive(true);
-                Debug.Log($"Onda de choque esquerda spawnada em {posEsquerda}.");
-            }
-            else
-            {
-                Debug.LogWarning("Nenhuma Onda de Choque esquerda disponível no pool!");
-            }
-
-            // Direita
-            Vector3 posDireita = new Vector3(position.x + 5f, position.y - yOffset, position.z); // Ajuste a distância conforme necessário
-            GameObject ondaDireita = ondaDeChoquePooler.GetPooledGameObject();
-            if (ondaDireita != null)
-            {
-                ondaDireita.transform.position = posDireita;
-                ondaDireita.transform.rotation = Quaternion.Euler(0, 0, 180); // Direção para a esquerda
-                ondaDireita.SetActive(true);
-                Debug.Log($"Onda de choque direita spawnada em {posDireita}.");
-            }
-            else
-            {
-                Debug.LogWarning("Nenhuma Onda de Choque direita disponível no pool!");
-            }
-
-            // Espera um pequeno delay antes de spawnar a próxima camada de ondas
-            yield return new WaitForSeconds(0.2f); // Ajuste conforme necessário
+            _alturaAtualOnda += IncrementoAlturaOnda;
+            ondaController.Initialize(OndaDeChoqueArea, _alturaAtualOnda);
         }
-
-        // Após a geração das ondas, ativa as plataformas nos cantos
-        AtivarPlataformasNosCantores();
-
-        // Opcional: Incrementar a intensidade para futuras ativações
-        // Exemplo:
-        // NumeroDeOndas += 1;
-        // EspacamentoVerticalPlataformas += 0.5f;
+        else
+        {
+            Debug.LogError("O prefab da onda de choque não possui o script OndaDeChoque!");
+        }
     }
 
-    /// <summary>
-    /// Método para ativar as plataformas nos cantos após a passagem das ondas
-    /// </summary>
-    private void AtivarPlataformasNosCantores()
+    private void AtivarPlataformas()
     {
-        // Encontrar todas as plataformas marcadas com as tags específicas
-        GameObject[] plataformasEsquerda = GameObject.FindGameObjectsWithTag("PlatformsEsquerda");
-        GameObject[] plataformasDireita = GameObject.FindGameObjectsWithTag("PlatformsDireita");
-
-        foreach (GameObject plataforma in plataformasEsquerda)
+        foreach (GameObject plataforma in Plataformas)
         {
-            if (plataforma != null)
-            {
-                plataforma.SetActive(true);
-                Debug.Log($"Plataforma esquerda {plataforma.name} ativada.");
-            }
+            plataforma.SetActive(true);
+
+            // Se a plataforma precisar ser elevada, podemos ajustar sua posição aqui
+            plataforma.transform.position += new Vector3(0, IncrementoAlturaOnda, 0);
+        }
+    }
+
+    protected virtual void OnDrawGizmosSelected()
+    {
+        if (MeteoroArea != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(MeteoroArea.bounds.center, MeteoroArea.bounds.size);
         }
 
-        foreach (GameObject plataforma in plataformasDireita)
+        if (OndaDeChoqueArea != null)
         {
-            if (plataforma != null)
-            {
-                plataforma.SetActive(true);
-                Debug.Log($"Plataforma direita {plataforma.name} ativada.");
-            }
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireCube(OndaDeChoqueArea.bounds.center, OndaDeChoqueArea.bounds.size);
         }
     }
 }

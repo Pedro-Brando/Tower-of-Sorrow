@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5512498181503869345}
   - component: {fileID: 5020440997712861370}
   - component: {fileID: 5175375766111530344}
+  - component: {fileID: 1150196954353864346}
   m_Layer: 0
   m_Name: MeteorPrefab
   m_TagString: Untagged
@@ -31,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -101.38626, y: -59.24759, z: -0.111411124}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 7, y: 7, z: 7}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -77,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b71f20a793a920a4588a3fc12260096e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c4b6758e5fe01a34695fb3ee2a623f74, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -149,7 +150,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.07
 --- !u!114 &5020440997712861370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,4 +205,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DropSpeed: 10
   Damage: 1
-  ExplosaoPrefab: {fileID: 0}
+  ExplosaoPrefab: {fileID: 100000, guid: 3cfe3f9255d7aa444ad3511f18f36a43, type: 3}
+--- !u!95 &1150196954353864346
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4359354768554291090}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6a7370b656c207c4faba81c4c4803afa, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

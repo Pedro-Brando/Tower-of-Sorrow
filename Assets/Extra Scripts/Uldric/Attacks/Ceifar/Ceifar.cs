@@ -16,7 +16,8 @@ namespace MoreMountains.CorgiEngine
 
         [Tooltip("Tempo antes de realizar o ataque após a foice aparecer")]
         public float AttackDelay = 0.5f;
-
+    [Tooltip("Tempo antes de realizar o ataque após a foice aparecer")]
+        public float FlickerDamageTime = 0.5f;
         [Tooltip("Dano causado pelo ataque Ceifar")]
         public float Damage = 1f;
 
@@ -66,7 +67,7 @@ namespace MoreMountains.CorgiEngine
             // Exibe a foice mágica acima do Uldric
             if (ScythePrefab != null)
             {
-                GameObject scythe = Instantiate(ScythePrefab, _characterTransform.position + Vector3.up, Quaternion.identity);
+                GameObject scythe = Instantiate(ScythePrefab, CeifarArea.transform.position + Vector3.up, Quaternion.identity);
                 Destroy(scythe, AttackDelay + 1f); // Destrói a foice após o ataque
             }
 
@@ -93,7 +94,7 @@ namespace MoreMountains.CorgiEngine
                     Destroy(slashInstance, 1f); // Destrói o prefab após a animação terminar (ajuste o tempo conforme necessário)
                 }
 
-                yield return new WaitForSeconds(0.5f); // Tempo durante o qual o ataque está ativo
+                yield return new WaitForSeconds(FlickerDamageTime); // Tempo durante o qual o ataque está ativo
                 _ceifarCollider.enabled = false; // Desativa o collider após o ataque
             }
         }

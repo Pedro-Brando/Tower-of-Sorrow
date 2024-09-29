@@ -42,8 +42,8 @@ namespace MoreMountains.CorgiEngine
             _rigidbody.velocity = new Vector2(direction.x, direction.y) * DropSpeed;
 
             // Opcional: Rotacionar o meteoro para dar efeito visual
-            float randomRotation = Random.Range(0f, 360f);
-            transform.rotation = Quaternion.Euler(0f, 0f, randomRotation);
+            /*float randomRotation = Random.Range(0f, 360f);*/
+            transform.rotation = Quaternion.Euler(0f, 0f, 15f);
 
             _hasExploded = false;
 
