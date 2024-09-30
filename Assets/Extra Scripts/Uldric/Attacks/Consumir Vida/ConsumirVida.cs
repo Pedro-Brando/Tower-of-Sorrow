@@ -7,7 +7,7 @@ using MoreMountains.Tools;
 namespace MoreMountains.CorgiEngine
 {
     [AddComponentMenu("Corgi Engine/Character/Abilities/Consumir Vida")]
-    public class ConsumirVida : CharacterAbility
+    public class ConsumirVida : CharacterAbility, IUldrichAbility
     {
         [Header("Configurações de Consumir Vida")]
 
@@ -48,14 +48,40 @@ namespace MoreMountains.CorgiEngine
 
         private bool _abilityInProgress = false;
 
+        [Header("Cooldown")]
+        [Tooltip("Duração do cooldown da habilidade Consumir Vida")]
+        public float CooldownDuration = 10f; // Ajuste conforme necessário
+
+        private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
+
+        /// <summary>
+        /// Propriedade que indica se a habilidade está permitida (herdada de CharacterAbility)
+        /// </summary>
+        public new bool AbilityPermitted => base.AbilityPermitted;
+
+        /// <summary>
+        /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
+        /// </summary>
+        public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
+
         /// <summary>
         /// Método público para ativar a habilidade Consumir Vida
         /// </summary>
         public void ActivateAbility()
         {
-            if (!_abilityInProgress)
+            if (!_abilityInProgress && AbilityAuthorized)
             {
-                StartCoroutine(ConsumirVidaRoutine());
+                if (Time.time >= _lastActivationTime + CooldownDuration)
+                {
+                    _lastActivationTime = Time.time;
+                    StartCoroutine(ConsumirVidaRoutine());
+                }
+                else
+                {
+                    // Opcional: Fornecer feedback indicando que a habilidade está em cooldown
+                    float cooldownRemaining = (_lastActivationTime + CooldownDuration) - Time.time;
+                    Debug.Log($"Consumir Vida está em cooldown. Tempo restante: {cooldownRemaining:F1} segundos.");
+                }
             }
         }
 
@@ -125,7 +151,7 @@ namespace MoreMountains.CorgiEngine
                 // Aplica dano às entidades na área da explosão
                 ApplyDamageInArea(explosion.transform.position);
 
-                // Desativa a explosão após o tempo definido (assumindo que a animação dura 1 segundo)
+                // Desativa a explosão após o tempo definido (ajuste conforme a duração da animação)
                 yield return new WaitForSeconds(1f);
                 explosion.SetActive(false);
             }

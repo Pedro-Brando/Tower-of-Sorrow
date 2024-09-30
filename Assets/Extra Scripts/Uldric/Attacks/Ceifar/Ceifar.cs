@@ -4,7 +4,7 @@ using MoreMountains.CorgiEngine;
 
 namespace MoreMountains.CorgiEngine
 {
-    public class Ceifar : CharacterAbility
+    public class Ceifar : CharacterAbility, IUldrichAbility
     {
         [Header("Configurações do Ceifar")]
         
@@ -16,15 +16,33 @@ namespace MoreMountains.CorgiEngine
 
         [Tooltip("Tempo antes de realizar o ataque após a foice aparecer")]
         public float AttackDelay = 0.5f;
-    [Tooltip("Tempo antes de realizar o ataque após a foice aparecer")]
+
+        [Tooltip("Tempo durante o qual o ataque está ativo")]
         public float FlickerDamageTime = 0.5f;
+
         [Tooltip("Dano causado pelo ataque Ceifar")]
         public float Damage = 1f;
 
         [Tooltip("Referência à área de ataque do Ceifar")]
-        public GameObject CeifarArea; // Referência ao GameObject da área do BoxCollider2D
+        public GameObject CeifarArea; // Referência ao GameObject da área do ataque
 
-        protected Collider2D _ceifarCollider; // Referência ao BoxCollider2D para controle
+        protected Collider2D _ceifarCollider; // Referência ao Collider2D para controle
+
+        [Header("Cooldown")]
+        [Tooltip("Duração do cooldown da habilidade Ceifar")]
+        public float CooldownDuration = 5f; // Duração do cooldown em segundos
+
+        private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
+
+        /// <summary>
+        /// Propriedade que indica se a habilidade está permitida (herdada de CharacterAbility)
+        /// </summary>
+        public new bool AbilityPermitted => base.AbilityPermitted;
+
+        /// <summary>
+        /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
+        /// </summary>
+        public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
 
         /// <summary>
         /// Inicialização da habilidade Ceifar
@@ -38,7 +56,7 @@ namespace MoreMountains.CorgiEngine
                 _ceifarCollider = CeifarArea.GetComponent<Collider2D>();
                 if (_ceifarCollider != null)
                 {
-                    _ceifarCollider.enabled = false; // Desativar o collider no início
+                    _ceifarCollider.enabled = false; // Desativa o collider no início
                 }
                 else
                 {
@@ -56,7 +74,22 @@ namespace MoreMountains.CorgiEngine
         /// </summary>
         public void ActivateAbility()
         {
-            StartCoroutine(CeifarRoutine());
+            if (!AbilityAuthorized)
+            {
+                return;
+            }
+
+            if (Time.time >= _lastActivationTime + CooldownDuration)
+            {
+                _lastActivationTime = Time.time;
+                StartCoroutine(CeifarRoutine());
+            }
+            else
+            {
+                // Opcional: Fornecer feedback indicando que a habilidade está em cooldown
+                float cooldownRemaining = (_lastActivationTime + CooldownDuration) - Time.time;
+                Debug.Log($"Ceifar está em cooldown. Tempo restante: {cooldownRemaining:F1} segundos.");
+            }
         }
 
         /// <summary>
@@ -88,13 +121,15 @@ namespace MoreMountains.CorgiEngine
                     Animator slashAnimator = slashInstance.GetComponent<Animator>();
                     if (slashAnimator != null)
                     {
-                        slashAnimator.Play("SlashAnimation"); // O nome da animação deve coincidir com a animação de corte no Animator
+                        slashAnimator.Play("SlashAnimation"); // Certifique-se de que o nome corresponde ao da animação
                     }
 
-                    Destroy(slashInstance, 1f); // Destrói o prefab após a animação terminar (ajuste o tempo conforme necessário)
+                    Destroy(slashInstance, 1f); // Ajuste o tempo conforme a duração da animação
                 }
 
-                yield return new WaitForSeconds(FlickerDamageTime); // Tempo durante o qual o ataque está ativo
+                // Tempo durante o qual o ataque está ativo
+                yield return new WaitForSeconds(FlickerDamageTime);
+
                 _ceifarCollider.enabled = false; // Desativa o collider após o ataque
             }
         }
@@ -104,7 +139,7 @@ namespace MoreMountains.CorgiEngine
         /// </summary>
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (_ceifarCollider.enabled && collision.CompareTag("Player")) // O dano só é aplicado quando o collider está ativo
+            if (_ceifarCollider != null && _ceifarCollider.enabled && collision.CompareTag("Player"))
             {
                 Health playerHealth = collision.GetComponent<Health>();
                 if (playerHealth != null)

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using MoreMountains.CorgiEngine;
 
-public class EspiritoCristalizado : CharacterAbility
+public class EspiritoCristalizado : CharacterAbility, IUldrichAbility
 {
     [Header("Configurações da Habilidade")]
 
@@ -24,13 +24,41 @@ public class EspiritoCristalizado : CharacterAbility
     [Tooltip("Prefab do portal a ser instanciado quando o cristal for destruído")]
     public GameObject PortalPrefab;
 
+    [Header("Cooldown")]
+    [Tooltip("Duração do cooldown da habilidade Espírito Cristalizado")]
+    public float CooldownDuration = 15f; // Ajuste conforme necessário
+
+    private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
+
+    /// <summary>
+    /// Propriedade que indica se a habilidade está permitida (herdada de CharacterAbility)
+    /// </summary>
+    public new bool AbilityPermitted => base.AbilityPermitted;
+
+    /// <summary>
+    /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
+    /// </summary>
+    public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
+
     /// <summary>
     /// Método público para ativar a habilidade Espírito Cristalizado
     /// </summary>
     public void ActivateAbility()
     {
-        Debug.Log("EspiritoCristalizado: ActivateAbility() chamado.");
-        StartCoroutine(SpawnCrystals());
+        if (AbilityAuthorized)
+        {
+            if (Time.time >= _lastActivationTime + CooldownDuration)
+            {
+                _lastActivationTime = Time.time;
+                StartCoroutine(SpawnCrystals());
+            }
+            else
+            {
+                // Opcional: Fornecer feedback indicando que a habilidade está em cooldown
+                float cooldownRemaining = (_lastActivationTime + CooldownDuration) - Time.time;
+                Debug.Log($"Espírito Cristalizado está em cooldown. Tempo restante: {cooldownRemaining:F1} segundos.");
+            }
+        }
     }
 
     private IEnumerator SpawnCrystals()

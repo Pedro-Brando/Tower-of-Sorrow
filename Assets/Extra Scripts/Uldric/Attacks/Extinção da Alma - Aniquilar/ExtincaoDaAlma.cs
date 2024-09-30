@@ -7,7 +7,7 @@ using MoreMountains.Tools;
 namespace MoreMountains.CorgiEngine
 {
     [AddComponentMenu("Corgi Engine/Character/Abilities/Extincao Da Alma")]
-    public class ExtincaoDaAlma : CharacterAbility
+    public class ExtincaoDaAlma : CharacterAbility, IUldrichAbility
     {
         [Header("Configurações da Extinção da Alma")]
 
@@ -34,18 +34,43 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Prefab do efeito de partículas na área de efeito")]
         public GameObject AreaEffectPrefab;
 
-        private bool _canUseAbility = true;
+        [Header("Cooldown")]
+        [Tooltip("Duração do cooldown da habilidade Extinção da Alma")]
+        public float CooldownDuration = 30f; // Ajuste conforme necessário
+
+        private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
+
         private GameObject _announcementInstance;
         private GameObject _areaEffectInstance;
+
+        /// <summary>
+        /// Propriedade que indica se a habilidade está permitida (herdada de CharacterAbility)
+        /// </summary>
+        public new bool AbilityPermitted => base.AbilityPermitted;
+
+        /// <summary>
+        /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
+        /// </summary>
+        public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
 
         /// <summary>
         /// Método público para ativar a habilidade Extinção da Alma
         /// </summary>
         public void ActivateAbility()
         {
-            if (_canUseAbility)
+            if (AbilityAuthorized)
             {
-                StartCoroutine(ExtincaoDaAlmaRoutine());
+                if (Time.time >= _lastActivationTime + CooldownDuration)
+                {
+                    _lastActivationTime = Time.time;
+                    StartCoroutine(ExtincaoDaAlmaRoutine());
+                }
+                else
+                {
+                    // Opcional: Fornecer feedback indicando que a habilidade está em cooldown
+                    float cooldownRemaining = (_lastActivationTime + CooldownDuration) - Time.time;
+                    Debug.Log($"Extinção da Alma está em cooldown. Tempo restante: {cooldownRemaining:F1} segundos.");
+                }
             }
         }
 
@@ -55,8 +80,6 @@ namespace MoreMountains.CorgiEngine
         /// <returns></returns>
         protected virtual IEnumerator ExtincaoDaAlmaRoutine()
         {
-            _canUseAbility = false;
-
             // Início do carregamento
             Debug.Log("Uldrich começou a carregar Extinção da Alma.");
             // TODO: Adicionar animação ou efeito de carregamento aqui
@@ -92,13 +115,12 @@ namespace MoreMountains.CorgiEngine
             {
                 _areaEffectInstance = Instantiate(AreaEffectPrefab, EffectArea.bounds.center, Quaternion.identity);
                 // Opcional: ajustar o tamanho do efeito para cobrir a área
-                // Exemplo: ajustar escala ou parâmetros do sistema de partículas
             }
 
-            // Espera antes de permitir outro uso (se necessário)
-            // yield return new WaitForSeconds(CooldownTime);
+            // Opcional: Aguarde o tempo do efeito antes de limpar (se necessário)
+            // yield return new WaitForSeconds(effectDuration);
 
-            _canUseAbility = true;
+            // Limpeza adicional, se necessário
         }
 
         /// <summary>

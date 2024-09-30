@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using MoreMountains.CorgiEngine;
 
-public class ImpactoEspiritual : CharacterAbility
+public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
 {
     [Header("Configurações do Impacto Espiritual")]
 
@@ -36,12 +36,41 @@ public class ImpactoEspiritual : CharacterAbility
 
     private float _alturaAtualOnda;
 
+    [Header("Cooldown")]
+    [Tooltip("Duração do cooldown da habilidade Impacto Espiritual")]
+    public float CooldownDuration = 10f; // Ajuste conforme necessário
+
+    private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
+
+    /// <summary>
+    /// Propriedade que indica se a habilidade está permitida (herdada de CharacterAbility)
+    /// </summary>
+    public new bool AbilityPermitted => base.AbilityPermitted;
+
+    /// <summary>
+    /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
+    /// </summary>
+    public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
+
     /// <summary>
     /// Método público para ativar a habilidade Impacto Espiritual
     /// </summary>
     public void ActivateAbility()
     {
-        StartCoroutine(ImpactoEspiritualRoutine());
+        if (AbilityAuthorized)
+        {
+            if (Time.time >= _lastActivationTime + CooldownDuration)
+            {
+                _lastActivationTime = Time.time;
+                StartCoroutine(ImpactoEspiritualRoutine());
+            }
+            else
+            {
+                // Opcional: Fornecer feedback indicando que a habilidade está em cooldown
+                float cooldownRemaining = (_lastActivationTime + CooldownDuration) - Time.time;
+                Debug.Log($"Impacto Espiritual está em cooldown. Tempo restante: {cooldownRemaining:F1} segundos.");
+            }
+        }
     }
 
     private IEnumerator ImpactoEspiritualRoutine()

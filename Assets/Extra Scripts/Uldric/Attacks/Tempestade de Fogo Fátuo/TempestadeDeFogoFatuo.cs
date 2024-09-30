@@ -1,12 +1,12 @@
 using UnityEngine;
 using System.Collections;
-using MoreMountains.Tools; // Namespace do Corgi Engine
+using MoreMountains.Tools;
 using MoreMountains.CorgiEngine;
 
 namespace MoreMountains.CorgiEngine
 {
     [AddComponentMenu("Corgi Engine/Character/Abilities/Tempestade De Fogo Fátuo")]
-    public class TempestadeDeFogoFatuo : CharacterAbility
+    public class TempestadeDeFogoFatuo : CharacterAbility, IUldrichAbility
     {
         [Header("Configurações da Tempestade de Fogo Fátuo")]
 
@@ -15,12 +15,6 @@ namespace MoreMountains.CorgiEngine
 
         [Tooltip("Espaçamento vertical entre os whisps")]
         public float WhispSpacing = 1.0f;
-
-        [Tooltip("Prefab do whisp")]
-        public GameObject WhispPrefab;
-
-        [Tooltip("Referência ao MMSimpleObjectPooler")]
-        public MMSimpleObjectPooler WhispPooler;
 
         [Tooltip("Velocidade dos whisps")]
         public float WhispSpeed = 5f;
@@ -31,8 +25,11 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Delay entre o spawn de cada whisp")]
         public float SpawnDelay = 0.1f;
 
-        [Tooltip("Tempo de espera antes de permitir outro ataque")]
-        public float Cooldown = 5f;
+        [Tooltip("Prefab do whisp")]
+        public GameObject WhispPrefab;
+
+        [Tooltip("Referência ao MMSimpleObjectPooler")]
+        public MMSimpleObjectPooler WhispPooler;
 
         [Header("Referências de Spawn")]
 
@@ -42,16 +39,40 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Transform que define a posição de spawn dos whisps da direita")]
         public Transform RightSpawnPoint;
 
-        private bool _canAttack = true;
+        [Header("Cooldown")]
+        [Tooltip("Duração do cooldown da habilidade")]
+        public float CooldownDuration = 10f; // Ajuste conforme necessário
+
+        private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
+
+        /// <summary>
+        /// Propriedade que indica se a habilidade está permitida (herdada de CharacterAbility)
+        /// </summary>
+        public new bool AbilityPermitted => base.AbilityPermitted;
+
+        /// <summary>
+        /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
+        /// </summary>
+        public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
 
         /// <summary>
         /// Método público para ativar a habilidade
         /// </summary>
         public void ActivateAbility()
         {
-            if (_canAttack)
+            if (AbilityAuthorized)
             {
-                StartCoroutine(TempestadeDeFogoFatuoRoutine());
+                if (Time.time >= _lastActivationTime + CooldownDuration)
+                {
+                    _lastActivationTime = Time.time;
+                    StartCoroutine(TempestadeDeFogoFatuoRoutine());
+                }
+                else
+                {
+                    // Fornecer feedback indicando que a habilidade está em cooldown
+                    float cooldownRemaining = (_lastActivationTime + CooldownDuration) - Time.time;
+                    Debug.Log($"Tempestade de Fogo Fátuo está em cooldown. Tempo restante: {cooldownRemaining:F1} segundos.");
+                }
             }
         }
 
@@ -61,8 +82,6 @@ namespace MoreMountains.CorgiEngine
         /// <returns></returns>
         protected virtual IEnumerator TempestadeDeFogoFatuoRoutine()
         {
-            _canAttack = false;
-
             Debug.Log("Tempestade de Fogo Fátuo iniciada!");
 
             // Calcular a posição inicial e espaçamento vertical
@@ -89,10 +108,6 @@ namespace MoreMountains.CorgiEngine
                 yield return new WaitForSeconds(SpawnDelay);
             }
 
-            // Espera o cooldown antes de permitir outro ataque
-            yield return new WaitForSeconds(Cooldown);
-            _canAttack = true;
-
             Debug.Log("Tempestade de Fogo Fátuo concluída.");
         }
 
@@ -104,13 +119,13 @@ namespace MoreMountains.CorgiEngine
         /// <param name="lado">Identificador do lado (para logs)</param>
         private void SpawnWhisp(Vector3 spawnPosition, Vector2 direction, string lado)
         {
-            if (WhispPooler != null && WhispPrefab != null)
+            if (WhispPooler != null)
             {
                 GameObject whisp = WhispPooler.GetPooledGameObject();
                 if (whisp != null)
                 {
                     whisp.transform.position = spawnPosition;
-                    whisp.transform.rotation = Quaternion.identity; // Resetar rotação, se necessário
+                    whisp.transform.rotation = Quaternion.identity;
 
                     // Reativa o whisp
                     whisp.SetActive(true);
@@ -135,17 +150,8 @@ namespace MoreMountains.CorgiEngine
             }
             else
             {
-                Debug.LogError("WhispPooler ou WhispPrefab não está atribuído no Inspector!");
+                Debug.LogError("WhispPooler não está atribuído no Inspector!");
             }
-        }
-
-        /// <summary>
-        /// Reseta a habilidade quando necessário
-        /// </summary>
-        public override void ResetAbility()
-        {
-            base.ResetAbility();
-            _canAttack = true;
         }
     }
 }

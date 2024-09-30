@@ -7,7 +7,7 @@ using MoreMountains.Tools;
 namespace MoreMountains.CorgiEngine
 {
     [AddComponentMenu("Corgi Engine/Character/Abilities/Onda De Chamas")]
-    public class OndaDeChamas : CharacterAbility
+    public class OndaDeChamas : CharacterAbility, IUldrichAbility
     {
         [Header("Configurações da Onda de Chamas")]
 
@@ -15,7 +15,7 @@ namespace MoreMountains.CorgiEngine
         public GameObject FireballPrefab;
 
         [Tooltip("Pooler para as bolas de fogo")]
-        public MMSimpleObjectPooler FireballPooler; // Adicionado
+        public MMSimpleObjectPooler FireballPooler;
 
         [Tooltip("Número de paredes por uso da habilidade")]
         public int NumberOfWalls = 5;
@@ -38,18 +38,27 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Ponto de spawn das paredes")]
         public Transform WallSpawnPoint;
 
-        [Tooltip("Número de vezes que Uldrich pode usar essa habilidade")]
-        public int NumberOfUses = 3;
-
-        private int _usesRemaining;
-        private bool _abilityInProgress = false;
-
         private List<int[]> _patterns;
+
+        [Header("Cooldown")]
+        [Tooltip("Duração do cooldown da habilidade Onda de Chamas")]
+        public float CooldownDuration = 15f; // Ajuste conforme necessário
+
+        private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
+
+        /// <summary>
+        /// Propriedade que indica se a habilidade está permitida (herdada de CharacterAbility)
+        /// </summary>
+        public new bool AbilityPermitted => base.AbilityPermitted;
+
+        /// <summary>
+        /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
+        /// </summary>
+        public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
 
         protected override void Initialization()
         {
             base.Initialization();
-            _usesRemaining = NumberOfUses;
 
             // Inicializa os padrões
             _patterns = new List<int[]>
@@ -67,28 +76,39 @@ namespace MoreMountains.CorgiEngine
             {
                 Debug.LogError("FireballPooler não está atribuído no OndaDeChamas!");
             }
+
+            // Verifica se o WallSpawnPoint está atribuído
+            if (WallSpawnPoint == null)
+            {
+                Debug.LogError("WallSpawnPoint não está atribuído no OndaDeChamas!");
+            }
         }
 
         public void ActivateAbility()
         {
-            if (!_abilityInProgress && _usesRemaining > 0)
+            if (AbilityAuthorized)
             {
-                StartCoroutine(OndaDeChamasRoutine());
+                if (Time.time >= _lastActivationTime + CooldownDuration)
+                {
+                    _lastActivationTime = Time.time;
+                    StartCoroutine(OndaDeChamasRoutine());
+                }
+                else
+                {
+                    // Opcional: Fornecer feedback indicando que a habilidade está em cooldown
+                    float cooldownRemaining = (_lastActivationTime + CooldownDuration) - Time.time;
+                    Debug.Log($"Onda de Chamas está em cooldown. Tempo restante: {cooldownRemaining:F1} segundos.");
+                }
             }
         }
 
         private IEnumerator OndaDeChamasRoutine()
         {
-            _abilityInProgress = true;
-            _usesRemaining--;
-
             for (int i = 0; i < NumberOfWalls; i++)
             {
                 SpawnWall();
                 yield return new WaitForSeconds(WallDelay);
             }
-
-            _abilityInProgress = false;
         }
 
         private void SpawnWall()
@@ -117,7 +137,7 @@ namespace MoreMountains.CorgiEngine
                         {
                             fireballScript.Speed = FireballSpeed;
                             fireballScript.Damage = FireballDamage;
-                            Vector2 direction = Vector2.left; // Supondo que Uldrich esteja à direita do jogador
+                            Vector2 direction = Vector2.left; // Ajuste conforme a direção desejada
                             fireballScript.Initialize(direction);
                         }
                         else

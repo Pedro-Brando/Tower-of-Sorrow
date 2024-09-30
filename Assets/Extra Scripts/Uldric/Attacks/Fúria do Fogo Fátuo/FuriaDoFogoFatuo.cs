@@ -6,7 +6,7 @@ using MoreMountains.CorgiEngine;
 namespace MoreMountains.CorgiEngine
 {
     [AddComponentMenu("Corgi Engine/Character/Abilities/Furia Do Fogo Fátuo")]
-    public class FuriaDoFogoFatuo : CharacterAbility
+    public class FuriaDoFogoFatuo : CharacterAbility, IUldrichAbility
     {
         [Header("Configurações da Fúria do Fogo Fátuo")]
 
@@ -25,21 +25,33 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Direção da linha de spawn (True para da esquerda para a direita, False para da direita para a esquerda)")]
         public bool SpawnDirectionLeftToRight = true;
 
-        [Tooltip("Tempo de espera antes de permitir outro ataque")]
-        public float Cooldown = 2f;
-
         [Tooltip("Delay entre o spawn de cada whisp")]
         public float SpawnDelay = 0.2f;
 
         [Tooltip("Velocidade dos whisps")]
-        public float WhispSpeed = 5f; // Adicionado
+        public float WhispSpeed = 5f;
 
         [Header("Pooler")]
 
         [Tooltip("Referência ao MMSimpleObjectPooler")]
         public MMSimpleObjectPooler simpleObjectPooler;
 
-        private bool _canAttack = true;
+        [Header("Cooldown")]
+        [Tooltip("Duração do cooldown da habilidade Fúria do Fogo Fátuo")]
+        public float CooldownDuration = 5f; // Ajuste conforme necessário
+
+        private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
+
+        /// <summary>
+        /// Propriedade que indica se a habilidade está permitida (herdada de CharacterAbility)
+        /// </summary>
+        public new bool AbilityPermitted => base.AbilityPermitted;
+
+        /// <summary>
+        /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
+        /// </summary>
+        public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
+
         private Transform _playerTransform;
 
         /// <summary>
@@ -76,9 +88,19 @@ namespace MoreMountains.CorgiEngine
         /// </summary>
         public void ActivateAbility()
         {
-            if (_canAttack)
+            if (AbilityAuthorized)
             {
-                StartCoroutine(FuriaDoFogoFatuoRoutine());
+                if (Time.time >= _lastActivationTime + CooldownDuration)
+                {
+                    _lastActivationTime = Time.time;
+                    StartCoroutine(FuriaDoFogoFatuoRoutine());
+                }
+                else
+                {
+                    // Opcional: Fornecer feedback indicando que a habilidade está em cooldown
+                    float cooldownRemaining = (_lastActivationTime + CooldownDuration) - Time.time;
+                    Debug.Log($"Fúria do Fogo Fátuo está em cooldown. Tempo restante: {cooldownRemaining:F1} segundos.");
+                }
             }
         }
 
@@ -88,8 +110,6 @@ namespace MoreMountains.CorgiEngine
         /// <returns></returns>
         protected virtual IEnumerator FuriaDoFogoFatuoRoutine()
         {
-            _canAttack = false;
-
             // Calcula o espaçamento inicial baseado na direção
             float initialOffsetX = SpawnDirectionLeftToRight ? -((NumberOfWhisps - 1) * WhispSpacing) / 2f : ((NumberOfWhisps - 1) * WhispSpacing) / 2f;
 
@@ -140,19 +160,6 @@ namespace MoreMountains.CorgiEngine
                 // Espera o delay configurado antes de spawnar o próximo whisp
                 yield return new WaitForSeconds(SpawnDelay);
             }
-
-            // Espera o cooldown antes de permitir outro ataque
-            yield return new WaitForSeconds(Cooldown);
-            _canAttack = true;
-        }
-
-        /// <summary>
-        /// Reseta a habilidade quando necessário
-        /// </summary>
-        public override void ResetAbility()
-        {
-            base.ResetAbility();
-            _canAttack = true;
         }
     }
 }

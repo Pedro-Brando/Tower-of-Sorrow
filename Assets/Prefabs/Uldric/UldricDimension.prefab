@@ -233,6 +233,7 @@ GameObject:
   - component: {fileID: 2972806338601568590}
   - component: {fileID: 2993216067872739242}
   - component: {fileID: 2937618133634821504}
+  - component: {fileID: 2134743813554263339}
   m_Layer: 0
   m_Name: UldricDimension
   m_TagString: Untagged
@@ -419,6 +420,18 @@ MonoBehaviour:
   AfterDelayBetweenFadesFeedback: {fileID: 0}
   SequenceEndFeedback: {fileID: 0}
   ArrivedHereFeedback: {fileID: 0}
+--- !u!114 &2134743813554263339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2978328330637778234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3be26018956aea34aa79235303363386, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7084394926448753290
 GameObject:
   m_ObjectHideFlags: 0
