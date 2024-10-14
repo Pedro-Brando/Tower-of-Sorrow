@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using MoreMountains.CorgiEngine;
+using System;
 
 public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
 {
@@ -31,8 +32,7 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
     [Tooltip("Lista de plataformas a serem ativadas")]
     public List<GameObject> Plataformas;
 
-    [Tooltip("Fase atual do boss")]
-    public int FaseAtual = 1;
+    private int plataformasAtivadas = 0;
 
     private float _alturaAtualOnda;
 
@@ -41,6 +41,8 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
     public float CooldownDuration = 10f; // Ajuste conforme necessário
 
     private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
+
+    public UldrichPhaseManager _phaseManager;
 
     /// <summary>
     /// Propriedade que indica se a habilidade está permitida (herdada de CharacterAbility)
@@ -113,7 +115,7 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
         SpawnOndaDeChoque();
 
         // Se estiver na fase 1, ativa as plataformas
-        if (FaseAtual == 1)
+        if (_phaseManager.CurrentPhase == 1)
         {
             AtivarPlataformas();
         }
@@ -142,15 +144,18 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
 
     private void AtivarPlataformas()
     {
-        foreach (GameObject plataforma in Plataformas)
+        // Quantidade de plataformas a ativar por chamada
+        int quantidadeParaAtivar = 2;
+        
+        // Ativando as plataformas de acordo com a quantidade definida
+        for (int i = plataformasAtivadas; i < plataformasAtivadas + quantidadeParaAtivar && i < Plataformas.Count; i++)
         {
-            plataforma.SetActive(true);
-
-            // Se a plataforma precisar ser elevada, podemos ajustar sua posição aqui
-            plataforma.transform.position += new Vector3(0, IncrementoAlturaOnda, 0);
+            Plataformas[i].SetActive(true);
         }
-    }
 
+        // Atualizando a quantidade de plataformas já ativadas
+        plataformasAtivadas += quantidadeParaAtivar;
+    }
     protected virtual void OnDrawGizmosSelected()
     {
         if (MeteoroArea != null)

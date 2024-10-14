@@ -66,7 +66,7 @@ namespace MoreMountains.CorgiEngine
                 // Padrão 1: Ficar parado para desviar (abertura na linha inferior)
                 new int[] { 0, 1, 1, 1, 1 },
                 // Padrão 2: Um pulo para desviar (abertura no meio)
-                new int[] { 1, 1, 0, 1, 1 },
+                new int[] { 1, 0, 0, 1, 1 },
                 // Padrão 3: Pulo duplo para desviar (abertura na linha superior)
                 new int[] { 1, 1, 1, 1, 0 }
             };

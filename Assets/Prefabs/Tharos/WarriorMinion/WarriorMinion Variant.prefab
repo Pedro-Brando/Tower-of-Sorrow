@@ -681,6 +681,12 @@ PrefabInstance:
       propertyPath: managedReferences[0].Sfx
       value: 
       objectReference: {fileID: 8300000, guid: 676b71cfb5655aa4f96127b38866338d, type: 3}
+    - target: {fileID: 2259935668079098484, guid: 6679448c28127a5478df3e55020ffa8e,
+        type: 3}
+      propertyPath: managedReferences[1].ParticlesPrefab
+      value: 
+      objectReference: {fileID: 3029214342374075935, guid: 5098646e8806a0345b73c32b787962ca,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

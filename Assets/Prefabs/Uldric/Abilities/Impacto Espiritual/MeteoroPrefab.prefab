@@ -77,7 +77,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300004, guid: 678058abcbfe36f42902c11d9e5f64fc, type: 3}
+  m_Sprite: {fileID: -8183379544815909166, guid: 678058abcbfe36f42902c11d9e5f64fc,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -197,4 +198,4 @@ MonoBehaviour:
   Dano: 1
   GroundLayer:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 256

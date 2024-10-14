@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using MoreMountains.CorgiEngine;
 using MoreMountains.Tools;
 
@@ -27,6 +28,8 @@ public class UldrichController : MonoBehaviour
     private int _spiritsDestroyed = 0;
     private bool _isVulnerableInSpiritualWorld = false;
     private bool _isVulnerableInMaterialWorld = false;
+    public float FlySpeed = 5f; // Velocidade de voo ajustável
+    private CorgiController _controller; // Referência ao CorgiController
 
     void Start()
     {
@@ -34,6 +37,14 @@ public class UldrichController : MonoBehaviour
         _phaseManager = GetComponent<UldrichPhaseManager>();
         _character = GetComponent<Character>();
         _health = GetComponent<Health>();
+
+        // Instancia a barreira uma vez na inicialização, caso necessário
+        if (BarrierVisual != null)
+        {
+            Instantiate(BarrierVisual, transform.position, Quaternion.identity, transform); // Instancia no Uldrich
+            
+            BarrierVisual.SetActive(false);
+        }
 
         if (_character != null)
         {
@@ -60,9 +71,16 @@ public class UldrichController : MonoBehaviour
             Debug.LogError("Player not found in the scene!");
         }
 
+        _controller = GetComponent<CorgiController>(); // Inicializa o CorgiController
+        if (_controller == null)
+        {
+            Debug.LogError("CorgiController não encontrado no Uldrich!");
+        }
+
         // Iniciar na Fase 1
         _phaseManager.SetPhase(1);
         ApplyBarrier();
+        Debug.Log("Barreira aplicada.");
     }
 
     void Update()
@@ -104,7 +122,7 @@ public class UldrichController : MonoBehaviour
         {
             case 1:
                 // Uldrich está voando e estacionário
-                _character.MovementState.ChangeState(CharacterStates.MovementStates.Idle);
+                FlyToPoint(new Vector2(-38, -4)); // Substitua pela posição desejada
                 break;
 
             case 2:
@@ -126,6 +144,47 @@ public class UldrichController : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    /// <summary>
+    /// Faz com que Uldrich voe até um ponto específico.
+    /// </summary>
+    /// <param name="targetPosition">A posição alvo onde Uldrich deve voar.</param>
+    public void FlyToPoint(Vector2 targetPosition)
+    {
+        StartCoroutine(FlyToPointCoroutine(targetPosition));
+    }
+
+    private IEnumerator FlyToPointCoroutine(Vector2 targetPosition)
+    {
+        // Define o estado de movimento para Voando (ou um estado apropriado)
+        _character.MovementState.ChangeState(CharacterStates.MovementStates.Flying);
+
+        float distance = Vector2.Distance(transform.position, targetPosition);
+
+        while (distance > 0.1f) // Tolerância para evitar paradas prematuras
+        {
+            // Recalcula a distância a cada frame
+            distance = Vector2.Distance(transform.position, targetPosition);
+
+            // Move Uldrich na direção do alvo
+            Vector2 direction = (targetPosition - (Vector2)transform.position).normalized;
+            Vector2 velocity = direction * FlySpeed;
+
+            // Aplica a força usando o CorgiController
+            _controller.SetHorizontalForce(velocity.x);
+            _controller.SetVerticalForce(velocity.y);
+
+            // Aguarda um frame antes de continuar
+            yield return null;
+        }
+
+        // Para quando atingir a posição
+        _controller.SetHorizontalForce(0);
+        _controller.SetVerticalForce(0);
+
+        // Define o estado de movimento como Idle
+        _character.MovementState.ChangeState(CharacterStates.MovementStates.Idle);
     }
 
     private void MoveAwayFromPlayer()
@@ -176,6 +235,7 @@ public class UldrichController : MonoBehaviour
         if (BarrierVisual != null)
         {
             BarrierVisual.SetActive(true);
+            Debug.Log("Barreira de fato ativada.");
         }
         // Torna Uldrich invulnerável
         if (_health != null)
