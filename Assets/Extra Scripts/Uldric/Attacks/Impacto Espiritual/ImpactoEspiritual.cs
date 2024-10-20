@@ -2,7 +2,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using MoreMountains.CorgiEngine;
+using MoreMountains.Tools;
 using System;
+using MoreMountains.Feedbacks;
 
 public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
 {
@@ -40,6 +42,22 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
     [Tooltip("Duração do cooldown da habilidade Impacto Espiritual")]
     public float CooldownDuration = 10f; // Ajuste conforme necessário
 
+    [Header("Feedbacks MMF Player")]
+    [Tooltip("Feedback ao iniciar o Impacto Espiritual")]
+    public MMF_Player AbilityStartFeedback;
+
+    [Tooltip("Feedback ao spawnar o meteoro")]
+    public MMF_Player MeteoroSpawnFeedback;
+
+    [Tooltip("Feedback ao ocorrer o impacto do meteoro")]
+    public MMF_Player MeteoroImpactFeedback;
+
+    [Tooltip("Feedback ao spawnar a onda de choque")]
+    public MMF_Player OndaDeChoqueFeedback;
+
+    [Tooltip("Feedback ao ativar as plataformas")]
+    public MMF_Player PlataformasAtivadasFeedback;
+
     private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
 
     public UldrichPhaseManager _phaseManager;
@@ -53,6 +71,9 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
     /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
     /// </summary>
     public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
+
+    // Evento para indicar quando a habilidade foi concluída
+    public event System.Action OnAbilityCompleted;
 
     /// <summary>
     /// Método público para ativar a habilidade Impacto Espiritual
@@ -77,17 +98,30 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
 
     private IEnumerator ImpactoEspiritualRoutine()
     {
+        // Feedback ao iniciar a habilidade
+        if (AbilityStartFeedback != null)
+        {
+            AbilityStartFeedback.PlayFeedbacks();
+        }
+
         // Aguarda o delay antes de cair o meteoro
         yield return new WaitForSeconds(MeteoroDelay);
 
         // Spawna o meteoro
         SpawnMeteoro();
 
-        yield return null;
+        // A habilidade estará completa quando o meteoro atingir o chão e a onda de choque for gerada,
+        // por isso a invocação do evento `OnAbilityCompleted` acontecerá após `OnMeteoroImpacto()` ser chamado
     }
 
     private void SpawnMeteoro()
     {
+        // Feedback ao spawnar o meteoro
+        if (MeteoroSpawnFeedback != null)
+        {
+            MeteoroSpawnFeedback.PlayFeedbacks();
+        }
+
         // Posição do meteoro no topo da MeteoroArea
         Vector2 spawnPosition = new Vector2(MeteoroArea.bounds.center.x, MeteoroArea.bounds.max.y);
 
@@ -111,6 +145,12 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
     /// </summary>
     public void OnMeteoroImpacto()
     {
+        // Feedback ao ocorrer o impacto do meteoro
+        if (MeteoroImpactFeedback != null)
+        {
+            MeteoroImpactFeedback.PlayFeedbacks();
+        }
+
         // Spawna a onda de choque
         SpawnOndaDeChoque();
 
@@ -119,10 +159,19 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
         {
             AtivarPlataformas();
         }
+
+        // A habilidade foi concluída após o impacto do meteoro e o spawn da onda de choque
+        OnAbilityCompleted?.Invoke();
     }
 
     private void SpawnOndaDeChoque()
     {
+        // Feedback ao spawnar a onda de choque
+        if (OndaDeChoqueFeedback != null)
+        {
+            OndaDeChoqueFeedback.PlayFeedbacks();
+        }
+
         // Posição inicial da onda de choque na base da OndaDeChoqueArea
         Vector2 spawnPosition = new Vector2(OndaDeChoqueArea.bounds.center.x, OndaDeChoqueArea.bounds.min.y);
 
@@ -146,16 +195,23 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
     {
         // Quantidade de plataformas a ativar por chamada
         int quantidadeParaAtivar = 2;
-        
+
         // Ativando as plataformas de acordo com a quantidade definida
         for (int i = plataformasAtivadas; i < plataformasAtivadas + quantidadeParaAtivar && i < Plataformas.Count; i++)
         {
             Plataformas[i].SetActive(true);
         }
 
+        // Feedback ao ativar as plataformas
+        if (PlataformasAtivadasFeedback != null)
+        {
+            PlataformasAtivadasFeedback.PlayFeedbacks();
+        }
+
         // Atualizando a quantidade de plataformas já ativadas
         plataformasAtivadas += quantidadeParaAtivar;
     }
+
     protected virtual void OnDrawGizmosSelected()
     {
         if (MeteoroArea != null)

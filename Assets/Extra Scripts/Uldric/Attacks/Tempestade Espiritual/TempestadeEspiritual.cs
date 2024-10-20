@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using MoreMountains.CorgiEngine;
+using MoreMountains.Tools;
+using MoreMountains.Feedbacks;
 
 namespace MoreMountains.CorgiEngine
 {
@@ -15,6 +17,9 @@ namespace MoreMountains.CorgiEngine
 
         [Tooltip("Prefab do meteoro que cairá pelas linhas")]
         public GameObject MeteoroPrefab;
+
+        [Tooltip("Prefab do indicador de impacto no solo")]
+        public GameObject GroundIndicatorPrefab;
 
         [Tooltip("Número de linhas diagonais")]
         public int NumberOfLines = 5;
@@ -38,7 +43,6 @@ namespace MoreMountains.CorgiEngine
         public Color LineColor = new Color(1f, 1f, 1f, 0.5f);
 
         [Header("Configurações de Direção")]
-
         [Tooltip("Ângulo de inclinação das linhas em graus (0 = horizontal, 90 = vertical para cima)")]
         [Range(0f, 360f)]
         public float DirectionAngle = -45f;
@@ -51,6 +55,13 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Duração do cooldown da habilidade Tempestade Espiritual")]
         public float CooldownDuration = 15f;
 
+        [Header("Feedbacks MMF Player")]
+        [Tooltip("Feedback de linha spawnada usando MMF Player")]
+        public MMF_Player LineSpawnFeedback;
+
+        [Tooltip("Feedback de impacto do meteoro usando MMF Player")]
+        public MMF_Player MeteoroImpactFeedback;
+
         private float _lastActivationTime = -Mathf.Infinity;
         protected Coroutine _tempestadeCoroutine;
         public bool IsExecuting { get; protected set; }
@@ -58,40 +69,14 @@ namespace MoreMountains.CorgiEngine
         private Vector2 directionVector;
         private float previousDirectionAngle;
 
-        /// <summary>
-        /// Propriedade que indica se a habilidade está permitida (herdada de CharacterAbility)
-        /// </summary>
         public new bool AbilityPermitted => base.AbilityPermitted;
-
-        /// <summary>
-        /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
-        /// </summary>
         public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
+
+        public event System.Action OnAbilityCompleted;
 
         protected override void Initialization()
         {
             base.Initialization();
-
-            if (DiagonalLinePrefab == null)
-            {
-                Debug.LogError("DiagonalLinePrefab não está atribuído no Inspector de TempestadeEspiritual!");
-            }
-
-            if (MeteoroPrefab == null)
-            {
-                Debug.LogError("MeteoroPrefab não está atribuído no Inspector de TempestadeEspiritual!");
-            }
-
-            if (MeteoroPool.Instance == null)
-            {
-                Debug.LogError("MeteoroPool.Instance não está definido. Adicione um GameObject com o script MeteoroPool na cena.");
-            }
-
-            if (meteorSpawnArea == null)
-            {
-                Debug.LogError("MeteorSpawnArea não está atribuído no Inspector de TempestadeEspiritual!");
-            }
-
             UpdateDirectionVector();
             previousDirectionAngle = DirectionAngle;
         }
@@ -117,7 +102,7 @@ namespace MoreMountains.CorgiEngine
         {
             if (AbilityAuthorized && !IsExecuting)
             {
-                if (Time.time >= _lastActivationTime + CooldownDuration)
+                if (CooldownReady)
                 {
                     _lastActivationTime = Time.time;
                     _tempestadeCoroutine = StartCoroutine(TempestadeRoutine());
@@ -159,6 +144,12 @@ namespace MoreMountains.CorgiEngine
                     Debug.LogWarning("O prefab da linha diagonal não possui o componente LinhaDiagonal!");
                 }
                 linhas.Add(linha);
+
+                // Feedback de linha usando MMF Player
+                if (LineSpawnFeedback != null)
+                {
+                    LineSpawnFeedback.PlayFeedbacks();
+                }
             }
 
             Debug.Log($"Esperando {LinesDuration} segundos antes de lançar os meteoros.");
@@ -182,6 +173,8 @@ namespace MoreMountains.CorgiEngine
             Debug.Log("Tempestade Espiritual Finalizada.");
             _tempestadeCoroutine = null;
             IsExecuting = false;
+
+            OnAbilityCompleted?.Invoke();
         }
 
         protected virtual void SpawnMeteoro(Vector3 startPosition, Vector3 targetPosition)
@@ -197,6 +190,12 @@ namespace MoreMountains.CorgiEngine
                 {
                     meteoroScript.Initialize(targetPosition, MeteoroDamage);
                     Debug.Log($"Meteoro inicializado direcionando para {targetPosition} com dano {MeteoroDamage}");
+
+                    // Feedback de Impacto usando MMF Player
+                    if (MeteoroImpactFeedback != null)
+                    {
+                        MeteoroImpactFeedback.PlayFeedbacks();
+                    }
                 }
                 else
                 {

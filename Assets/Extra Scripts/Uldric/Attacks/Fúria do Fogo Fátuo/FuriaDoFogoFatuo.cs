@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using MoreMountains.Tools;
 using MoreMountains.CorgiEngine;
+using System;
+using MoreMountains.Feedbacks;
 
 namespace MoreMountains.CorgiEngine
 {
@@ -40,6 +42,16 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Duração do cooldown da habilidade Fúria do Fogo Fátuo")]
         public float CooldownDuration = 5f; // Ajuste conforme necessário
 
+        [Header("Feedbacks MMF Player")]
+        [Tooltip("Feedback ao iniciar o cast da Fúria do Fogo Fátuo")]
+        public MMF_Player CastFeedback;
+
+        [Tooltip("Feedback ao spawnar cada whisp da Fúria do Fogo Fátuo")]
+        public MMF_Player WhispSpawnFeedback;
+
+        [Tooltip("Feedback ao completar a habilidade da Fúria do Fogo Fátuo")]
+        public MMF_Player AbilityCompleteFeedback;
+
         private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
 
         /// <summary>
@@ -53,6 +65,8 @@ namespace MoreMountains.CorgiEngine
         public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
 
         private Transform _playerTransform;
+
+        public event Action OnAbilityCompleted;
 
         /// <summary>
         /// Inicialização da habilidade
@@ -110,6 +124,12 @@ namespace MoreMountains.CorgiEngine
         /// <returns></returns>
         protected virtual IEnumerator FuriaDoFogoFatuoRoutine()
         {
+            // Feedback ao iniciar o cast da habilidade
+            if (CastFeedback != null)
+            {
+                CastFeedback.PlayFeedbacks();
+            }
+
             // Calcula o espaçamento inicial baseado na direção
             float initialOffsetX = SpawnDirectionLeftToRight ? -((NumberOfWhisps - 1) * WhispSpacing) / 2f : ((NumberOfWhisps - 1) * WhispSpacing) / 2f;
 
@@ -130,7 +150,7 @@ namespace MoreMountains.CorgiEngine
 
                 // Calcula o ângulo para rotacionar o whisp (opcional)
                 float angle = Mathf.Atan2(directionToPlayer.y, directionToPlayer.x) * Mathf.Rad2Deg;
-                Quaternion rotation = Quaternion.Euler(0, 0, angle - 90f); // Ajuste conforme a orientação do prefab
+                Quaternion rotation = Quaternion.Euler(0, 0, angle - 270f); // Ajuste conforme a orientação do prefab
 
                 // Recupera um whisp do pool
                 GameObject whisp = simpleObjectPooler.GetPooledGameObject();
@@ -150,6 +170,12 @@ namespace MoreMountains.CorgiEngine
                         whispScript.Initialize(directionToPlayer * WhispSpeed); // Define a direção e velocidade
                     }
 
+                    // Feedback ao spawnar cada whisp
+                    if (WhispSpawnFeedback != null)
+                    {
+                        WhispSpawnFeedback.PlayFeedbacks();
+                    }
+
                     Debug.Log($"Whisp {i + 1} spawnado em {whispPosition} em direção ao jogador.");
                 }
                 else
@@ -160,6 +186,14 @@ namespace MoreMountains.CorgiEngine
                 // Espera o delay configurado antes de spawnar o próximo whisp
                 yield return new WaitForSeconds(SpawnDelay);
             }
+
+            // Feedback ao completar a habilidade
+            if (AbilityCompleteFeedback != null)
+            {
+                AbilityCompleteFeedback.PlayFeedbacks();
+            }
+
+            OnAbilityCompleted?.Invoke();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using MoreMountains.CorgiEngine;
 using MoreMountains.Tools;
+using MoreMountains.Feedbacks;
 
 namespace MoreMountains.CorgiEngine
 {
@@ -46,12 +47,24 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Pooler para as explosões")]
         public MMSimpleObjectPooler ExplosionPooler;
 
-        private bool _abilityInProgress = false;
-
         [Header("Cooldown")]
         [Tooltip("Duração do cooldown da habilidade Consumir Vida")]
         public float CooldownDuration = 10f; // Ajuste conforme necessário
 
+        [Header("Feedbacks MMF Player")]
+        [Tooltip("Feedback ao iniciar a habilidade Consumir Vida")]
+        public MMF_Player AbilityStartFeedback;
+
+        [Tooltip("Feedback ao spawnar um crosshair")]
+        public MMF_Player CrosshairSpawnFeedback;
+
+        [Tooltip("Feedback ao ocorrer a explosão")]
+        public MMF_Player ExplosionFeedback;
+
+        [Tooltip("Feedback ao concluir a habilidade Consumir Vida")]
+        public MMF_Player AbilityCompleteFeedback;
+
+        private bool _abilityInProgress = false;
         private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
 
         /// <summary>
@@ -63,6 +76,9 @@ namespace MoreMountains.CorgiEngine
         /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
         /// </summary>
         public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
+
+        // Evento para indicar quando a habilidade for concluída
+        public event System.Action OnAbilityCompleted;
 
         /// <summary>
         /// Método público para ativar a habilidade Consumir Vida
@@ -89,6 +105,12 @@ namespace MoreMountains.CorgiEngine
         {
             _abilityInProgress = true;
 
+            // Feedback ao iniciar a habilidade
+            if (AbilityStartFeedback != null)
+            {
+                AbilityStartFeedback.PlayFeedbacks();
+            }
+
             int crosshairsSpawned = 0;
             List<GameObject> activeCrosshairs = new List<GameObject>();
 
@@ -106,6 +128,12 @@ namespace MoreMountains.CorgiEngine
                         crosshair.transform.position = randomPosition;
                         crosshair.transform.rotation = Quaternion.identity;
                         crosshair.SetActive(true);
+
+                        // Feedback ao spawnar o crosshair
+                        if (CrosshairSpawnFeedback != null)
+                        {
+                            CrosshairSpawnFeedback.PlayFeedbacks();
+                        }
 
                         // Inicia a rotina da explosão
                         StartCoroutine(CrosshairRoutine(crosshair));
@@ -132,6 +160,14 @@ namespace MoreMountains.CorgiEngine
                 yield return null;
             }
 
+            // Feedback ao concluir a habilidade
+            if (AbilityCompleteFeedback != null)
+            {
+                AbilityCompleteFeedback.PlayFeedbacks();
+            }
+
+            // Aciona o evento indicando que a habilidade foi concluída
+            OnAbilityCompleted?.Invoke();
             _abilityInProgress = false;
         }
 
@@ -147,6 +183,12 @@ namespace MoreMountains.CorgiEngine
                 explosion.transform.position = crosshair.transform.position;
                 explosion.transform.rotation = Quaternion.identity;
                 explosion.SetActive(true);
+
+                // Feedback ao ocorrer a explosão
+                if (ExplosionFeedback != null)
+                {
+                    ExplosionFeedback.PlayFeedbacks();
+                }
 
                 // Aplica dano às entidades na área da explosão
                 ApplyDamageInArea(explosion.transform.position);

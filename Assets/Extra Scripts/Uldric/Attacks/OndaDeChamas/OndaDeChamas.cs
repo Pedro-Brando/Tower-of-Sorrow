@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using MoreMountains.CorgiEngine;
 using MoreMountains.Tools;
+using MoreMountains.Feedbacks;
 
 namespace MoreMountains.CorgiEngine
 {
@@ -44,6 +45,16 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Duração do cooldown da habilidade Onda de Chamas")]
         public float CooldownDuration = 15f; // Ajuste conforme necessário
 
+        [Header("Feedbacks MMF Player")]
+        [Tooltip("Feedback ao iniciar a habilidade Onda de Chamas")]
+        public MMF_Player AbilityStartFeedback;
+
+        [Tooltip("Feedback ao spawnar cada parede de chamas")]
+        public MMF_Player WallSpawnFeedback;
+
+        [Tooltip("Feedback ao concluir a habilidade Onda de Chamas")]
+        public MMF_Player AbilityCompleteFeedback;
+
         private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
 
         /// <summary>
@@ -55,6 +66,9 @@ namespace MoreMountains.CorgiEngine
         /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
         /// </summary>
         public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
+
+        // Evento para indicar quando a habilidade foi concluída
+        public event System.Action OnAbilityCompleted;
 
         protected override void Initialization()
         {
@@ -104,11 +118,26 @@ namespace MoreMountains.CorgiEngine
 
         private IEnumerator OndaDeChamasRoutine()
         {
+            // Feedback ao iniciar a habilidade
+            if (AbilityStartFeedback != null)
+            {
+                AbilityStartFeedback.PlayFeedbacks();
+            }
+
             for (int i = 0; i < NumberOfWalls; i++)
             {
                 SpawnWall();
                 yield return new WaitForSeconds(WallDelay);
             }
+
+            // Feedback ao concluir a habilidade
+            if (AbilityCompleteFeedback != null)
+            {
+                AbilityCompleteFeedback.PlayFeedbacks();
+            }
+
+            // A habilidade está completa após todas as paredes serem geradas
+            OnAbilityCompleted?.Invoke();
         }
 
         private void SpawnWall()
@@ -150,6 +179,12 @@ namespace MoreMountains.CorgiEngine
                         Debug.LogWarning("Nenhuma bola de fogo disponível no pool!");
                     }
                 }
+            }
+
+            // Feedback ao spawnar cada parede de chamas
+            if (WallSpawnFeedback != null)
+            {
+                WallSpawnFeedback.PlayFeedbacks();
             }
         }
     }

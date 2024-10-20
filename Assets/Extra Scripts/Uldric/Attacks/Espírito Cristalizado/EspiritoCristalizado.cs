@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using MoreMountains.CorgiEngine;
+using MoreMountains.Tools;
+using MoreMountains.Feedbacks;
 
 public class EspiritoCristalizado : CharacterAbility, IUldrichAbility
 {
@@ -28,6 +30,16 @@ public class EspiritoCristalizado : CharacterAbility, IUldrichAbility
     [Tooltip("Duração do cooldown da habilidade Espírito Cristalizado")]
     public float CooldownDuration = 15f; // Ajuste conforme necessário
 
+    [Header("Feedbacks MMF Player")]
+    [Tooltip("Feedback ao iniciar a habilidade Espírito Cristalizado")]
+    public MMF_Player AbilityStartFeedback;
+
+    [Tooltip("Feedback ao spawnar um cristal")]
+    public MMF_Player CrystalSpawnFeedback;
+
+    [Tooltip("Feedback ao concluir a habilidade Espírito Cristalizado")]
+    public MMF_Player AbilityCompleteFeedback;
+
     private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
 
     /// <summary>
@@ -39,6 +51,9 @@ public class EspiritoCristalizado : CharacterAbility, IUldrichAbility
     /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
     /// </summary>
     public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
+
+    // Evento para indicar quando a habilidade foi concluída
+    public event System.Action OnAbilityCompleted;
 
     /// <summary>
     /// Método público para ativar a habilidade Espírito Cristalizado
@@ -63,6 +78,12 @@ public class EspiritoCristalizado : CharacterAbility, IUldrichAbility
 
     private IEnumerator SpawnCrystals()
     {
+        // Feedback ao iniciar a habilidade
+        if (AbilityStartFeedback != null)
+        {
+            AbilityStartFeedback.PlayFeedbacks();
+        }
+
         Debug.Log($"EspiritoCristalizado: Iniciando SpawnCrystals(). Número de cristais: {NumberOfCrystals}");
 
         for (int i = 0; i < NumberOfCrystals; i++)
@@ -72,6 +93,15 @@ public class EspiritoCristalizado : CharacterAbility, IUldrichAbility
         }
 
         Debug.Log("EspiritoCristalizado: SpawnCrystals() concluído.");
+
+        // Feedback ao concluir a habilidade
+        if (AbilityCompleteFeedback != null)
+        {
+            AbilityCompleteFeedback.PlayFeedbacks();
+        }
+
+        // Acionar o evento indicando que a habilidade foi concluída
+        OnAbilityCompleted?.Invoke();
     }
 
     private void SpawnCristal()
@@ -83,6 +113,12 @@ public class EspiritoCristalizado : CharacterAbility, IUldrichAbility
         // Instancia o cristal
         GameObject cristal = Instantiate(CristalPrefab, spawnPosition, Quaternion.identity);
         Debug.Log("EspiritoCristalizado: Cristal instanciado.");
+
+        // Feedback ao spawnar o cristal
+        if (CrystalSpawnFeedback != null)
+        {
+            CrystalSpawnFeedback.PlayFeedbacks();
+        }
 
         // Configura o controlador do cristal
         CristalController cristalController = cristal.GetComponent<CristalController>();

@@ -1,5 +1,7 @@
 using UnityEngine;
 using MoreMountains.CorgiEngine;
+using MoreMountains.Tools;
+using MoreMountains.Feedbacks;
 
 namespace MoreMountains.CorgiEngine
 {
@@ -14,6 +16,10 @@ namespace MoreMountains.CorgiEngine
 
         [Tooltip("Prefab da explosão ao colidir com o chão ou parede")]
         public GameObject ExplosionPrefab;
+
+        [Header("Feedbacks MMF Player")]
+        [Tooltip("Feedback ao colidir com o chão ou parede")]
+        public MMF_Player CollisionFeedback;
 
         private Rigidbody2D _rb;
 
@@ -54,7 +60,10 @@ namespace MoreMountains.CorgiEngine
                 {
                     playerHealth.Damage(Damage, gameObject, 0.1f, 0.1f, transform.position);
                 }
-                // Não desativa o whisp
+                if (CollisionFeedback != null)
+                {
+                    CollisionFeedback.PlayFeedbacks();
+                }
             }
             else if (collision.CompareTag("Ground") || collision.CompareTag("Wall"))
             {
@@ -63,6 +72,10 @@ namespace MoreMountains.CorgiEngine
                 {
                     Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
                 }
+
+                // Feedback ao colidir com o chão ou parede
+
+
                 // Desativar o whisp
                 gameObject.SetActive(false);
             }

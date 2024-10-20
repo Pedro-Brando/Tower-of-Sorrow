@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using MoreMountains.CorgiEngine;
 using MoreMountains.Tools;
+using MoreMountains.Feedbacks;
 
 namespace MoreMountains.CorgiEngine
 {
@@ -38,6 +39,16 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Duração do cooldown da habilidade Extinção da Alma")]
         public float CooldownDuration = 30f; // Ajuste conforme necessário
 
+        [Header("Feedbacks MMF Player")]
+        [Tooltip("Feedback ao iniciar o carregamento da Extinção da Alma")]
+        public MMF_Player ChargeFeedback;
+
+        [Tooltip("Feedback ao aplicar o efeito da Extinção da Alma")]
+        public MMF_Player EffectFeedback;
+
+        [Tooltip("Feedback ao completar a habilidade da Extinção da Alma")]
+        public MMF_Player AbilityCompleteFeedback;
+
         private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
 
         private GameObject _announcementInstance;
@@ -52,6 +63,9 @@ namespace MoreMountains.CorgiEngine
         /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
         /// </summary>
         public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
+
+        // Evento para indicar quando a habilidade foi concluída
+        public event System.Action OnAbilityCompleted;
 
         /// <summary>
         /// Método público para ativar a habilidade Extinção da Alma
@@ -82,7 +96,12 @@ namespace MoreMountains.CorgiEngine
         {
             // Início do carregamento
             Debug.Log("Uldrich começou a carregar Extinção da Alma.");
-            // TODO: Adicionar animação ou efeito de carregamento aqui
+
+            // Feedback ao iniciar o carregamento
+            if (ChargeFeedback != null)
+            {
+                ChargeFeedback.PlayFeedbacks();
+            }
 
             // Instancia o anúncio
             if (AnnouncementPrefab != null)
@@ -104,6 +123,12 @@ namespace MoreMountains.CorgiEngine
                 Destroy(_announcementInstance);
             }
 
+            // Feedback ao aplicar o efeito da habilidade
+            if (EffectFeedback != null)
+            {
+                EffectFeedback.PlayFeedbacks();
+            }
+
             // Destrói as plataformas no mundo material
             DestroyMaterialWorldPlatforms();
 
@@ -117,10 +142,22 @@ namespace MoreMountains.CorgiEngine
                 // Opcional: ajustar o tamanho do efeito para cobrir a área
             }
 
-            // Opcional: Aguarde o tempo do efeito antes de limpar (se necessário)
-            // yield return new WaitForSeconds(effectDuration);
+            // Acionar o evento indicando que a habilidade foi concluída
+            OnAbilityCompleted?.Invoke();
+
+            // Feedback ao completar a habilidade
+            if (AbilityCompleteFeedback != null)
+            {
+                AbilityCompleteFeedback.PlayFeedbacks();
+            }
 
             // Limpeza adicional, se necessário
+            // Exemplo: destruir a área de efeito após algum tempo
+            if (_areaEffectInstance != null)
+            {
+                yield return new WaitForSeconds(2f); // Duração do efeito de partículas
+                Destroy(_areaEffectInstance);
+            }
         }
 
         /// <summary>

@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using MoreMountains.CorgiEngine;
+using MoreMountains.Tools;
+using System;
+using MoreMountains.Feedbacks;
 
 namespace MoreMountains.CorgiEngine
 {
@@ -32,6 +35,13 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Duração do cooldown da habilidade Ceifar")]
         public float CooldownDuration = 5f; // Duração do cooldown em segundos
 
+        [Header("Feedbacks MMF Player")]
+        [Tooltip("Feedback ao iniciar o cast do Ceifar")]
+        public MMF_Player CastFeedback;
+
+        [Tooltip("Feedback ao realizar o ataque do Ceifar")]
+        public MMF_Player AttackFeedback;
+
         private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
 
         /// <summary>
@@ -43,6 +53,8 @@ namespace MoreMountains.CorgiEngine
         /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
         /// </summary>
         public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
+
+        public event Action OnAbilityCompleted;
 
         /// <summary>
         /// Inicialização da habilidade Ceifar
@@ -97,6 +109,12 @@ namespace MoreMountains.CorgiEngine
         /// </summary>
         protected virtual IEnumerator CeifarRoutine()
         {
+            // Feedback ao iniciar o cast do Ceifar
+            if (CastFeedback != null)
+            {
+                CastFeedback.PlayFeedbacks();
+            }
+
             // Exibe a foice mágica acima do Uldric
             if (ScythePrefab != null)
             {
@@ -106,6 +124,12 @@ namespace MoreMountains.CorgiEngine
 
             // Espera antes de realizar o ataque
             yield return new WaitForSeconds(AttackDelay);
+
+            // Feedback ao realizar o ataque do Ceifar
+            if (AttackFeedback != null)
+            {
+                AttackFeedback.PlayFeedbacks();
+            }
 
             // Ativa o collider da área de ataque
             if (_ceifarCollider != null)
@@ -131,6 +155,7 @@ namespace MoreMountains.CorgiEngine
                 yield return new WaitForSeconds(FlickerDamageTime);
 
                 _ceifarCollider.enabled = false; // Desativa o collider após o ataque
+                OnAbilityCompleted?.Invoke();
             }
         }
 

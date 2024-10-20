@@ -9,6 +9,7 @@ public class UldrichAttackManager : MonoBehaviour
     public Ceifar Ceifar;
     public FuriaDoFogoFatuo FuriaDoFogoFatuo;
     public ImpactoEspiritual ImpactoEspiritual;
+    public TempestadeDeFogoFatuo TempestadeDeFogoFatuo;     
     public ExtincaoDaAlma Aniquilar; // Habilidade especial
     public OndaDeChamas OndaDeChamas;
     public ConsumirVida ConsumirVida;
@@ -23,6 +24,8 @@ public class UldrichAttackManager : MonoBehaviour
 
     private float _attackCooldown = 3f;
     private float _lastAttackTime = -Mathf.Infinity;
+
+    private bool _abilityInExecution = false;
 
     void Awake()
     {
@@ -42,7 +45,7 @@ public class UldrichAttackManager : MonoBehaviour
 
     void Update()
     {
-        if (Time.time >= _lastAttackTime + _attackCooldown)
+        if (!_abilityInExecution && Time.time >= _lastAttackTime + _attackCooldown)
         {
             PerformRandomAttack();
             _lastAttackTime = Time.time;
@@ -51,12 +54,12 @@ public class UldrichAttackManager : MonoBehaviour
         // Uso de habilidades especiais em momentos específicos
         if (_phaseManager != null)
         {
-            if (_phaseManager.CurrentPhase == 2 && !_aniquilarUsed)
+            if (_phaseManager.CurrentPhase == 2 && !_aniquilarUsed && !_abilityInExecution)
             {
                 UseAniquilar();
             }
 
-            if (_phaseManager.CurrentPhase == 3)
+            if (_phaseManager.CurrentPhase == 3 && !_abilityInExecution)
             {
                 UseExtincaoDaAlma();
             }
@@ -65,9 +68,13 @@ public class UldrichAttackManager : MonoBehaviour
 
     public void UseAbility(IUldrichAbility ability)
     {
-        if (ability != null && ability.AbilityPermitted && ability.CooldownReady)
+        if (ability != null && ability.AbilityPermitted && ability.CooldownReady && !_abilityInExecution)
         {
             ability.ActivateAbility();
+            _abilityInExecution = true;
+
+            // Inscrevendo-se no evento OnAbilityCompleted para saber quando a habilidade termina
+            ability.OnAbilityCompleted += OnAbilityCompleted;
         }
     }
 
@@ -88,6 +95,7 @@ public class UldrichAttackManager : MonoBehaviour
                 _availableAbilities.Add(Ceifar);
                 _availableAbilities.Add(FuriaDoFogoFatuo);
                 _availableAbilities.Add(ImpactoEspiritual);
+                _availableAbilities.Add(TempestadeDeFogoFatuo);
                 break;
 
             case 2:
@@ -106,13 +114,14 @@ public class UldrichAttackManager : MonoBehaviour
                 _availableAbilities.Add(OndaDeChamas);
                 _availableAbilities.Add(ConsumirVida);
                 _availableAbilities.Add(EspiritoCristalizado);
+                _availableAbilities.Add(TempestadeDeFogoFatuo);
                 break;
         }
     }
 
     public void PerformRandomAttack()
     {
-        if (_availableAbilities.Count > 0)
+        if (_availableAbilities.Count > 0 && !_abilityInExecution)
         {
             int index = Random.Range(0, _availableAbilities.Count);
             UseAbility(_availableAbilities[index]);
@@ -121,18 +130,37 @@ public class UldrichAttackManager : MonoBehaviour
 
     public void UseAniquilar()
     {
-        if (Aniquilar != null && Aniquilar.AbilityPermitted && Aniquilar.CooldownReady && !_aniquilarUsed)
+        if (Aniquilar != null && Aniquilar.AbilityPermitted && Aniquilar.CooldownReady && !_aniquilarUsed && !_abilityInExecution)
         {
-            Aniquilar.ActivateAbility();
+            UseAbility(Aniquilar);
             _aniquilarUsed = true;
         }
     }
 
     public void UseExtincaoDaAlma()
     {
-        if (ExtincaoDaAlma != null && ExtincaoDaAlma.AbilityPermitted && ExtincaoDaAlma.CooldownReady)
+        if (ExtincaoDaAlma != null && ExtincaoDaAlma.AbilityPermitted && ExtincaoDaAlma.CooldownReady && !_abilityInExecution)
         {
-            ExtincaoDaAlma.ActivateAbility();
+            UseAbility(ExtincaoDaAlma);
         }
+    }
+
+    // Callback que será chamado quando uma habilidade for concluída
+    private void OnAbilityCompleted()
+    {
+        _abilityInExecution = false;
+
+        // Desinscrever de todas as habilidades (assumindo que pode ser qualquer habilidade que terminou)
+        if (TempestadeEspiritual != null) TempestadeEspiritual.OnAbilityCompleted -= OnAbilityCompleted;
+        if (Ceifar != null) Ceifar.OnAbilityCompleted -= OnAbilityCompleted;
+        if (FuriaDoFogoFatuo != null) FuriaDoFogoFatuo.OnAbilityCompleted -= OnAbilityCompleted;
+        if (ImpactoEspiritual != null) ImpactoEspiritual.OnAbilityCompleted -= OnAbilityCompleted;
+        if (OndaDeChamas != null) OndaDeChamas.OnAbilityCompleted -= OnAbilityCompleted;
+        if (ConsumirVida != null) ConsumirVida.OnAbilityCompleted -= OnAbilityCompleted;
+        if (EspiritoCristalizado != null) EspiritoCristalizado.OnAbilityCompleted -= OnAbilityCompleted;
+        if (ExtincaoDaAlma != null) ExtincaoDaAlma.OnAbilityCompleted -= OnAbilityCompleted;
+        if (Aniquilar != null) Aniquilar.OnAbilityCompleted -= OnAbilityCompleted;
+
+        Debug.Log("Habilidade concluída. Pronto para a próxima ação.");
     }
 }

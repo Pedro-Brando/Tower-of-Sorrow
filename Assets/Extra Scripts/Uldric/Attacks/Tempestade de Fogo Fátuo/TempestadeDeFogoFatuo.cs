@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using MoreMountains.Tools;
 using MoreMountains.CorgiEngine;
+using MoreMountains.Feedbacks;
 
 namespace MoreMountains.CorgiEngine
 {
@@ -43,6 +44,16 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Duração do cooldown da habilidade")]
         public float CooldownDuration = 10f; // Ajuste conforme necessário
 
+        [Header("Feedbacks MMF Player")]
+        [Tooltip("Feedback ao iniciar o cast da Tempestade de Fogo Fátuo")]
+        public MMF_Player CastFeedback;
+
+        [Tooltip("Feedback ao spawnar cada whisp da Tempestade de Fogo Fátuo")]
+        public MMF_Player WhispSpawnFeedback;
+
+        [Tooltip("Feedback ao completar a habilidade da Tempestade de Fogo Fátuo")]
+        public MMF_Player AbilityCompleteFeedback;
+
         private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
 
         /// <summary>
@@ -54,6 +65,9 @@ namespace MoreMountains.CorgiEngine
         /// Propriedade que indica se o cooldown terminou e a habilidade está pronta para uso
         /// </summary>
         public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
+
+        // Evento para indicar quando a habilidade foi concluída
+        public event System.Action OnAbilityCompleted;
 
         /// <summary>
         /// Método público para ativar a habilidade
@@ -84,6 +98,12 @@ namespace MoreMountains.CorgiEngine
         {
             Debug.Log("Tempestade de Fogo Fátuo iniciada!");
 
+            // Feedback ao iniciar o cast da habilidade
+            if (CastFeedback != null)
+            {
+                CastFeedback.PlayFeedbacks();
+            }
+
             // Calcular a posição inicial e espaçamento vertical
             float totalSpacing = (NumberOfWhispsPerSide - 1) * WhispSpacing;
             float initialOffsetY = -totalSpacing / 2;
@@ -109,6 +129,15 @@ namespace MoreMountains.CorgiEngine
             }
 
             Debug.Log("Tempestade de Fogo Fátuo concluída.");
+
+            // Feedback ao completar a habilidade
+            if (AbilityCompleteFeedback != null)
+            {
+                AbilityCompleteFeedback.PlayFeedbacks();
+            }
+
+            // A habilidade foi concluída, aciona o evento
+            OnAbilityCompleted?.Invoke();
         }
 
         /// <summary>
@@ -141,6 +170,12 @@ namespace MoreMountains.CorgiEngine
                     else
                     {
                         Debug.LogWarning("O prefab do whisp não possui o componente Whisp!");
+                    }
+
+                    // Feedback ao spawnar cada whisp
+                    if (WhispSpawnFeedback != null)
+                    {
+                        WhispSpawnFeedback.PlayFeedbacks();
                     }
                 }
                 else

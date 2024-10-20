@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using MoreMountains.CorgiEngine;
+using MoreMountains.Tools;
+using MoreMountains.Feedbacks;
 
 namespace MoreMountains.CorgiEngine
 {
@@ -15,6 +17,13 @@ namespace MoreMountains.CorgiEngine
 
         [Tooltip("Prefab da explosão do meteoro")]
         public GameObject ExplosaoPrefab;
+
+        [Header("Feedbacks MMF Player")]
+        [Tooltip("Feedback ao iniciar o cast do meteoro")]
+        public MMF_Player CastFeedback;
+
+        [Tooltip("Feedback ao explodir o meteoro")]
+        public MMF_Player ExplodeFeedback;
 
         private Rigidbody2D _rigidbody;
         private bool _hasExploded = false;
@@ -46,6 +55,12 @@ namespace MoreMountains.CorgiEngine
             transform.rotation = Quaternion.Euler(0f, 0f, 15f);
 
             _hasExploded = false;
+
+            // Feedback ao iniciar o cast do meteoro
+            if (CastFeedback != null)
+            {
+                CastFeedback.PlayFeedbacks();
+            }
 
             // Inicia uma coroutine para retornar o meteoro ao pool após um tempo, se não tiver colidido
             StartCoroutine(ReturnToPoolAfterDelay(5f));
@@ -98,6 +113,12 @@ namespace MoreMountains.CorgiEngine
             }
 
             _hasExploded = true;
+
+            // Feedback ao explodir o meteoro
+            if (ExplodeFeedback != null)
+            {
+                ExplodeFeedback.PlayFeedbacks();
+            }
 
             // Retornar o meteoro ao pool
             if (MeteoroPool.Instance != null)
