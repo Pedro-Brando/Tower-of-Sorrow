@@ -42,6 +42,9 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Feedback ao realizar o ataque do Ceifar")]
         public MMF_Player AttackFeedback;
 
+        [Tooltip("Feedback do aviso na tela antes do ataque Ceifar ser realizado")]
+        public MMF_Player WarningFeedback;
+
         private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
 
         /// <summary>
@@ -109,17 +112,38 @@ namespace MoreMountains.CorgiEngine
         /// </summary>
         protected virtual IEnumerator CeifarRoutine()
         {
+            // Feedback do aviso na tela
+            if (WarningFeedback != null)
+            {
+                WarningFeedback.PlayFeedbacks();
+            }
+
+            // Exibe a foice mágica como "warning" na tela
+            if (ScythePrefab != null)
+            {
+                Vector3 spawnPosition = Camera.main.transform.position + Camera.main.transform.forward * 2;
+                
+                // Adiciona um offset ao componente Y para ajustar a posição vertical da foice
+                float yOffset = 0f; // Ajuste este valor para obter o offset desejado
+                spawnPosition.y -= yOffset;
+
+                GameObject scytheWarning = Instantiate(ScythePrefab, spawnPosition, Quaternion.identity);
+                scytheWarning.transform.SetParent(Camera.main.transform); // Faz a foice seguir a câmera como um aviso
+                
+                // Configurar o Animator da foice para usar UnscaledTime, assim ele não é afetado pelo timeScale
+                Animator scytheAnimator = scytheWarning.GetComponent<Animator>();
+                if (scytheAnimator != null)
+                {
+                    scytheAnimator.updateMode = AnimatorUpdateMode.UnscaledTime; // Isso faz a animação continuar mesmo quando timeScale for 0
+                }
+
+                Destroy(scytheWarning, 1f); // Destrói a foice após o tempo do aviso (ajustado para UnscaledTime)
+            }
+
             // Feedback ao iniciar o cast do Ceifar
             if (CastFeedback != null)
             {
                 CastFeedback.PlayFeedbacks();
-            }
-
-            // Exibe a foice mágica acima do Uldric
-            if (ScythePrefab != null)
-            {
-                GameObject scythe = Instantiate(ScythePrefab, CeifarArea.transform.position + Vector3.up, Quaternion.identity);
-                Destroy(scythe, AttackDelay + 1f); // Destrói a foice após o ataque
             }
 
             // Espera antes de realizar o ataque
@@ -140,11 +164,12 @@ namespace MoreMountains.CorgiEngine
                 if (ScytheSlashPrefab != null)
                 {
                     GameObject slashInstance = Instantiate(ScytheSlashPrefab, CeifarArea.transform.position, Quaternion.identity);
-                    
+
                     // Toca a animação de corte
                     Animator slashAnimator = slashInstance.GetComponent<Animator>();
                     if (slashAnimator != null)
                     {
+                        slashAnimator.updateMode = AnimatorUpdateMode.UnscaledTime; // Garante que a animação também não seja afetada
                         slashAnimator.Play("SlashAnimation"); // Certifique-se de que o nome corresponde ao da animação
                     }
 
@@ -158,6 +183,7 @@ namespace MoreMountains.CorgiEngine
                 OnAbilityCompleted?.Invoke();
             }
         }
+
 
         /// <summary>
         /// Detecta colisões com o jogador e aplica dano

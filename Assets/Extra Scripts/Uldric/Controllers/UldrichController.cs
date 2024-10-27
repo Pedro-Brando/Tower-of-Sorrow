@@ -42,7 +42,6 @@ public class UldrichController : MonoBehaviour
         if (BarrierVisual != null)
         {
             Instantiate(BarrierVisual, transform.position, Quaternion.identity, transform); // Instancia no Uldrich
-            
             BarrierVisual.SetActive(false);
         }
 
@@ -63,6 +62,10 @@ public class UldrichController : MonoBehaviour
         {
             _health.OnDeath += OnDeath;
         }
+        else
+        {
+            Debug.LogError("Health component not found on Uldrich!");
+        }
 
         // Encontrar o jogador
         _player = GameObject.FindGameObjectWithTag("Player");
@@ -79,7 +82,7 @@ public class UldrichController : MonoBehaviour
 
         // Iniciar na Fase 1
         _phaseManager.SetPhase(1);
-        ApplyBarrier();
+        BecomeInvulnerable();
         Debug.Log("Barreira aplicada.");
     }
 
@@ -121,8 +124,15 @@ public class UldrichController : MonoBehaviour
         switch (_phaseManager.CurrentPhase)
         {
             case 1:
-                // Uldrich está voando e estacionário
-                FlyToPoint(new Vector2(-38, -4)); // Substitua pela posição desejada
+                if (_isInvulnerable)
+                {
+                    // Uldrich está voando e estacionário
+                    FlyToPoint(new Vector2(-38, -4)); // Substitua pela posição desejada
+                }
+                else
+                {
+                    MoveAwayFromPlayer();
+                }
                 break;
 
             case 2:
@@ -202,6 +212,7 @@ public class UldrichController : MonoBehaviour
 
     public void BecomeVulnerable(bool inMaterialWorld = true, bool inSpiritualWorld = false)
     {
+        Debug.Log("Uldrich se tornou vulnerável.");
         _isInvulnerable = false;
         _isVulnerableTimerActive = true;
         _isVulnerableInMaterialWorld = inMaterialWorld;
@@ -209,25 +220,89 @@ public class UldrichController : MonoBehaviour
 
         RemoveBarrier();
 
+        // Atualiza a invulnerabilidade com base no mundo atual do jogador
+        UpdateInvulnerability();
+
         if (inMaterialWorld)
         {
             // Uldrich cai no chão e se torna vulnerável
             _character.MovementState.ChangeState(CharacterStates.MovementStates.Falling);
-            VulnerableDuration = 7f; // Reseta o temporizador
+            VulnerableDuration = 20f; // Reseta o temporizador
         }
     }
 
     private void BecomeInvulnerable()
     {
+        Debug.Log("Uldrich se tornou invulnerável.");
         _isInvulnerable = true;
         _isVulnerableTimerActive = false;
-        VulnerableDuration = 7f; // Reseta o temporizador
+        VulnerableDuration = 20f; // Reseta o temporizador
         _isVulnerableInMaterialWorld = false;
         _isVulnerableInSpiritualWorld = false;
         ApplyBarrier();
 
+        // Atualiza a invulnerabilidade com base no mundo atual do jogador
+        UpdateInvulnerability();
+
         // Uldrich voa novamente
         _character.MovementState.ChangeState(CharacterStates.MovementStates.Jumping);
+    }
+
+
+    private void UpdateInvulnerability()
+    {
+        if (_isInvulnerable)
+        {
+            // Uldrich está invulnerável independentemente do mundo do jogador
+            if (_health != null)
+            {
+                _health.Invulnerable = true;
+            }
+        }
+        else
+        {
+            // A vulnerabilidade de Uldrich depende do mundo atual do jogador
+            if ((_playerInSpiritualWorld && _isVulnerableInSpiritualWorld) ||
+                (!_playerInSpiritualWorld && _isVulnerableInMaterialWorld))
+            {
+                // Uldrich é vulnerável no mundo atual do jogador
+                if (_health != null)
+                {
+                    _health.Invulnerable = false;
+                }
+            }
+            else
+            {
+                // Uldrich é invulnerável no mundo atual do jogador
+                if (_health != null)
+                {
+                    _health.Invulnerable = true;
+                }
+            }
+        }
+    }
+
+
+    public void OnPotentializerDestroyed()
+    {
+        Debug.Log("OnPotentializerDestroyed chamado no UldrichController.");
+        if (_phaseManager.CurrentPhase == 1 && !_potentializerDestroyed)
+        {
+            _potentializerDestroyed = true;
+            // Uldrich torna-se vulnerável
+            BecomeVulnerable();
+        }
+    }
+
+    public void OnPotentializerRevived()
+    {
+        Debug.Log("OnPotentializerRevived chamado no UldrichController.");
+        if (_phaseManager.CurrentPhase == 1 && _potentializerDestroyed)
+        {
+            _potentializerDestroyed = false;
+            // Uldrich torna-se invulnerável novamente
+            BecomeInvulnerable();
+        }
     }
 
     private void ApplyBarrier()
@@ -240,7 +315,7 @@ public class UldrichController : MonoBehaviour
         // Torna Uldrich invulnerável
         if (_health != null)
         {
-            _health.DamageDisabled();
+            _health.Invulnerable = true;
         }
     }
 
@@ -253,7 +328,7 @@ public class UldrichController : MonoBehaviour
         // Torna Uldrich vulnerável
         if (_health != null)
         {
-            _health.DamageEnabled();
+            _health.Invulnerable = false;
         }
     }
 
@@ -269,22 +344,15 @@ public class UldrichController : MonoBehaviour
     public void PlayerEnteredSpiritualWorld()
     {
         _playerInSpiritualWorld = true;
+        UpdateInvulnerability();
     }
 
     public void PlayerExitedSpiritualWorld()
     {
         _playerInSpiritualWorld = false;
+        UpdateInvulnerability();
     }
 
-    public void OnPotentializerDestroyed()
-    {
-        if (_phaseManager.CurrentPhase == 1 && !_potentializerDestroyed)
-        {
-            _potentializerDestroyed = true;
-            // Uldrich torna-se vulnerável
-            BecomeVulnerable();
-        }
-    }
 
     public void OnSpiritDestroyed()
     {

@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using MoreMountains.CorgiEngine;
+using Unity.VisualScripting;
+using System.Collections;
 
 public class UldrichAttackManager : MonoBehaviour
 {
@@ -40,6 +42,7 @@ public class UldrichAttackManager : MonoBehaviour
 
     void Start()
     {
+        StartCoroutine(WaitBeforeStartingAttacks());
         UpdateAvailableAbilities();
     }
 
@@ -76,6 +79,12 @@ public class UldrichAttackManager : MonoBehaviour
             // Inscrevendo-se no evento OnAbilityCompleted para saber quando a habilidade termina
             ability.OnAbilityCompleted += OnAbilityCompleted;
         }
+    }
+
+    private IEnumerator WaitBeforeStartingAttacks()
+    {
+        // Aguarda 5 segundos antes de iniciar os ataques
+        yield return new WaitForSeconds(5f);
     }
 
     public void UpdateAvailableAbilities()
@@ -160,6 +169,7 @@ public class UldrichAttackManager : MonoBehaviour
         if (EspiritoCristalizado != null) EspiritoCristalizado.OnAbilityCompleted -= OnAbilityCompleted;
         if (ExtincaoDaAlma != null) ExtincaoDaAlma.OnAbilityCompleted -= OnAbilityCompleted;
         if (Aniquilar != null) Aniquilar.OnAbilityCompleted -= OnAbilityCompleted;
+        if (TempestadeDeFogoFatuo != null) TempestadeDeFogoFatuo.OnAbilityCompleted -= OnAbilityCompleted;
 
         Debug.Log("Habilidade concluída. Pronto para a próxima ação.");
     }
