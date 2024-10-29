@@ -24,7 +24,7 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Dano causado (use um valor alto para Hit Kill)")]
         public int Damage = 9999;
 
-        [Tooltip("Lista de plataformas a serem destruídas no mundo material")]
+        [Tooltip("Lista de plataformas a serem desativadas no mundo material")]
         public List<GameObject> MaterialWorldPlatforms;
 
         [Header("Prefabs e Efeitos")]
@@ -129,8 +129,8 @@ namespace MoreMountains.CorgiEngine
                 EffectFeedback.PlayFeedbacks();
             }
 
-            // Destrói as plataformas no mundo material
-            DestroyMaterialWorldPlatforms();
+            // Desativa as plataformas no mundo material
+            DesativarPlataformas();
 
             // Aplica dano às entidades na área de efeito
             ApplyDamageInArea();
@@ -161,16 +161,16 @@ namespace MoreMountains.CorgiEngine
         }
 
         /// <summary>
-        /// Destrói todas as plataformas listadas no mundo material
+        /// Desativa todas as plataformas listadas no mundo material
         /// </summary>
-        protected virtual void DestroyMaterialWorldPlatforms()
+        protected virtual void DesativarPlataformas()
         {
             foreach (GameObject platform in MaterialWorldPlatforms)
             {
                 if (platform != null)
                 {
-                    Destroy(platform);
-                    Debug.Log($"Plataforma {platform.name} destruída.");
+                    platform.SetActive(false);
+                    Debug.Log($"Plataforma {platform.name} foi desativada.");
                 }
             }
         }

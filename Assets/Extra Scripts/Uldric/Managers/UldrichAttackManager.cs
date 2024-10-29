@@ -104,7 +104,6 @@ public class UldrichAttackManager : MonoBehaviour
                 _availableAbilities.Add(Ceifar);
                 _availableAbilities.Add(FuriaDoFogoFatuo);
                 _availableAbilities.Add(ImpactoEspiritual);
-                _availableAbilities.Add(Aniquilar);
                 _availableAbilities.Add(ExtincaoDaAlma);
                 _availableAbilities.Add(TempestadeDeFogoFatuo);
                 break;
