@@ -20,7 +20,7 @@ public class Spirit : MonoBehaviour
     {
         if (uldrichController != null)
         {
-            uldrichController.OnSpiritDestroyed();
+            uldrichController.OnSpiritDeath();
         }
     }
 

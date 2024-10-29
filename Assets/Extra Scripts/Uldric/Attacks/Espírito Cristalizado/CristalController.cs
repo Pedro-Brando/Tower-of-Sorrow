@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using MoreMountains.CorgiEngine;
+using MoreMountains.Feedbacks;
 
 public class CristalController : MonoBehaviour
 {
@@ -11,6 +12,19 @@ public class CristalController : MonoBehaviour
 
     [Tooltip("Prefab do portal a ser instanciado quando o cristal for destruído")]
     public GameObject PortalPrefab;
+
+    [Header("Feedbacks MMF Player")]
+    [Tooltip("Feedback ao iniciar a flutuação do cristal")]
+    public MMF_Player FloatStartFeedback;
+
+    [Tooltip("Feedback ao iniciar a queda do cristal")]
+    public MMF_Player FallStartFeedback;
+
+    [Tooltip("Feedback ao aterrissar no chão")]
+    public MMF_Player LandingFeedback;
+
+    [Tooltip("Feedback ao cristal ser destruído")]
+    public MMF_Player DeathFeedback;
 
     private Rigidbody2D _rigidbody2D;
     private Health _healthComponent;
@@ -54,6 +68,12 @@ public class CristalController : MonoBehaviour
     {
         Debug.Log("CristalController: Coroutine CristalRoutine() iniciada com sucesso.");
 
+        // Feedback ao iniciar a flutuação do cristal
+        if (FloatStartFeedback != null)
+        {
+            FloatStartFeedback.PlayFeedbacks();
+        }
+
         // Espera o tempo de flutuação
         Debug.Log($"CristalController: Aguardando {FloatTime} segundos antes de ativar a gravidade.");
         yield return new WaitForSeconds(FloatTime);
@@ -61,6 +81,12 @@ public class CristalController : MonoBehaviour
         // Ativa a gravidade para iniciar a queda
         _rigidbody2D.gravityScale = 1f;
         Debug.Log("CristalController: Gravidade ativada, cristal começará a cair.");
+
+        // Feedback ao iniciar a queda
+        if (FallStartFeedback != null)
+        {
+            FallStartFeedback.PlayFeedbacks();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -73,7 +99,6 @@ public class CristalController : MonoBehaviour
             {
                 playerHealth.Damage(Damage, gameObject, 0.1f, 0.1f, transform.position);
             }
-
         }
         else if (collision.CompareTag("Ground") || collision.CompareTag("Wall"))
         {
@@ -94,12 +119,24 @@ public class CristalController : MonoBehaviour
         _rigidbody2D.isKinematic = true;
         Debug.Log("CristalController: Gravidade desativada após aterrissagem.");
 
+        // Feedback ao aterrissar no chão
+        if (LandingFeedback != null)
+        {
+            LandingFeedback.PlayFeedbacks();
+        }
+
         // Opcional: você pode adicionar lógica aqui se quiser que o cristal faça algo ao aterrissar
     }
 
     private void OnDeath()
     {
         Debug.Log("CristalController: OnDeath() chamado. Cristal será destruído.");
+
+        // Feedback ao cristal ser destruído
+        if (DeathFeedback != null)
+        {
+            DeathFeedback.PlayFeedbacks();
+        }
 
         // Instancia o portal
         if (PortalPrefab != null)

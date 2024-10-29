@@ -215,10 +215,10 @@ MonoBehaviour:
           ButtonText: Debug Play Sound
         TestStopButton:
           ButtonText: Debug Stop Sound
-        PlayMethod: 0
-        PoolSize: 10
+        PlayMethod: 3
+        PoolSize: 1
         UseLegacyEventsMode: 0
-        StopSoundOnFeedbackStop: 1
+        StopSoundOnFeedbackStop: 0
         MinVolume: 1
         MaxVolume: 1
         MinPitch: 1
@@ -273,7 +273,7 @@ GameObject:
   - component: {fileID: 5847206550665566207}
   - component: {fileID: -1139059359311253427}
   - component: {fileID: 40188474722539244}
-  - component: {fileID: -291034567808558475}
+  - component: {fileID: 4904567136969513590}
   m_Layer: 12
   m_Name: FireballPrefab
   m_TagString: Untagged
@@ -415,8 +415,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!58 &-291034567808558475
-CircleCollider2D:
+--- !u!70 &4904567136969513590
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -447,9 +447,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.1
+  m_Offset: {x: -0.07, y: 0}
+  m_Size: {x: 0.15, y: 0.07}
+  m_Direction: 1
 --- !u!1 &4093795092657568649
 GameObject:
   m_ObjectHideFlags: 0
@@ -665,10 +665,10 @@ MonoBehaviour:
           ButtonText: Debug Play Sound
         TestStopButton:
           ButtonText: Debug Stop Sound
-        PlayMethod: 0
-        PoolSize: 10
+        PlayMethod: 3
+        PoolSize: 1
         UseLegacyEventsMode: 0
-        StopSoundOnFeedbackStop: 1
+        StopSoundOnFeedbackStop: 0
         MinVolume: 1
         MaxVolume: 1
         MinPitch: 1

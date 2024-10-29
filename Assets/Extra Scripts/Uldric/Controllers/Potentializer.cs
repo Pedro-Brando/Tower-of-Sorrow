@@ -1,5 +1,5 @@
 using UnityEngine;
-using MoreMountains.CorgiEngine; // Se estiver usando o Corgi Engine
+using MoreMountains.CorgiEngine;
 
 public class Potentializer : MonoBehaviour
 {
@@ -39,7 +39,20 @@ public class Potentializer : MonoBehaviour
         {
             uldrichController.OnPotentializerDestroyed();
         }
-        Destroy(gameObject);
+
+        // Desativa o Potentializer ao invés de destruí-lo
+        gameObject.SetActive(false);
+    }
+
+    public void Revive()
+    {
+        // Reativa o Potentializer e reseta sua vida
+        gameObject.SetActive(true);
+        if (_health != null)
+        {
+            _health.SetHealth(_health.MaximumHealth, gameObject);
+        }
+        Debug.Log("Potentializer reviveu.");
     }
 
     void OnDestroy()

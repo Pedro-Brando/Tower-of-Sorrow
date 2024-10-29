@@ -104,6 +104,8 @@ public class UldrichAttackManager : MonoBehaviour
                 _availableAbilities.Add(Ceifar);
                 _availableAbilities.Add(FuriaDoFogoFatuo);
                 _availableAbilities.Add(ImpactoEspiritual);
+                _availableAbilities.Add(Aniquilar);
+                _availableAbilities.Add(ExtincaoDaAlma);
                 _availableAbilities.Add(TempestadeDeFogoFatuo);
                 break;
 
@@ -113,6 +115,7 @@ public class UldrichAttackManager : MonoBehaviour
                 _availableAbilities.Add(FuriaDoFogoFatuo);
                 _availableAbilities.Add(ImpactoEspiritual);
                 _availableAbilities.Add(OndaDeChamas);
+                _availableAbilities.Add(Aniquilar);
                 break;
 
             case 3:
@@ -123,7 +126,6 @@ public class UldrichAttackManager : MonoBehaviour
                 _availableAbilities.Add(OndaDeChamas);
                 _availableAbilities.Add(ConsumirVida);
                 _availableAbilities.Add(EspiritoCristalizado);
-                _availableAbilities.Add(TempestadeDeFogoFatuo);
                 break;
         }
     }

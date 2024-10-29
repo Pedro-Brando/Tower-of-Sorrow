@@ -8,10 +8,14 @@ public class UldrichController : MonoBehaviour
     [Header("Uldrich Settings")]
 
     public GameObject BarrierVisual; // Representação visual da barreira
-    public float VulnerableDuration = 7f; // Duração em que Uldrich permanece vulnerável após cair
+    public Potentializer potentializer; // Referência ao objeto Potentializer
 
     [Header("Spiritual World Settings")]
     public float MaxTimeInSpiritualWorld = 10f; // Tempo máximo que o jogador pode ficar no mundo espiritual antes de Uldrich lançar Extinção da Alma
+
+    [Header("Espírito Container")]
+    [Tooltip("GameObject que contém todos os espíritos como filhos")]
+    public GameObject EspiritosContainer; // Referência ao GameObject que contém todos os espíritos
 
     private UldrichAttackManager _attackManager;
     private UldrichPhaseManager _phaseManager;
@@ -21,13 +25,10 @@ public class UldrichController : MonoBehaviour
     private GameObject _player; // Referência ao jogador
 
     private bool _isInvulnerable = true;
-    private bool _isVulnerableTimerActive = false;
     private bool _playerInSpiritualWorld = false;
     private float _spiritualWorldTimer = 0f;
     private bool _potentializerDestroyed = false;
     private int _spiritsDestroyed = 0;
-    private bool _isVulnerableInSpiritualWorld = false;
-    private bool _isVulnerableInMaterialWorld = false;
     public float FlySpeed = 5f; // Velocidade de voo ajustável
     private CorgiController _controller; // Referência ao CorgiController
 
@@ -38,10 +39,19 @@ public class UldrichController : MonoBehaviour
         _character = GetComponent<Character>();
         _health = GetComponent<Health>();
 
+        // Inicializa o Container de Espíritos, garantindo que eles estejam desativados no início
+        if (EspiritosContainer != null)
+        {
+            EspiritosContainer.SetActive(false);
+        }
+        else
+        {
+            Debug.LogWarning("EspiritosContainer não foi atribuído no inspetor!");
+        }
+
         // Instancia a barreira uma vez na inicialização, caso necessário
         if (BarrierVisual != null)
         {
-            Instantiate(BarrierVisual, transform.position, Quaternion.identity, transform); // Instancia no Uldrich
             BarrierVisual.SetActive(false);
         }
 
@@ -80,6 +90,16 @@ public class UldrichController : MonoBehaviour
             Debug.LogError("CorgiController não encontrado no Uldrich!");
         }
 
+        // Verifica se a referência ao Potentializer está atribuída corretamente
+        if (potentializer == null)
+        {
+            potentializer = FindObjectOfType<Potentializer>();
+            if (potentializer == null)
+            {
+                Debug.LogError("Potentializer não encontrado na cena!");
+            }
+        }
+
         // Iniciar na Fase 1
         _phaseManager.SetPhase(1);
         BecomeInvulnerable();
@@ -90,17 +110,6 @@ public class UldrichController : MonoBehaviour
     {
         // Gerenciar movimentação baseada na fase
         HandleMovement();
-
-        // Atualizar status de invulnerabilidade
-        if (_isVulnerableTimerActive && !_isInvulnerable)
-        {
-            VulnerableDuration -= Time.deltaTime;
-            if (VulnerableDuration <= 0)
-            {
-                Debug.Log("Uldrich Became Invulnerable");
-                BecomeInvulnerable();
-            }
-        }
 
         // Gerenciar o tempo do jogador no mundo espiritual
         if (_playerInSpiritualWorld)
@@ -126,8 +135,7 @@ public class UldrichController : MonoBehaviour
             case 1:
                 if (_isInvulnerable)
                 {
-                    // Uldrich está voando e estacionário
-                    FlyToPoint(new Vector2(-38, -4)); // Substitua pela posição desejada
+                    FlyToPoint(new Vector2(-38, -4));
                 }
                 else
                 {
@@ -136,25 +144,30 @@ public class UldrichController : MonoBehaviour
                 break;
 
             case 2:
-                // Uldrich está no chão e se afasta do jogador
+                if (_isInvulnerable)
+                {
+                    BecomeVulnerable(); // Garante que Uldric se torne vulnerável ao entrar na fase 2
+                }
                 MoveAwayFromPlayer();
                 break;
 
             case 3:
-                // Uldrich é invulnerável e pode ter um comportamento diferente
                 if (_spiritsDestroyed < 2)
                 {
-                    // Continua atacando o jogador
+                    // Espíritos não foram completamente destruídos
+                    ActivateEspiritos();
                     MoveAwayFromPlayer();
                 }
                 else
                 {
-                    // Após os dois espíritos serem destruídos, Uldrich fica vulnerável no mundo espiritual
+                    // Todos os espíritos foram destruídos
+                    BecomeVulnerable();
                     _character.MovementState.ChangeState(CharacterStates.MovementStates.Idle);
                 }
                 break;
         }
     }
+
 
     /// <summary>
     /// Faz com que Uldrich voe até um ponto específico.
@@ -189,98 +202,122 @@ public class UldrichController : MonoBehaviour
             yield return null;
         }
 
+        // Define o estado de movimento como Idle
+        _character.MovementState.ChangeState(CharacterStates.MovementStates.Idle);
+
         // Para quando atingir a posição
         _controller.SetHorizontalForce(0);
         _controller.SetVerticalForce(0);
-
-        // Define o estado de movimento como Idle
-        _character.MovementState.ChangeState(CharacterStates.MovementStates.Idle);
     }
 
-    private void MoveAwayFromPlayer()
+private void MoveAwayFromPlayer()
+{
+    if (_player != null && _horizontalMovement != null)
     {
-        if (_player != null && _horizontalMovement != null)
+        // Determina a direção oposta ao jogador
+        Vector2 direction = transform.position.x > _player.transform.position.x ? Vector2.right : Vector2.left;
+
+        // Define o comprimento do Raycast (ajuste conforme necessário)
+        float raycastDistance = 1.5f;
+
+        // Realiza o Raycast na direção atual para detectar obstáculos
+        RaycastHit2D hitInDirection = Physics2D.Raycast(transform.position, direction, raycastDistance, LayerMask.GetMask("Wall"));
+        RaycastHit2D hitOppositeDirection = Physics2D.Raycast(transform.position, -direction, raycastDistance, LayerMask.GetMask("Wall"));
+
+        if (hitInDirection.collider != null && hitInDirection.collider.CompareTag("Wall"))
         {
-            // Determina a direção oposta ao jogador
-            Vector2 direction = transform.position.x > _player.transform.position.x ? Vector2.right : Vector2.left;
-            _horizontalMovement.SetHorizontalMove(direction.x);
-
-            // Configura o estado de movimento
-            _character.MovementState.ChangeState(CharacterStates.MovementStates.Walking);
+            // Se houver uma parede na direção que o Boss está se movendo
+            if (hitOppositeDirection.collider == null)
+            {
+                // Se não houver uma parede na direção oposta, mude para essa direção
+                direction = -direction;
+                Debug.Log("Parede detectada! Mudando de direção.");
+            }
+            else
+            {
+                // Se ambas as direções estiverem bloqueadas, o Boss pode pular ou ficar parado
+                Debug.Log("Boss preso entre jogador e parede, decidindo nova ação...");
+                _character.MovementState.ChangeState(CharacterStates.MovementStates.Jumping);
+                _controller.SetVerticalForce(5f); // Ajuste a força do salto conforme necessário
+                return;
+            }
         }
-    }
 
-    public void BecomeVulnerable(bool inMaterialWorld = true, bool inSpiritualWorld = false)
+        // Ajusta o movimento horizontal com base na direção final decidida
+        _horizontalMovement.SetHorizontalMove(direction.x);
+
+        // Configura o estado de movimento para Walking
+        _character.MovementState.ChangeState(CharacterStates.MovementStates.Walking);
+    }
+}
+
+
+    public void BecomeVulnerable()
     {
         Debug.Log("Uldrich se tornou vulnerável.");
         _isInvulnerable = false;
-        _isVulnerableTimerActive = true;
-        _isVulnerableInMaterialWorld = inMaterialWorld;
-        _isVulnerableInSpiritualWorld = inSpiritualWorld;
 
         RemoveBarrier();
-
-        // Atualiza a invulnerabilidade com base no mundo atual do jogador
-        UpdateInvulnerability();
-
-        if (inMaterialWorld)
-        {
-            // Uldrich cai no chão e se torna vulnerável
-            _character.MovementState.ChangeState(CharacterStates.MovementStates.Falling);
-            VulnerableDuration = 20f; // Reseta o temporizador
-        }
     }
 
     private void BecomeInvulnerable()
     {
         Debug.Log("Uldrich se tornou invulnerável.");
         _isInvulnerable = true;
-        _isVulnerableTimerActive = false;
-        VulnerableDuration = 20f; // Reseta o temporizador
-        _isVulnerableInMaterialWorld = false;
-        _isVulnerableInSpiritualWorld = false;
         ApplyBarrier();
 
-        // Atualiza a invulnerabilidade com base no mundo atual do jogador
-        UpdateInvulnerability();
+        // Reviver o Potentializer se ele estiver disponível
+        if (potentializer != null)
+        {
+            potentializer.Revive();
+        }
 
         // Uldrich voa novamente
         _character.MovementState.ChangeState(CharacterStates.MovementStates.Jumping);
     }
 
 
-    private void UpdateInvulnerability()
+
+    private void SubscribeToSpiritsHealth()
     {
-        if (_isInvulnerable)
+        if (EspiritosContainer != null)
         {
-            // Uldrich está invulnerável independentemente do mundo do jogador
-            if (_health != null)
+            Health[] spiritsHealth = EspiritosContainer.GetComponentsInChildren<Health>(true);
+            foreach (Health spiritHealth in spiritsHealth)
             {
-                _health.Invulnerable = true;
+                // Verifica se já está inscrito para evitar múltiplas inscrições
+                spiritHealth.OnDeath -= OnSpiritDeath; 
+                spiritHealth.OnDeath += OnSpiritDeath;
             }
         }
         else
         {
-            // A vulnerabilidade de Uldrich depende do mundo atual do jogador
-            if ((_playerInSpiritualWorld && _isVulnerableInSpiritualWorld) ||
-                (!_playerInSpiritualWorld && _isVulnerableInMaterialWorld))
-            {
-                // Uldrich é vulnerável no mundo atual do jogador
-                if (_health != null)
-                {
-                    _health.Invulnerable = false;
-                }
-            }
-            else
-            {
-                // Uldrich é invulnerável no mundo atual do jogador
-                if (_health != null)
-                {
-                    _health.Invulnerable = true;
-                }
-            }
+            Debug.LogWarning("EspiritosContainer não foi atribuído no inspetor!");
         }
     }
+
+
+    public void OnSpiritDeath()
+    {
+        _spiritsDestroyed++;
+        Debug.Log($"Espírito destruído. Total destruído: {_spiritsDestroyed}");
+
+    }
+    
+    private void ActivateEspiritos()
+    {
+        if (EspiritosContainer != null && !EspiritosContainer.activeSelf)
+        {
+            EspiritosContainer.SetActive(true);
+            Debug.Log("Espíritos ativados.");
+            SubscribeToSpiritsHealth(); // Se inscreve no evento de morte dos espíritos quando eles são ativados
+        }
+        else
+        {
+            Debug.LogWarning("EspiritosContainer não está atribuído ou já está ativo.");
+        }
+    }
+
 
 
     public void OnPotentializerDestroyed()
@@ -344,26 +381,14 @@ public class UldrichController : MonoBehaviour
     public void PlayerEnteredSpiritualWorld()
     {
         _playerInSpiritualWorld = true;
-        UpdateInvulnerability();
     }
 
     public void PlayerExitedSpiritualWorld()
     {
         _playerInSpiritualWorld = false;
-        UpdateInvulnerability();
     }
 
 
-    public void OnSpiritDestroyed()
-    {
-        _spiritsDestroyed++;
-        if (_spiritsDestroyed >= 2)
-        {
-            // Ambos os espíritos foram destruídos
-            // Uldrich torna-se vulnerável no mundo espiritual
-            BecomeVulnerable(inMaterialWorld: false, inSpiritualWorld: true);
-        }
-    }
 
     private void OnDeath()
     {
@@ -374,7 +399,7 @@ public class UldrichController : MonoBehaviour
             // Restaura a vida de Uldrich para 1
             if (_health != null)
             {
-                _health.SetHealth(1, gameObject);
+                _health.SetHealth(10, gameObject);
             }
             Debug.Log("Uldrich Became Invulnerable");
             BecomeInvulnerable();

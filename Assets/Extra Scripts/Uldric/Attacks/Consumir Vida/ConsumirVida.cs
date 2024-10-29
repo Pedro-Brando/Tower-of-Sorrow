@@ -18,9 +18,6 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Prefab da explosão")]
         public GameObject ExplosionPrefab;
 
-        [Tooltip("Área onde os crosshairs podem aparecer (BoxCollider2D)")]
-        public BoxCollider2D SpawnArea;
-
         [Tooltip("Número total de crosshairs a serem gerados")]
         public int TotalCrosshairs = 6;
 
@@ -63,6 +60,10 @@ namespace MoreMountains.CorgiEngine
 
         [Tooltip("Feedback ao concluir a habilidade Consumir Vida")]
         public MMF_Player AbilityCompleteFeedback;
+
+        [Header("Referências")]
+        [Tooltip("Referência ao GameObject do jogador")]
+        public GameObject PlayerReference;
 
         private bool _abilityInProgress = false;
         private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
@@ -118,14 +119,21 @@ namespace MoreMountains.CorgiEngine
             {
                 if (activeCrosshairs.Count < MaxActiveCrosshairs)
                 {
-                    // Seleciona uma posição aleatória dentro da área
-                    Vector2 randomPosition = GetRandomPositionInArea();
+                    // Verifica se a referência ao jogador está atribuída
+                    if (PlayerReference == null)
+                    {
+                        Debug.LogError("PlayerReference não está atribuída!");
+                        yield break;
+                    }
+
+                    // Posição do jogador
+                    Vector2 spawnPosition = PlayerReference.transform.position;
 
                     // Obtém um crosshair do pool
                     GameObject crosshair = CrosshairPooler.GetPooledGameObject();
                     if (crosshair != null)
                     {
-                        crosshair.transform.position = randomPosition;
+                        crosshair.transform.position = spawnPosition;
                         crosshair.transform.rotation = Quaternion.identity;
                         crosshair.SetActive(true);
 
@@ -227,38 +235,6 @@ namespace MoreMountains.CorgiEngine
                     healthComponent.Damage(ExplosionDamage, gameObject, 0f, 0f, transform.position);
                     Debug.Log($"{hit.name} recebeu dano da explosão.");
                 }
-            }
-        }
-
-        /// <summary>
-        /// Retorna uma posição aleatória dentro do SpawnArea
-        /// </summary>
-        /// <returns>Posição aleatória dentro da área</returns>
-        private Vector2 GetRandomPositionInArea()
-        {
-            if (SpawnArea == null)
-            {
-                Debug.LogError("SpawnArea não está atribuída!");
-                return Vector2.zero;
-            }
-
-            Bounds bounds = SpawnArea.bounds;
-
-            float x = Random.Range(bounds.min.x, bounds.max.x);
-            float y = Random.Range(bounds.min.y, bounds.max.y);
-
-            return new Vector2(x, y);
-        }
-
-        /// <summary>
-        /// Visualiza a área de spawn no editor
-        /// </summary>
-        protected virtual void OnDrawGizmosSelected()
-        {
-            if (SpawnArea != null)
-            {
-                Gizmos.color = Color.green;
-                Gizmos.DrawWireCube(SpawnArea.bounds.center, SpawnArea.bounds.size);
             }
         }
     }

@@ -1406,6 +1406,31 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7153591468184248138, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: EffectArea
+      value: 
+      objectReference: {fileID: 488289967}
+    - target: {fileID: 7153591468184248138, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: ChargeFeedback
+      value: 
+      objectReference: {fileID: 1048935618}
+    - target: {fileID: 7153591468184248138, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: EffectFeedback
+      value: 
+      objectReference: {fileID: 693609833}
+    - target: {fileID: 7153591468184248138, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: TargetLayers.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 7153591468184248138, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: AbilityCompleteFeedback
+      value: 
+      objectReference: {fileID: 840419811}
     - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
         type: 3}
       propertyPath: m_Enabled
@@ -1416,6 +1441,56 @@ PrefabInstance:
       propertyPath: EffectArea
       value: 
       objectReference: {fileID: 1808849789}
+    - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: ChargeFeedback
+      value: 
+      objectReference: {fileID: 1400979120}
+    - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: EffectFeedback
+      value: 
+      objectReference: {fileID: 1190603214}
+    - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: AbilityCompleteFeedback
+      value: 
+      objectReference: {fileID: 1377817207}
+    - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: MaterialWorldPlatforms.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: MaterialWorldPlatforms.Array.data[0]
+      value: 
+      objectReference: {fileID: 1021259028}
+    - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: MaterialWorldPlatforms.Array.data[1]
+      value: 
+      objectReference: {fileID: 851265386}
+    - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: MaterialWorldPlatforms.Array.data[2]
+      value: 
+      objectReference: {fileID: 1165372992}
+    - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: MaterialWorldPlatforms.Array.data[3]
+      value: 
+      objectReference: {fileID: 1266906743}
+    - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: MaterialWorldPlatforms.Array.data[4]
+      value: 
+      objectReference: {fileID: 1622005817}
+    - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: MaterialWorldPlatforms.Array.data[5]
+      value: 
+      objectReference: {fileID: 1133937993}
     - target: {fileID: 7845874440689348261, guid: a6d340c6298297d4c8a9e4d80e59ad58,
         type: 3}
       propertyPath: SpawnArea

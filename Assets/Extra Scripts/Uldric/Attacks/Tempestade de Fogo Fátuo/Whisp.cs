@@ -21,6 +21,9 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Feedback ao colidir com o chão ou parede")]
         public MMF_Player CollisionFeedback;
 
+        [Tooltip("Feedback contínuo enquanto o Whisp está ativo")]
+        public MMF_Player LoopingFeedback;
+
         private Rigidbody2D _rb;
 
         /// <summary>
@@ -45,6 +48,26 @@ namespace MoreMountains.CorgiEngine
             {
                 _rb.velocity = Velocity;
             }
+
+            // Iniciar o feedback contínuo enquanto o Whisp está ativo
+            if (LoopingFeedback != null)
+            {
+                Debug.Log("Iniciando feedback contínuo do Whisp");
+                LoopingFeedback.PlayFeedbacks();
+            }
+        }
+
+        /// <summary>
+        /// Método chamado quando o objeto é desativado
+        /// </summary>
+        void OnDisable()
+        {
+            // Parar o feedback contínuo quando o Whisp for desativado
+            if (LoopingFeedback != null)
+            {
+                Debug.Log("Parando feedback contínuo do Whisp");
+                LoopingFeedback.StopFeedbacks();
+            }
         }
 
         /// <summary>
@@ -54,7 +77,8 @@ namespace MoreMountains.CorgiEngine
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.CompareTag("Player"))
-            {
+            {   
+                Debug.Log("Whisp colidiu com jogador");
                 Health playerHealth = collision.GetComponent<Health>();
                 if (playerHealth != null)
                 {
@@ -62,19 +86,24 @@ namespace MoreMountains.CorgiEngine
                 }
                 if (CollisionFeedback != null)
                 {
+                    Debug.Log("Tocando feedback de colisão");
                     CollisionFeedback.PlayFeedbacks();
                 }
             }
             else if (collision.CompareTag("Ground") || collision.CompareTag("Wall"))
             {
+                // Feedback ao colidir com o chão ou parede
+                Debug.Log("Whisp colidiu com chão ou parede");
+                if (CollisionFeedback != null)
+                {
+                    Debug.Log("Tocando feedback de colisão");
+                    CollisionFeedback.PlayFeedbacks();
+                }
                 // Instanciar explosão (opcional)
                 if (ExplosionPrefab != null)
                 {
                     Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
                 }
-
-                // Feedback ao colidir com o chão ou parede
-
 
                 // Desativar o whisp
                 gameObject.SetActive(false);
