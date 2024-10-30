@@ -12,7 +12,7 @@ public class UldrichAttackManager : MonoBehaviour
     public FuriaDoFogoFatuo FuriaDoFogoFatuo;
     public ImpactoEspiritual ImpactoEspiritual;
     public TempestadeDeFogoFatuo TempestadeDeFogoFatuo;     
-    public ExtincaoDaAlma Aniquilar; // Habilidade especial
+    public Aniquilar Aniquilar; // Habilidade especial
     public OndaDeChamas OndaDeChamas;
     public ConsumirVida ConsumirVida;
     public EspiritoCristalizado EspiritoCristalizado;
@@ -28,6 +28,12 @@ public class UldrichAttackManager : MonoBehaviour
     private float _lastAttackTime = -Mathf.Infinity;
 
     private bool _abilityInExecution = false;
+
+    // Controle para habilidades programadas
+    private float _impactoEspiritualNextTime = 0f;
+    private float _impactoEspiritualInterval = 10f;
+    private int _impactoEspiritualCastCount = 0; // Contador para quantas vezes Impacto Espiritual foi lançado
+    private bool _extincaoDaAlmaUsed = false; // Controle se Extinção da Alma foi usado
 
     void Awake()
     {
@@ -50,21 +56,17 @@ public class UldrichAttackManager : MonoBehaviour
     {
         if (!_abilityInExecution && Time.time >= _lastAttackTime + _attackCooldown)
         {
-            PerformRandomAttack();
+            UpdateAvailableAbilities();
+            PerformAttack();
             _lastAttackTime = Time.time;
         }
 
-        // Uso de habilidades especiais em momentos específicos
+        // Controle de habilidades especiais por fase
         if (_phaseManager != null)
         {
             if (_phaseManager.CurrentPhase == 2 && !_aniquilarUsed && !_abilityInExecution)
             {
                 UseAniquilar();
-            }
-
-            if (_phaseManager.CurrentPhase == 3 && !_abilityInExecution)
-            {
-                UseExtincaoDaAlma();
             }
         }
     }
@@ -78,6 +80,19 @@ public class UldrichAttackManager : MonoBehaviour
 
             // Inscrevendo-se no evento OnAbilityCompleted para saber quando a habilidade termina
             ability.OnAbilityCompleted += OnAbilityCompleted;
+
+            // Lógica adicional para Impacto Espiritual e Extinção da Alma
+            if (ability == ImpactoEspiritual)
+            {
+                _impactoEspiritualCastCount++;
+            }
+
+            if (ability == ExtincaoDaAlma)
+            {
+                _extincaoDaAlmaUsed = true;
+                _impactoEspiritualCastCount = 0; // Reinicia o contador de Impacto Espiritual
+                _impactoEspiritualNextTime = Time.time + _impactoEspiritualInterval; // Reinicia o agendamento
+            }
         }
     }
 
@@ -85,6 +100,7 @@ public class UldrichAttackManager : MonoBehaviour
     {
         // Aguarda 5 segundos antes de iniciar os ataques
         yield return new WaitForSeconds(5f);
+        _impactoEspiritualNextTime = Time.time + _impactoEspiritualInterval;
     }
 
     public void UpdateAvailableAbilities()
@@ -103,16 +119,26 @@ public class UldrichAttackManager : MonoBehaviour
                 _availableAbilities.Add(TempestadeEspiritual);
                 _availableAbilities.Add(Ceifar);
                 _availableAbilities.Add(FuriaDoFogoFatuo);
-                _availableAbilities.Add(ImpactoEspiritual);
-                _availableAbilities.Add(ExtincaoDaAlma);
                 _availableAbilities.Add(TempestadeDeFogoFatuo);
+
+                // Impacto Espiritual deve ser castado no máximo três vezes, então adiciona se não chegou ao limite
+                if (_impactoEspiritualCastCount < 3)
+                {
+                    _availableAbilities.Add(ImpactoEspiritual);
+                }
+
+                // Extincao Da Alma só deve ser adicionada após o Impacto Espiritual ter sido usado três vezes
+                if (_impactoEspiritualCastCount >= 3 && !_extincaoDaAlmaUsed)
+                {
+                    _availableAbilities.Add(ExtincaoDaAlma);
+                }
+
                 break;
 
             case 2:
                 _availableAbilities.Add(TempestadeEspiritual);
                 _availableAbilities.Add(Ceifar);
                 _availableAbilities.Add(FuriaDoFogoFatuo);
-                _availableAbilities.Add(ImpactoEspiritual);
                 _availableAbilities.Add(OndaDeChamas);
                 _availableAbilities.Add(Aniquilar);
                 break;
@@ -121,11 +147,27 @@ public class UldrichAttackManager : MonoBehaviour
                 _availableAbilities.Add(TempestadeEspiritual);
                 _availableAbilities.Add(Ceifar);
                 _availableAbilities.Add(FuriaDoFogoFatuo);
-                _availableAbilities.Add(ImpactoEspiritual);
                 _availableAbilities.Add(OndaDeChamas);
                 _availableAbilities.Add(ConsumirVida);
                 _availableAbilities.Add(EspiritoCristalizado);
                 break;
+        }
+    }
+
+    public void PerformAttack()
+    {
+        // Verifica se é hora de executar ImpactoEspiritual na Fase 1
+        if (_phaseManager.CurrentPhase == 1 && Time.time >= _impactoEspiritualNextTime && _impactoEspiritualCastCount < 3 && !_abilityInExecution)
+        {
+            UseAbility(ImpactoEspiritual);
+            _impactoEspiritualNextTime = Time.time + _impactoEspiritualInterval; // Agendar o próximo uso
+            return;
+        }
+
+        // Se não for o momento de usar ImpactoEspiritual, realiza um ataque aleatório
+        if (_availableAbilities.Count > 0 && !_abilityInExecution)
+        {
+            PerformRandomAttack();
         }
     }
 
@@ -146,6 +188,7 @@ public class UldrichAttackManager : MonoBehaviour
             _aniquilarUsed = true;
         }
     }
+
 
     public void UseExtincaoDaAlma()
     {

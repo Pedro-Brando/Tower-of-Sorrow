@@ -182,13 +182,21 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
         OndaDeChoque ondaController = onda.GetComponent<OndaDeChoque>();
         if (ondaController != null)
         {
-            _alturaAtualOnda += IncrementoAlturaOnda;
+            
             ondaController.Initialize(OndaDeChoqueArea, _alturaAtualOnda);
+
+            _alturaAtualOnda += IncrementoAlturaOnda;  // Incrementa a altura da onda
         }
         else
         {
             Debug.LogError("O prefab da onda de choque não possui o script OndaDeChoque!");
         }
+    }
+
+    public void ResetarAlturaOnda()
+    {
+        _alturaAtualOnda = AlturaInicialOnda;
+        Debug.Log("Altura da onda de choque foi resetada pelo Extinção da Alma.");
     }
 
     private void AtivarPlataformas()
@@ -210,6 +218,13 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
 
         // Atualizando a quantidade de plataformas já ativadas
         plataformasAtivadas += quantidadeParaAtivar;
+    }
+
+    // Método público para resetar o número de plataformas ativadas
+    public void ResetarPlataformasAtivadas()
+    {
+        plataformasAtivadas = 0;
+        Debug.Log("Plataformas ativadas foram resetadas pelo Extinção da Alma.");
     }
 
     protected virtual void OnDrawGizmosSelected()

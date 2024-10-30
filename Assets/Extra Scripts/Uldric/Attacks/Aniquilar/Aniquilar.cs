@@ -8,10 +8,10 @@ using Unity.VisualScripting;
 
 namespace MoreMountains.CorgiEngine
 {
-    [AddComponentMenu("Corgi Engine/Character/Abilities/Extincao Da Alma")]
-    public class ExtincaoDaAlma : CharacterAbility, IUldrichAbility
+    [AddComponentMenu("Corgi Engine/Character/Abilities/Aniquilar")]
+    public class Aniquilar : CharacterAbility, IUldrichAbility
     {
-        [Header("Configurações da Extinção da Alma")]
+        [Header("Configurações da Aniquilar")]
 
         [Tooltip("Tempo de carregamento antes de ativar a habilidade")]
         public float ChargeTime = 5f;
@@ -25,11 +25,7 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Dano causado (use um valor alto para Hit Kill)")]
         public int Damage = 9999;
 
-        [Tooltip("Lista de plataformas a serem desativadas no mundo material")]
-        public List<GameObject> MaterialWorldPlatforms;
-
         [Header("Prefabs e Efeitos")]
-
         [Tooltip("Prefab do anúncio a ser instanciado durante o carregamento")]
         public GameObject AnnouncementPrefab;
 
@@ -37,17 +33,17 @@ namespace MoreMountains.CorgiEngine
         public GameObject AreaEffectPrefab;
 
         [Header("Cooldown")]
-        [Tooltip("Duração do cooldown da habilidade Extinção da Alma")]
+        [Tooltip("Duração do cooldown da habilidade Aniquilar")]
         public float CooldownDuration = 30f; // Ajuste conforme necessário
 
         [Header("Feedbacks MMF Player")]
-        [Tooltip("Feedback ao iniciar o carregamento da Extinção da Alma")]
+        [Tooltip("Feedback ao iniciar o carregamento da Aniquilar")]
         public MMF_Player ChargeFeedback;
 
-        [Tooltip("Feedback ao aplicar o efeito da Extinção da Alma")]
+        [Tooltip("Feedback ao aplicar o efeito da Aniquilar")]
         public MMF_Player EffectFeedback;
 
-        [Tooltip("Feedback ao completar a habilidade da Extinção da Alma")]
+        [Tooltip("Feedback ao completar a habilidade da Aniquilar")]
         public MMF_Player AbilityCompleteFeedback;
 
         private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
@@ -55,9 +51,6 @@ namespace MoreMountains.CorgiEngine
         private GameObject _announcementInstance;
         private GameObject _areaEffectInstance;
 
-        [Header("Referências")]
-        [Tooltip("Referência ao componente Impacto Espiritual para resetar plataformas ativadas")]
-        public ImpactoEspiritual impactoEspiritual; // Referência ao Impacto Espiritual
 
         /// <summary>
         /// Propriedade que indica se a habilidade está permitida (herdada de CharacterAbility)
@@ -73,7 +66,7 @@ namespace MoreMountains.CorgiEngine
         public event System.Action OnAbilityCompleted;
 
         /// <summary>
-        /// Método público para ativar a habilidade Extinção da Alma
+        /// Método público para ativar a habilidade Aniquilar
         /// </summary>
         public void ActivateAbility()
         {
@@ -82,34 +75,25 @@ namespace MoreMountains.CorgiEngine
                 if (Time.time >= _lastActivationTime + CooldownDuration)
                 {
                     _lastActivationTime = Time.time;
-                    StartCoroutine(ExtincaoDaAlmaRoutine());
-                    if (impactoEspiritual != null)
-                    {
-                        impactoEspiritual.ResetarPlataformasAtivadas();
-                        impactoEspiritual.ResetarAlturaOnda();
-                    }
-                    else 
-                    {
-                        Debug.Log("Referência ao Impacto Espiritual não encontrada.");
-                    }
+                    StartCoroutine(AniquilarRoutine());
                 }
                 else
                 {
                     // Opcional: Fornecer feedback indicando que a habilidade está em cooldown
                     float cooldownRemaining = (_lastActivationTime + CooldownDuration) - Time.time;
-                    Debug.Log($"Extinção da Alma está em cooldown. Tempo restante: {cooldownRemaining:F1} segundos.");
+                    Debug.Log($"Aniquilar está em cooldown. Tempo restante: {cooldownRemaining:F1} segundos.");
                 }
             }
         }
 
         /// <summary>
-        /// Coroutine que gerencia a execução da Extinção da Alma
+        /// Coroutine que gerencia a execução da Aniquilar
         /// </summary>
         /// <returns></returns>
-        protected virtual IEnumerator ExtincaoDaAlmaRoutine()
+        protected virtual IEnumerator AniquilarRoutine()
         {
             // Início do carregamento
-            Debug.Log("Uldrich começou a carregar Extinção da Alma.");
+            Debug.Log("Uldrich começou a carregar Aniquilar.");
 
             // Feedback ao iniciar o carregamento
             if (ChargeFeedback != null)
@@ -129,7 +113,7 @@ namespace MoreMountains.CorgiEngine
             yield return new WaitForSeconds(ChargeTime);
 
             // Fim do carregamento
-            Debug.Log("Extinção da Alma ativada!");
+            Debug.Log("Aniquilar ativada!");
 
             // Destrói o anúncio
             if (_announcementInstance != null)
@@ -142,9 +126,6 @@ namespace MoreMountains.CorgiEngine
             {
                 EffectFeedback.PlayFeedbacks();
             }
-
-            // Desativa as plataformas no mundo material
-            DesativarPlataformas();
 
             // Aplica dano às entidades na área de efeito
             ApplyDamageInArea();
@@ -175,21 +156,6 @@ namespace MoreMountains.CorgiEngine
         }
 
         /// <summary>
-        /// Desativa todas as plataformas listadas no mundo material
-        /// </summary>
-        protected virtual void DesativarPlataformas()
-        {
-            foreach (GameObject platform in MaterialWorldPlatforms)
-            {
-                if (platform != null)
-                {
-                    platform.SetActive(false);
-                    Debug.Log($"Plataforma {platform.name} foi desativada.");
-                }
-            }
-        }
-
-        /// <summary>
         /// Aplica dano às entidades na área de efeito
         /// </summary>
         protected virtual void ApplyDamageInArea()
@@ -214,7 +180,7 @@ namespace MoreMountains.CorgiEngine
                 {
                     // Aplica dano letal
                     healthComponent.Damage(Damage, gameObject, 0f, 0f, Vector3.zero);
-                    Debug.Log($"{hit.name} recebeu dano de Extinção da Alma.");
+                    Debug.Log($"{hit.name} recebeu dano de Aniquilar.");
                 }
             }
         }

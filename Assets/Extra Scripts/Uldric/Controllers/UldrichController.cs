@@ -23,17 +23,22 @@ public class UldrichController : MonoBehaviour
     private CharacterHorizontalMovement _horizontalMovement; // Referência à habilidade de movimento horizontal
     private Health _health;
     private GameObject _player; // Referência ao jogador
+    private BoxCollider2D _collider2D;
 
     private bool _isInvulnerable = true;
     private bool _playerInSpiritualWorld = false;
     private float _spiritualWorldTimer = 0f;
     private bool _potentializerDestroyed = false;
+    private bool _espiritosAtivados = false;
+    private bool _vidaRestaurada = false; // Flag para controle da restauração da vida
+    private bool _vulneravelNaFase3 = false;
     private int _spiritsDestroyed = 0;
     public float FlySpeed = 5f; // Velocidade de voo ajustável
     private CorgiController _controller; // Referência ao CorgiController
 
-    void Start()
+void Start()
     {
+        // Inicializações básicas
         _attackManager = GetComponent<UldrichAttackManager>();
         _phaseManager = GetComponent<UldrichPhaseManager>();
         _character = GetComponent<Character>();
@@ -43,13 +48,13 @@ public class UldrichController : MonoBehaviour
         if (EspiritosContainer != null)
         {
             EspiritosContainer.SetActive(false);
+            _espiritosAtivados = false;
         }
         else
         {
             Debug.LogWarning("EspiritosContainer não foi atribuído no inspetor!");
         }
 
-        // Instancia a barreira uma vez na inicialização, caso necessário
         if (BarrierVisual != null)
         {
             BarrierVisual.SetActive(false);
@@ -77,20 +82,18 @@ public class UldrichController : MonoBehaviour
             Debug.LogError("Health component not found on Uldrich!");
         }
 
-        // Encontrar o jogador
         _player = GameObject.FindGameObjectWithTag("Player");
         if (_player == null)
         {
             Debug.LogError("Player not found in the scene!");
         }
 
-        _controller = GetComponent<CorgiController>(); // Inicializa o CorgiController
+        _controller = GetComponent<CorgiController>();
         if (_controller == null)
         {
             Debug.LogError("CorgiController não encontrado no Uldrich!");
         }
 
-        // Verifica se a referência ao Potentializer está atribuída corretamente
         if (potentializer == null)
         {
             potentializer = FindObjectOfType<Potentializer>();
@@ -108,23 +111,20 @@ public class UldrichController : MonoBehaviour
 
     void Update()
     {
-        // Gerenciar movimentação baseada na fase
         HandleMovement();
 
-        // Gerenciar o tempo do jogador no mundo espiritual
-        if (_playerInSpiritualWorld)
+        if (_playerInSpiritualWorld && _phaseManager.CurrentPhase >= 2)
         {
             _spiritualWorldTimer += Time.deltaTime;
-            if (_spiritualWorldTimer >= MaxTimeInSpiritualWorld)
+            if (_spiritualWorldTimer >= MaxTimeInSpiritualWorld )
             {
-                // O jogador ficou muito tempo no mundo espiritual, Uldrich lança Extinção da Alma
                 CastExtincaoDaAlma();
-                _spiritualWorldTimer = 0f; // Reseta o temporizador
+                _spiritualWorldTimer = 0f;
             }
         }
         else
         {
-            _spiritualWorldTimer = 0f; // Reseta o temporizador se o jogador não estiver no mundo espiritual
+            _spiritualWorldTimer = 0f;
         }
     }
 
@@ -146,27 +146,74 @@ public class UldrichController : MonoBehaviour
             case 2:
                 if (_isInvulnerable)
                 {
-                    BecomeVulnerable(); // Garante que Uldric se torne vulnerável ao entrar na fase 2
+                    BecomeVulnerable(); // Garante que Uldrich se torne vulnerável ao entrar na fase 2
                 }
                 MoveAwayFromPlayer();
                 break;
 
             case 3:
-                if (_spiritsDestroyed < 2)
+                if (!_espiritosAtivados)
                 {
-                    // Espíritos não foram completamente destruídos
                     ActivateEspiritos();
-                    MoveAwayFromPlayer();
+                }
+
+                if (_spiritsDestroyed >= 2 && !_vulneravelNaFase3)
+                {
+                    BecomeVulnerable();
+                    RestoreHealth(); // Restaura a vida de Uldrich após todos os espíritos serem destruídos
+                    _vulneravelNaFase3 = true;
                 }
                 else
                 {
-                    // Todos os espíritos foram destruídos
-                    BecomeVulnerable();
-                    _character.MovementState.ChangeState(CharacterStates.MovementStates.Idle);
+                    FlyToPoint(new Vector2(-38, -4));
                 }
+                MoveAwayFromPlayer();
                 break;
         }
     }
+
+private void RestoreHealth()
+{
+    if (_health != null && !_vidaRestaurada)
+    {
+        Debug.Log("Restaurando saúde de Uldrich...");
+
+        // Restaura a saúde ao valor máximo
+        _health.SetHealth(1, gameObject);
+
+        // Remove qualquer invulnerabilidade existente
+        _health.Invulnerable = false;
+        _health.TemporarilyInvulnerable = false;
+        _health.PostDamageInvulnerable = false;
+        _health.ImmuneToDamage = false;
+
+        // Garante que o estado do Character é alterado de 'Dead' para 'Normal'
+        if (_character != null)
+        {
+            _character.ConditionState.ChangeState(CharacterStates.CharacterConditions.Normal);
+        }
+
+        // Revive o boss para garantir que ele possa ser atacado novamente
+        _health.Revive();
+
+        // Reativa colisões e física
+        if (_controller != null)
+        {
+            _controller.CollisionsOn();
+            _controller.GravityActive(true);
+            _controller.ResetParameters();
+        }
+
+        if (_collider2D != null)
+        {
+            _collider2D.enabled = true;
+        }
+
+        _vidaRestaurada = true; // Evita restaurações repetidas desnecessárias
+        Debug.Log($"Vida de Uldrich restaurada: {_health.CurrentHealth} / {_health.MaximumHealth}");
+    }
+}
+
 
 
     /// <summary>
@@ -210,46 +257,37 @@ public class UldrichController : MonoBehaviour
         _controller.SetVerticalForce(0);
     }
 
-private void MoveAwayFromPlayer()
-{
-    if (_player != null && _horizontalMovement != null)
+    private float _currentDirection = 1f; // 1 para direita, -1 para esquerda
+
+    private void MoveAwayFromPlayer()
     {
-        // Determina a direção oposta ao jogador
-        Vector2 direction = transform.position.x > _player.transform.position.x ? Vector2.right : Vector2.left;
-
-        // Define o comprimento do Raycast (ajuste conforme necessário)
-        float raycastDistance = 1.5f;
-
-        // Realiza o Raycast na direção atual para detectar obstáculos
-        RaycastHit2D hitInDirection = Physics2D.Raycast(transform.position, direction, raycastDistance, LayerMask.GetMask("Wall"));
-        RaycastHit2D hitOppositeDirection = Physics2D.Raycast(transform.position, -direction, raycastDistance, LayerMask.GetMask("Wall"));
-
-        if (hitInDirection.collider != null && hitInDirection.collider.CompareTag("Wall"))
+        if (_horizontalMovement != null)
         {
-            // Se houver uma parede na direção que o Boss está se movendo
-            if (hitOppositeDirection.collider == null)
+            // Comprimento do Raycast para detectar a parede
+            float raycastDistance = 1.5f;
+
+            // Direção atual do movimento (direita ou esquerda)
+            Vector2 direction = _currentDirection > 0 ? Vector2.right : Vector2.left;
+
+            // Raycast na direção atual para detectar obstáculos (como paredes)
+            RaycastHit2D hitInDirection = Physics2D.Raycast(transform.position, direction, raycastDistance, LayerMask.GetMask("Platforms"));
+
+            if (hitInDirection.collider != null && hitInDirection.collider.CompareTag("Platforms"))
             {
-                // Se não houver uma parede na direção oposta, mude para essa direção
-                direction = -direction;
+                // Se bater na parede, inverte a direção
+                _currentDirection = -_currentDirection;
                 Debug.Log("Parede detectada! Mudando de direção.");
             }
-            else
-            {
-                // Se ambas as direções estiverem bloqueadas, o Boss pode pular ou ficar parado
-                Debug.Log("Boss preso entre jogador e parede, decidindo nova ação...");
-                _character.MovementState.ChangeState(CharacterStates.MovementStates.Jumping);
-                _controller.SetVerticalForce(5f); // Ajuste a força do salto conforme necessário
-                return;
-            }
+
+            // Ajusta o movimento horizontal com base na direção atual
+            _horizontalMovement.SetHorizontalMove(_currentDirection);
+
+            // Configura o estado de movimento para "Walking"
+            _character.MovementState.ChangeState(CharacterStates.MovementStates.Walking);
         }
-
-        // Ajusta o movimento horizontal com base na direção final decidida
-        _horizontalMovement.SetHorizontalMove(direction.x);
-
-        // Configura o estado de movimento para Walking
-        _character.MovementState.ChangeState(CharacterStates.MovementStates.Walking);
     }
-}
+
+
 
 
     public void BecomeVulnerable()
@@ -285,8 +323,7 @@ private void MoveAwayFromPlayer()
             Health[] spiritsHealth = EspiritosContainer.GetComponentsInChildren<Health>(true);
             foreach (Health spiritHealth in spiritsHealth)
             {
-                // Verifica se já está inscrito para evitar múltiplas inscrições
-                spiritHealth.OnDeath -= OnSpiritDeath; 
+                spiritHealth.OnDeath -= OnSpiritDeath; // Evita múltiplas inscrições
                 spiritHealth.OnDeath += OnSpiritDeath;
             }
         }
@@ -302,6 +339,13 @@ private void MoveAwayFromPlayer()
         _spiritsDestroyed++;
         Debug.Log($"Espírito destruído. Total destruído: {_spiritsDestroyed}");
 
+        if (_spiritsDestroyed >= 2 && !_vulneravelNaFase3)
+        {
+            // Se todos os espíritos foram destruídos, Uldrich deve tornar-se vulnerável e restaurar sua vida
+            BecomeVulnerable();
+            RestoreHealth();
+            _vulneravelNaFase3 = true;
+        }
     }
     
     private void ActivateEspiritos()
@@ -309,8 +353,9 @@ private void MoveAwayFromPlayer()
         if (EspiritosContainer != null && !EspiritosContainer.activeSelf)
         {
             EspiritosContainer.SetActive(true);
+            _espiritosAtivados = true;
             Debug.Log("Espíritos ativados.");
-            SubscribeToSpiritsHealth(); // Se inscreve no evento de morte dos espíritos quando eles são ativados
+            SubscribeToSpiritsHealth();
         }
         else
         {

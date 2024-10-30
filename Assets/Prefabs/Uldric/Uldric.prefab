@@ -646,7 +646,6 @@ GameObject:
   - component: {fileID: 2273133977430447590}
   - component: {fileID: 7845907553200792894}
   - component: {fileID: 7531728180596496883}
-  - component: {fileID: 7153591468184248138}
   - component: {fileID: 2425755284459669779}
   - component: {fileID: 7845874440689348261}
   - component: {fileID: 8961593856146002664}
@@ -994,6 +993,7 @@ MonoBehaviour:
     type: 3}
   MeteoroPrefab: {fileID: 4359354768554291090, guid: 74b7101f46afa014185badaa07824bc6,
     type: 3}
+  GroundIndicatorPrefab: {fileID: 0}
   NumberOfLines: 10
   LineSpacing: 3
   LineVerticalOffset: 13.9
@@ -1004,6 +1004,8 @@ MonoBehaviour:
   DirectionAngle: 280
   meteorSpawnArea: {fileID: 0}
   CooldownDuration: 15
+  LineSpawnFeedback: {fileID: 0}
+  MeteoroImpactFeedback: {fileID: 0}
 --- !u!114 &103545241967133297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1031,6 +1033,9 @@ MonoBehaviour:
   Damage: 1
   CeifarArea: {fileID: 0}
   CooldownDuration: 5
+  CastFeedback: {fileID: 0}
+  AttackFeedback: {fileID: 0}
+  WarningFeedback: {fileID: 0}
 --- !u!114 &2273133977430447590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1058,6 +1063,9 @@ MonoBehaviour:
   WhispSpeed: 10
   simpleObjectPooler: {fileID: 0}
   CooldownDuration: 5
+  CastFeedback: {fileID: 0}
+  WhispSpawnFeedback: {fileID: 0}
+  AbilityCompleteFeedback: {fileID: 0}
 --- !u!114 &7845907553200792894
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1087,6 +1095,9 @@ MonoBehaviour:
   LeftSpawnPoint: {fileID: 0}
   RightSpawnPoint: {fileID: 0}
   CooldownDuration: 10
+  CastFeedback: {fileID: 0}
+  WhispSpawnFeedback: {fileID: 0}
+  AbilityCompleteFeedback: {fileID: 0}
 --- !u!114 &7531728180596496883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1117,34 +1128,10 @@ MonoBehaviour:
   AreaEffectPrefab: {fileID: 2863113622798928858, guid: dc68fd5bceccc3c41b664794951b0871,
     type: 3}
   CooldownDuration: 30
---- !u!114 &7153591468184248138
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9136194739456994727}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e95d46d0f3775e43860c0a680beb806, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AbilityStartFeedbacks: {fileID: 0}
-  AbilityStopFeedbacks: {fileID: 0}
-  AbilityPermitted: 1
-  BlockingMovementStates: 
-  BlockingConditionStates: 
-  BlockingWeaponStates: 
-  ChargeTime: 5
-  EffectArea: {fileID: 0}
-  TargetLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  Damage: 9999
-  MaterialWorldPlatforms: []
-  AnnouncementPrefab: {fileID: 0}
-  AreaEffectPrefab: {fileID: 0}
-  CooldownDuration: 30
+  ChargeFeedback: {fileID: 0}
+  EffectFeedback: {fileID: 0}
+  AbilityCompleteFeedback: {fileID: 0}
+  impactoEspiritual: {fileID: 0}
 --- !u!114 &2425755284459669779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1174,6 +1161,9 @@ MonoBehaviour:
   VerticalSpacing: 1.2
   WallSpawnPoint: {fileID: 0}
   CooldownDuration: 15
+  AbilityStartFeedback: {fileID: 0}
+  WallSpawnFeedback: {fileID: 0}
+  AbilityCompleteFeedback: {fileID: 0}
 --- !u!114 &7845874440689348261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1196,7 +1186,6 @@ MonoBehaviour:
     type: 3}
   ExplosionPrefab: {fileID: 8174013188879732332, guid: 4576a5fa1851dff4ebe7413a18d0b9de,
     type: 3}
-  SpawnArea: {fileID: 0}
   TotalCrosshairs: 6
   MaxActiveCrosshairs: 3
   CrosshairSpawnDelay: 0.5
@@ -1208,6 +1197,11 @@ MonoBehaviour:
   CrosshairPooler: {fileID: 0}
   ExplosionPooler: {fileID: 0}
   CooldownDuration: 10
+  AbilityStartFeedback: {fileID: 0}
+  CrosshairSpawnFeedback: {fileID: 0}
+  ExplosionFeedback: {fileID: 0}
+  AbilityCompleteFeedback: {fileID: 0}
+  PlayerReference: {fileID: 0}
 --- !u!114 &8961593856146002664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1235,6 +1229,9 @@ MonoBehaviour:
   PortalPrefab: {fileID: 2978328330637778234, guid: ed049f7e29434f94ebcebe58028740cc,
     type: 3}
   CooldownDuration: 15
+  AbilityStartFeedback: {fileID: 0}
+  CrystalSpawnFeedback: {fileID: 0}
+  AbilityCompleteFeedback: {fileID: 0}
 --- !u!114 &5607485170784725716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1263,8 +1260,13 @@ MonoBehaviour:
   AlturaInicialOnda: 2
   IncrementoAlturaOnda: 1
   Plataformas: []
-  FaseAtual: 1
   CooldownDuration: 10
+  AbilityStartFeedback: {fileID: 0}
+  MeteoroSpawnFeedback: {fileID: 0}
+  MeteoroImpactFeedback: {fileID: 0}
+  OndaDeChoqueFeedback: {fileID: 0}
+  PlataformasAtivadasFeedback: {fileID: 0}
+  _phaseManager: {fileID: 0}
 --- !u!114 &359029010216608798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1281,7 +1283,8 @@ MonoBehaviour:
   Ceifar: {fileID: 103545241967133297}
   FuriaDoFogoFatuo: {fileID: 2273133977430447590}
   ImpactoEspiritual: {fileID: 5607485170784725716}
-  Aniquilar: {fileID: 7153591468184248138}
+  TempestadeDeFogoFatuo: {fileID: 0}
+  Aniquilar: {fileID: 0}
   OndaDeChamas: {fileID: 2425755284459669779}
   ConsumirVida: {fileID: 7845874440689348261}
   EspiritoCristalizado: {fileID: 8961593856146002664}
@@ -1314,8 +1317,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BarrierVisual: {fileID: 4311230529403043525, guid: 7f8cd1283fd133743a79848593d878ac,
     type: 3}
-  VulnerableDuration: 7
+  potentializer: {fileID: 0}
   MaxTimeInSpiritualWorld: 10
+  EspiritosContainer: {fileID: 0}
   FlySpeed: 5
 --- !u!114 &8311007592423710701
 MonoBehaviour:

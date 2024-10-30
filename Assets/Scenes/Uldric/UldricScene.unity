@@ -1390,6 +1390,11 @@ PrefabInstance:
       objectReference: {fileID: 1705597933}
     - target: {fileID: 359029010216608798, guid: a6d340c6298297d4c8a9e4d80e59ad58,
         type: 3}
+      propertyPath: Aniquilar
+      value: 
+      objectReference: {fileID: 1705387614}
+    - target: {fileID: 359029010216608798, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
@@ -1652,7 +1657,7 @@ PrefabInstance:
         type: 3}
       propertyPath: LineSpawnFeedback
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1713324664}
     - target: {fileID: 6765233654578411102, guid: a6d340c6298297d4c8a9e4d80e59ad58,
         type: 3}
       propertyPath: LineVerticalOffset
@@ -1710,6 +1715,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
         type: 3}
+      propertyPath: ChargeTime
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
       propertyPath: EffectArea
       value: 
       objectReference: {fileID: 1808849789}
@@ -1723,6 +1733,11 @@ PrefabInstance:
       propertyPath: EffectFeedback
       value: 
       objectReference: {fileID: 1190603214}
+    - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: impactoEspiritual
+      value: 
+      objectReference: {fileID: 1705387599}
     - target: {fileID: 7531728180596496883, guid: a6d340c6298297d4c8a9e4d80e59ad58,
         type: 3}
       propertyPath: TargetLayers.m_Bits
@@ -1897,7 +1912,11 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1604163193}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 9136194739456994727, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      insertIndex: 12
+      addedObject: {fileID: 1705387614}
   m_SourcePrefab: {fileID: 100100000, guid: a6d340c6298297d4c8a9e4d80e59ad58, type: 3}
 --- !u!1 &231564688
 GameObject:
@@ -2911,7 +2930,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 228387933}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 703008222}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e144f5723e0d16419eae3c17e978130, type: 3}
@@ -3018,6 +3037,100 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &472894519 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6852655139165906392, guid: 8856090f63d436146b4def78c811574f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1490028969}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &472894523
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472894519}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.0015549436, y: 0.0054415986}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.16, y: 0.16}
+    newSize: {x: 1.5, y: 1.5}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.08537166, y: 0.1491168}
+  m_EdgeRadius: 0
+--- !u!114 &472894524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472894519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9716d97790a0a49889284ee813194576, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentHealth: 0
+  TemporarilyInvulnerable: 0
+  PostDamageInvulnerable: 0
+  InitialHealth: 10
+  MaximumHealth: 10
+  Invulnerable: 0
+  ImmuneToDamage: 0
+  DamageFeedbacks: {fileID: 0}
+  FeedbackIsProportionalToDamage: 0
+  FlickerSpriteOnHit: 1
+  FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
+  ImmuneToKnockback: 0
+  ImmuneToKnockbackIfZeroDamage: 0
+  DeathFeedbacks: {fileID: 0}
+  DestroyOnDeath: 1
+  DelayBeforeDestruction: 0
+  CollisionsOffOnDeath: 1
+  GravityOffOnDeath: 0
+  PointsWhenDestroyed: 0
+  RespawnAtInitialLocation: 0
+  ApplyDeathForce: 1
+  DeathForce: {x: 0, y: 10}
+  ResetForcesOnDeath: 0
+  ResetColorOnRevive: 1
+  ColorMaterialPropertyName: _Color
+  UseMaterialPropertyBlocks: 0
+  AssociatedCharacter: {fileID: 0}
+  MasterHealth: {fileID: 0}
+  OnlyDamageMaster: 1
+  KillOnMasterHealthDeath: 0
+  TargetDamageResistanceProcessor: {fileID: 0}
 --- !u!1 &488289965
 GameObject:
   m_ObjectHideFlags: 0
@@ -4092,6 +4205,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 695031445}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &703008222 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9136194739456994727, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+    type: 3}
+  m_PrefabInstance: {fileID: 228387933}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &756410311 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114219179259142264, guid: f91453c231f84424c82503a75cd03e08,
@@ -4186,7 +4305,7 @@ GameObject:
   - component: {fileID: 805399046}
   m_Layer: 8
   m_Name: walls
-  m_TagString: Ground
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31609,100 +31728,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ed049f7e29434f94ebcebe58028740cc, type: 3}
---- !u!1 &1089342563 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4478137195021871172, guid: 8856090f63d436146b4def78c811574f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1490028969}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1089342565
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1089342563}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9716d97790a0a49889284ee813194576, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CurrentHealth: 0
-  TemporarilyInvulnerable: 0
-  PostDamageInvulnerable: 0
-  InitialHealth: 1
-  MaximumHealth: 1
-  Invulnerable: 0
-  ImmuneToDamage: 0
-  DamageFeedbacks: {fileID: 0}
-  FeedbackIsProportionalToDamage: 0
-  FlickerSpriteOnHit: 1
-  FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
-  ImmuneToKnockback: 0
-  ImmuneToKnockbackIfZeroDamage: 0
-  DeathFeedbacks: {fileID: 0}
-  DestroyOnDeath: 1
-  DelayBeforeDestruction: 0
-  CollisionsOffOnDeath: 1
-  GravityOffOnDeath: 0
-  PointsWhenDestroyed: 0
-  RespawnAtInitialLocation: 0
-  ApplyDeathForce: 1
-  DeathForce: {x: 0, y: 10}
-  ResetForcesOnDeath: 0
-  ResetColorOnRevive: 1
-  ColorMaterialPropertyName: _Color
-  UseMaterialPropertyBlocks: 0
-  AssociatedCharacter: {fileID: 0}
-  MasterHealth: {fileID: 0}
-  OnlyDamageMaster: 1
-  KillOnMasterHealthDeath: 0
-  TargetDamageResistanceProcessor: {fileID: 0}
---- !u!61 &1089342567
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1089342563}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.047383785}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.51262665, y: 0.9052324}
-  m_EdgeRadius: 0
 --- !u!1 &1113472661
 GameObject:
   m_ObjectHideFlags: 0
@@ -32389,100 +32414,6 @@ MonoBehaviour:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
---- !u!1 &1162078990 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4007303137112964679, guid: 8856090f63d436146b4def78c811574f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1490028969}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1162078992
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1162078990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9716d97790a0a49889284ee813194576, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CurrentHealth: 0
-  TemporarilyInvulnerable: 0
-  PostDamageInvulnerable: 0
-  InitialHealth: 1
-  MaximumHealth: 1
-  Invulnerable: 0
-  ImmuneToDamage: 0
-  DamageFeedbacks: {fileID: 0}
-  FeedbackIsProportionalToDamage: 0
-  FlickerSpriteOnHit: 1
-  FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
-  ImmuneToKnockback: 0
-  ImmuneToKnockbackIfZeroDamage: 0
-  DeathFeedbacks: {fileID: 0}
-  DestroyOnDeath: 1
-  DelayBeforeDestruction: 0
-  CollisionsOffOnDeath: 1
-  GravityOffOnDeath: 0
-  PointsWhenDestroyed: 0
-  RespawnAtInitialLocation: 0
-  ApplyDeathForce: 1
-  DeathForce: {x: 0, y: 10}
-  ResetForcesOnDeath: 0
-  ResetColorOnRevive: 1
-  ColorMaterialPropertyName: _Color
-  UseMaterialPropertyBlocks: 0
-  AssociatedCharacter: {fileID: 0}
-  MasterHealth: {fileID: 0}
-  OnlyDamageMaster: 1
-  KillOnMasterHealthDeath: 0
-  TargetDamageResistanceProcessor: {fileID: 0}
---- !u!61 &1162078994
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1162078990}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.027076244}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.53969955, y: 0.9458475}
-  m_EdgeRadius: 0
 --- !u!1 &1165372992
 GameObject:
   m_ObjectHideFlags: 0
@@ -34693,22 +34624,22 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4478137195021871172, guid: 8856090f63d436146b4def78c811574f,
+    - targetCorrespondingSourceObject: {fileID: 6852655139165906392, guid: 8856090f63d436146b4def78c811574f,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1089342565}
-    - targetCorrespondingSourceObject: {fileID: 4478137195021871172, guid: 8856090f63d436146b4def78c811574f,
+      addedObject: {fileID: 472894524}
+    - targetCorrespondingSourceObject: {fileID: 6852655139165906392, guid: 8856090f63d436146b4def78c811574f,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1089342567}
-    - targetCorrespondingSourceObject: {fileID: 4007303137112964679, guid: 8856090f63d436146b4def78c811574f,
+      addedObject: {fileID: 472894523}
+    - targetCorrespondingSourceObject: {fileID: 8731854473514606253, guid: 8856090f63d436146b4def78c811574f,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1162078992}
-    - targetCorrespondingSourceObject: {fileID: 4007303137112964679, guid: 8856090f63d436146b4def78c811574f,
+      addedObject: {fileID: 1610953356}
+    - targetCorrespondingSourceObject: {fileID: 8731854473514606253, guid: 8856090f63d436146b4def78c811574f,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1162078994}
+      addedObject: {fileID: 1610953355}
   m_SourcePrefab: {fileID: 100100000, guid: 8856090f63d436146b4def78c811574f, type: 3}
 --- !u!1 &1503891436
 GameObject:
@@ -35786,6 +35717,100 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 797375285}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1610953351 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8731854473514606253, guid: 8856090f63d436146b4def78c811574f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1490028969}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &1610953355
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1610953351}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.0015548505, y: 0.003886871}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.16, y: 0.16}
+    newSize: {x: 1.5, y: 1.5}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.08226205, y: 0.15222625}
+  m_EdgeRadius: 0
+--- !u!114 &1610953356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1610953351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9716d97790a0a49889284ee813194576, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentHealth: 0
+  TemporarilyInvulnerable: 0
+  PostDamageInvulnerable: 0
+  InitialHealth: 10
+  MaximumHealth: 10
+  Invulnerable: 0
+  ImmuneToDamage: 0
+  DamageFeedbacks: {fileID: 0}
+  FeedbackIsProportionalToDamage: 0
+  FlickerSpriteOnHit: 1
+  FlickerColor: {r: 1, g: 0.078431375, b: 0.078431375, a: 1}
+  ImmuneToKnockback: 0
+  ImmuneToKnockbackIfZeroDamage: 0
+  DeathFeedbacks: {fileID: 0}
+  DestroyOnDeath: 1
+  DelayBeforeDestruction: 0
+  CollisionsOffOnDeath: 1
+  GravityOffOnDeath: 0
+  PointsWhenDestroyed: 0
+  RespawnAtInitialLocation: 0
+  ApplyDeathForce: 1
+  DeathForce: {x: 0, y: 10}
+  ResetForcesOnDeath: 0
+  ResetColorOnRevive: 1
+  ColorMaterialPropertyName: _Color
+  UseMaterialPropertyBlocks: 0
+  AssociatedCharacter: {fileID: 0}
+  MasterHealth: {fileID: 0}
+  OnlyDamageMaster: 1
+  KillOnMasterHealthDeath: 0
+  TargetDamageResistanceProcessor: {fileID: 0}
 --- !u!1 &1622005817
 GameObject:
   m_ObjectHideFlags: 0
@@ -36084,7 +36109,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 228387933}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 703008222}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bb2bdc4e4010c0b488fdb0ce52262624, type: 3}
@@ -36096,7 +36121,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 228387933}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 703008222}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ba3178aafed5964b98484434299acf7, type: 3}
@@ -36108,6 +36133,48 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 228387933}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1705387599 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5607485170784725716, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+    type: 3}
+  m_PrefabInstance: {fileID: 228387933}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703008222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7781b2c8c6e09bd40ba4e0e1e78b2bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1705387614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703008222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d08cae1cba6b14f46b1d28f4abb23861, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AbilityStartFeedbacks: {fileID: 0}
+  AbilityStopFeedbacks: {fileID: 0}
+  AbilityPermitted: 1
+  BlockingMovementStates: 
+  BlockingConditionStates: 
+  BlockingWeaponStates: 
+  ChargeTime: 10
+  EffectArea: {fileID: 488289967}
+  TargetLayers:
+    serializedVersion: 2
+    m_Bits: 512
+  Damage: 9999
+  AnnouncementPrefab: {fileID: 0}
+  AreaEffectPrefab: {fileID: 0}
+  CooldownDuration: 30
+  ChargeFeedback: {fileID: 1048935618}
+  EffectFeedback: {fileID: 693609833}
+  AbilityCompleteFeedback: {fileID: 840419811}
 --- !u!1 &1705597931
 GameObject:
   m_ObjectHideFlags: 0
