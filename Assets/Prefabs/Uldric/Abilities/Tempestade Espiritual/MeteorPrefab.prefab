@@ -727,7 +727,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DropSpeed: 10
   Damage: 1
-  ExplosaoPrefab: {fileID: 100000, guid: 3cfe3f9255d7aa444ad3511f18f36a43, type: 3}
+  ExplosaoPrefab: {fileID: 1674568081200525790, guid: ce39aad4d3c9cd04d8e92fe068dec3ec,
+    type: 3}
   CastFeedback: {fileID: 2732246488811251243}
   ExplodeFeedback: {fileID: 9202719605032688126}
 --- !u!95 &1150196954353864346
