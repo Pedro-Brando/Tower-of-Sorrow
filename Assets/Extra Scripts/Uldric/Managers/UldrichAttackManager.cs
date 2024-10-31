@@ -35,6 +35,7 @@ public class UldrichAttackManager : MonoBehaviour
     private int _impactoEspiritualCastCount = 0; // Contador para quantas vezes Impacto Espiritual foi lançado
     private bool _extincaoDaAlmaUsed = false; // Controle se Extinção da Alma foi usado
 
+
     void Awake()
     {
         _phaseManager = GetComponent<UldrichPhaseManager>();
@@ -128,9 +129,9 @@ public class UldrichAttackManager : MonoBehaviour
                 }
 
                 // Extincao Da Alma só deve ser adicionada após o Impacto Espiritual ter sido usado três vezes
-                if (_impactoEspiritualCastCount >= 3 && !_extincaoDaAlmaUsed)
+                if (_impactoEspiritualCastCount >= 3 && !_aniquilarUsed)
                 {
-                    _availableAbilities.Add(ExtincaoDaAlma);
+                    _availableAbilities.Add(Aniquilar);
                 }
 
                 break;
@@ -140,7 +141,6 @@ public class UldrichAttackManager : MonoBehaviour
                 _availableAbilities.Add(Ceifar);
                 _availableAbilities.Add(FuriaDoFogoFatuo);
                 _availableAbilities.Add(OndaDeChamas);
-                _availableAbilities.Add(Aniquilar);
                 break;
 
             case 3:
@@ -193,6 +193,15 @@ public class UldrichAttackManager : MonoBehaviour
     public void UseExtincaoDaAlma()
     {
         if (ExtincaoDaAlma != null && ExtincaoDaAlma.AbilityPermitted && ExtincaoDaAlma.CooldownReady && !_abilityInExecution)
+        {
+            UseAbility(ExtincaoDaAlma);
+        }
+
+    }
+
+    public void ForceCastExtincaoDaAlma()
+    {
+        if (ExtincaoDaAlma != null)
         {
             UseAbility(ExtincaoDaAlma);
         }

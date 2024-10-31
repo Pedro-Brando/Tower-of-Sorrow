@@ -54,6 +54,7 @@ namespace MoreMountains.CorgiEngine
 
         private GameObject _announcementInstance;
         private GameObject _areaEffectInstance;
+        public UldrichController uldricController;
 
         [Header("Referências")]
         [Tooltip("Referência ao componente Impacto Espiritual para resetar plataformas ativadas")]
@@ -163,6 +164,7 @@ namespace MoreMountains.CorgiEngine
             if (AbilityCompleteFeedback != null)
             {
                 AbilityCompleteFeedback.PlayFeedbacks();
+                uldricController.DesativarPortais();
             }
 
             // Limpeza adicional, se necessário

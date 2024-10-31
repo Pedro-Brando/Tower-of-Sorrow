@@ -32,6 +32,14 @@ public class Potentializer : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ground") || collision.CompareTag("Wall"))
+        {
+            return;
+        }
+    }
+
     private void OnDeath()
     {
         Debug.Log("Potentializer morreu.");

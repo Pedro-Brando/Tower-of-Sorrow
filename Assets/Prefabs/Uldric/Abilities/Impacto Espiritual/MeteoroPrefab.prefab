@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 7227130821458840056}
   - component: {fileID: 140169091328883921}
   - component: {fileID: 8425928853229152424}
-  - component: {fileID: 5696429435847277028}
   - component: {fileID: -6216867648829566485}
+  - component: {fileID: 1924962412031040283}
   m_Layer: 0
   m_Name: MeteoroPrefab
   m_TagString: Untagged
@@ -77,8 +77,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -8183379544815909166, guid: 678058abcbfe36f42902c11d9e5f64fc,
-    type: 3}
+  m_Sprite: {fileID: 21300000, guid: cba3881bb8b07b84dbd3df3e5fe9d121, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -99,7 +98,7 @@ Animator:
   m_GameObject: {fileID: 5566399479474091705}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d1286181c9c210a4ebca93a5a37882a8, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -137,8 +136,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &5696429435847277028
-BoxCollider2D:
+--- !u!114 &-6216867648829566485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5566399479474091705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c9709945fa4d745ba929bd8478f31c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VelocidadeQueda: 5
+  Dano: 1
+  GroundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+--- !u!70 &1924962412031040283
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -169,33 +185,6 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.8, y: 0.8}
-    newSize: {x: 1.35, y: 0.77}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.74, y: 0.82}
-  m_EdgeRadius: 0
---- !u!114 &-6216867648829566485
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5566399479474091705}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84c9709945fa4d745ba929bd8478f31c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  VelocidadeQueda: 5
-  Dano: 1
-  GroundLayer:
-    serializedVersion: 2
-    m_Bits: 256
+  m_Offset: {x: 0.0012151719, y: -0.017012596}
+  m_Size: {x: 0.34592554, y: 0.5087601}
+  m_Direction: 0

@@ -87,7 +87,7 @@ namespace MoreMountains.CorgiEngine
                 // Explodir e retornar ao pool
                 Explodir();
             }
-            else if (collision.CompareTag("Ground"))
+            else if (collision.CompareTag("Ground") || collision.CompareTag("Wall"))
             {
                 // Explodir e retornar ao pool
                 Explodir();

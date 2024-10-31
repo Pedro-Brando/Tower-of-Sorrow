@@ -934,7 +934,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FloatTime: 5
-  PortalPrefab: {fileID: 0}
+  PortalPrefab: {fileID: 2978328330637778234, guid: d76674c3163e753419ab6c88be7e2231,
+    type: 3}
   FloatStartFeedback: {fileID: 3701081824510258456}
   FallStartFeedback: {fileID: 8573802711720549946}
   LandingFeedback: {fileID: 8899816864362788218}

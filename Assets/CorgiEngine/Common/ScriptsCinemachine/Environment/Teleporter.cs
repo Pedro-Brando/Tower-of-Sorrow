@@ -12,6 +12,10 @@ namespace MoreMountains.CorgiEngine
 	/// </summary>
 	public class Teleporter : ButtonActivated 
 	{
+
+		public enum PostTeleportAction { None, Deactivate, Destroy }
+		[Tooltip("Ação a ser tomada após o portal ser usado (Nenhuma, Desativar, Destruir)")]
+		public PostTeleportAction postTeleportAction = PostTeleportAction.None;
 		/// the possible modes the teleporter can interact with the camera system on activation, either doing nothing, teleporting the camera to a new position, or blending between Cinemachine virtual cameras
 		public enum CameraModes { DoNothing, TeleportCamera, CinemachinePriority }
 		/// the possible teleportation modes (either 1-frame instant teleportation, or tween between this teleporter and its destination)
@@ -495,6 +499,22 @@ namespace MoreMountains.CorgiEngine
 			}
 
 			SequenceEndFeedback?.PlayFeedbacks();
+
+			    // Ação após o uso do portal
+			switch (postTeleportAction)
+			{
+				case PostTeleportAction.Deactivate:
+					this.gameObject.SetActive(false);
+					Debug.Log("Teleporter: Portal desativado após uso.");
+					break;
+				case PostTeleportAction.Destroy:
+					Destroy(this.gameObject);
+					Debug.Log("Teleporter: Portal destruído após uso.");
+					break;
+				case PostTeleportAction.None:
+					// Nenhuma ação extra
+					break;
+			}
 		}
 
 		/// <summary>

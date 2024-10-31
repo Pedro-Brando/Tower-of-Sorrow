@@ -141,7 +141,7 @@ public class CristalController : MonoBehaviour
         // Instancia o portal
         if (PortalPrefab != null)
         {
-            Instantiate(PortalPrefab, transform.position, Quaternion.identity);
+            PortalPrefab.SetActive(true);
             Debug.Log("CristalController: Portal instanciado na posição do cristal.");
         }
         else
