@@ -125,7 +125,6 @@ public class EspiritoCristalizado : CharacterAbility, IUldrichAbility
         if (cristalController != null)
         {
             cristalController.FloatTime = FloatTime;
-            cristalController.PortalPrefab = PortalPrefab;
             Debug.Log("EspiritoCristalizado: Parâmetros do cristal configurados.");
         }
         else

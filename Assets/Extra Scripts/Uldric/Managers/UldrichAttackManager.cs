@@ -129,7 +129,7 @@ public class UldrichAttackManager : MonoBehaviour
                 }
 
                 // Extincao Da Alma só deve ser adicionada após o Impacto Espiritual ter sido usado três vezes
-                if (_impactoEspiritualCastCount >= 3 && !_aniquilarUsed)
+                if (_impactoEspiritualCastCount >= 3 && !_aniquilarUsed && _controller._playerInSpiritualWorld)
                 {
                     _availableAbilities.Add(Aniquilar);
                 }
@@ -149,10 +149,11 @@ public class UldrichAttackManager : MonoBehaviour
                 _availableAbilities.Add(FuriaDoFogoFatuo);
                 _availableAbilities.Add(OndaDeChamas);
                 _availableAbilities.Add(ConsumirVida);
-                _availableAbilities.Add(EspiritoCristalizado);
                 break;
         }
     }
+
+    private bool _espiritoCristalizadoUsed;
 
     public void PerformAttack()
     {
@@ -161,6 +162,20 @@ public class UldrichAttackManager : MonoBehaviour
         {
             UseAbility(ImpactoEspiritual);
             _impactoEspiritualNextTime = Time.time + _impactoEspiritualInterval; // Agendar o próximo uso
+            return;
+        }
+
+        if (_impactoEspiritualCastCount == 3)
+        {
+            _controller.AtivarPortais();
+            _impactoEspiritualCastCount = 0;
+        }
+
+        // Habilidade Espirito Cristalizado na fase 3 após 30s, apenas uma vez
+        if (_phaseManager.CurrentPhase == 3 && Time.time >= _phaseManager.PhaseStartTime + 30f && !_espiritoCristalizadoUsed)
+        {
+            UseAbility(EspiritoCristalizado);
+            _espiritoCristalizadoUsed = true;
             return;
         }
 
@@ -203,7 +218,7 @@ public class UldrichAttackManager : MonoBehaviour
     {
         if (ExtincaoDaAlma != null)
         {
-            UseAbility(ExtincaoDaAlma);
+            ExtincaoDaAlma.ActivateAbility();
         }
     }
 

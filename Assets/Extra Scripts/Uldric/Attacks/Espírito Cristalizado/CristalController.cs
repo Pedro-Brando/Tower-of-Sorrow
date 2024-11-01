@@ -10,9 +10,6 @@ public class CristalController : MonoBehaviour
     [Tooltip("Tempo que o cristal fica flutuando antes de cair")]
     public float FloatTime = 2f;
 
-    [Tooltip("Prefab do portal a ser instanciado quando o cristal for destruído")]
-    public GameObject PortalPrefab;
-
     [Header("Feedbacks MMF Player")]
     [Tooltip("Feedback ao iniciar a flutuação do cristal")]
     public MMF_Player FloatStartFeedback;
@@ -30,6 +27,9 @@ public class CristalController : MonoBehaviour
     private Health _healthComponent;
     private bool _hasLanded = false;
     public float Damage = 1f;
+
+    // Defina as coordenadas de teletransporte
+    [SerializeField] private Vector3 teleportDestination;
 
     void Start()
     {
@@ -128,6 +128,7 @@ public class CristalController : MonoBehaviour
         // Opcional: você pode adicionar lógica aqui se quiser que o cristal faça algo ao aterrissar
     }
 
+
     private void OnDeath()
     {
         Debug.Log("CristalController: OnDeath() chamado. Cristal será destruído.");
@@ -138,21 +139,24 @@ public class CristalController : MonoBehaviour
             DeathFeedback.PlayFeedbacks();
         }
 
-        // Instancia o portal
-        if (PortalPrefab != null)
+        // Encontra o player na cena usando a tag "Player"
+        GameObject playerObject = GameObject.FindWithTag("Player");
+        if (playerObject != null)
         {
-            PortalPrefab.SetActive(true);
-            Debug.Log("CristalController: Portal instanciado na posição do cristal.");
+            Transform playerTransform = playerObject.transform;
+            playerTransform.position = teleportDestination;
+            Debug.Log($"Player teleportado para {teleportDestination}.");
         }
         else
         {
-            Debug.LogWarning("CristalController: PortalPrefab não atribuído.");
+            Debug.LogWarning("Player não encontrado na cena!");
         }
 
         // Remove a assinatura do evento para evitar erros
         _healthComponent.OnDeath -= OnDeath;
         Debug.Log("CristalController: Evento OnDeath desassociado.");
     }
+
 
     private void OnDestroy()
     {

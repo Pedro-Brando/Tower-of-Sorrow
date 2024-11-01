@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 319332020184294523}
   - component: {fileID: 9123871598288553265}
   - component: {fileID: 3250329668875815227}
-  - component: {fileID: 5084540463585654790}
   - component: {fileID: -218816805959577447}
+  - component: {fileID: 3103337011295649189}
   m_Layer: 0
   m_Name: OndaDeChoquePrefab
   m_TagString: Untagged
@@ -136,7 +136,24 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &5084540463585654790
+--- !u!114 &-218816805959577447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4379885859578022535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b43c1e1e07fffbb47925db7eb2f9b476, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VelocidadeExpansao: 10
+  Dano: 1
+  PlayerLayer:
+    serializedVersion: 2
+    m_Bits: 512
+--- !u!61 &3103337011295649189
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,33 +185,16 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 1.9860761, y: -0.25477293}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 10.24, y: 10.24}
-    newSize: {x: 10.24, y: 10.24}
-    adaptiveTilingThreshold: 0.5
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2, y: 5.13}
+  m_Size: {x: 3.9722524, y: 0.5096459}
   m_EdgeRadius: 0
---- !u!114 &-218816805959577447
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4379885859578022535}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b43c1e1e07fffbb47925db7eb2f9b476, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  VelocidadeExpansao: 5
-  Dano: 1
-  PlayerLayer:
-    serializedVersion: 2
-    m_Bits: 512

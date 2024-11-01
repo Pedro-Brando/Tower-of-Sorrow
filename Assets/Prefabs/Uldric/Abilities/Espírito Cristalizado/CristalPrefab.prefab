@@ -934,13 +934,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FloatTime: 5
-  PortalPrefab: {fileID: 2978328330637778234, guid: d76674c3163e753419ab6c88be7e2231,
-    type: 3}
   FloatStartFeedback: {fileID: 3701081824510258456}
   FallStartFeedback: {fileID: 8573802711720549946}
   LandingFeedback: {fileID: 8899816864362788218}
   DeathFeedback: {fileID: 6419506594360958011}
   Damage: 1
+  teleportDestination: {x: 16, y: -9, z: 0}
 --- !u!61 &6512965883852964891
 BoxCollider2D:
   m_ObjectHideFlags: 0

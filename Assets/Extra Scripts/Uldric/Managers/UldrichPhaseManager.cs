@@ -13,14 +13,18 @@ public class UldrichPhaseManager : MonoBehaviour
     public float Phase2HealthThreshold = 70f; // Valor de exemplo
     public float Phase3HealthThreshold = 0f;  // Transição para a Fase 3 quando a saúde chega a 0
 
+    // Variável para armazenar o tempo de início da fase
+    private float _phaseStartTime;
+
+    // Propriedade para acessar o tempo de início da fase
+    public float PhaseStartTime => _phaseStartTime;
+
     void Awake()
     {
-        // Inicializa as referências necessárias
         _controller = GetComponent<UldrichController>();
         _attackManager = GetComponent<UldrichAttackManager>();
         _health = GetComponent<Health>();
 
-        // Verifica se os componentes foram encontrados
         if (_controller == null)
         {
             Debug.LogError("UldrichController component not found on Uldrich!");
@@ -37,7 +41,7 @@ public class UldrichPhaseManager : MonoBehaviour
 
     void Start()
     {
-        // Se necessário, outras inicializações podem ser feitas aqui
+        _phaseStartTime = Time.time; // Define o tempo de início da Fase 1
     }
 
     void Update()
@@ -49,6 +53,9 @@ public class UldrichPhaseManager : MonoBehaviour
     {
         CurrentPhase = phase;
 
+        // Registra o tempo de início da nova fase
+        _phaseStartTime = Time.time;
+
         if (_attackManager != null)
         {
             _attackManager.UpdateAvailableAbilities();
@@ -58,7 +65,7 @@ public class UldrichPhaseManager : MonoBehaviour
             Debug.LogError("_attackManager is null in UldrichPhaseManager.SetPhase()!");
         }
 
-        // Executa quaisquer configurações adicionais para a nova fase
+        // Configurações adicionais para cada fase
         switch (CurrentPhase)
         {
             case 1:

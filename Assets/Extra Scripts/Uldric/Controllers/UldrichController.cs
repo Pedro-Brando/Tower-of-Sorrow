@@ -15,7 +15,6 @@ public class UldrichController : MonoBehaviour
     [Header("Spiritual World Settings")]
     public float MaxTimeInSpiritualWorld = 10f; // Tempo máximo que o jogador pode ficar no mundo espiritual antes de Uldrich lançar Extinção da Alma
 
-
     [Header("Espírito Container")]
     [Tooltip("GameObject que contém todos os espíritos como filhos")]
     public GameObject EspiritosContainer; // Referência ao GameObject que contém todos os espíritos
@@ -31,7 +30,7 @@ public class UldrichController : MonoBehaviour
 
 
     private bool _isInvulnerable = true;
-    private bool _playerInSpiritualWorld = false;
+    public bool _playerInSpiritualWorld = false;
     private float _spiritualWorldTimer = 0f;
     private bool _potentializerDestroyed = false;
     private bool _espiritosAtivados = false;
@@ -152,7 +151,7 @@ public class UldrichController : MonoBehaviour
         UpdateAnimatorState();
         HandleMovement();
 
-        if (_playerInSpiritualWorld && _phaseManager.CurrentPhase >= 2)
+        if (_playerInSpiritualWorld && _phaseManager.CurrentPhase < 2)
         {
             _spiritualWorldTimer += Time.deltaTime;
             if (_spiritualWorldTimer >= MaxTimeInSpiritualWorld )
@@ -411,6 +410,8 @@ public class UldrichController : MonoBehaviour
         }
     }
 
+    // Defina as coordenadas de teletransporte
+    [SerializeField] private Vector3 teleportDestination;
 
     public void OnSpiritDeath()
     {
@@ -420,6 +421,20 @@ public class UldrichController : MonoBehaviour
         if (_spiritsDestroyed >= 2 && !_vulneravelNaFase3)
         {
             // Se todos os espíritos foram destruídos, Uldrich deve tornar-se vulnerável e restaurar sua vida
+
+            // Encontra o player na cena usando a tag "Player"
+            GameObject playerObject = GameObject.FindWithTag("Player");
+            if (playerObject != null)
+            {
+                Transform playerTransform = playerObject.transform;
+                playerTransform.position = teleportDestination;
+                Debug.Log($"Player teleportado para {teleportDestination}.");
+            }
+            else
+            {
+                Debug.LogWarning("Player não encontrado na cena!");
+            }
+
             BecomeVulnerable();
             RestoreHealth();
             _vulneravelNaFase3 = true;
@@ -517,6 +532,24 @@ public class UldrichController : MonoBehaviour
             {
                 portal.SetActive(false);
                 Debug.Log("Portal desativado: " + portal.name);
+            }
+        }
+    }
+
+        public void AtivarPortais()
+    {
+        if (Portais == null || Portais.Count == 0)
+        {
+            Debug.LogWarning("Nenhum portal foi atribuído no inspetor!");
+            return;
+        }
+
+        foreach (GameObject portal in Portais)
+        {
+            if (portal != null)
+            {
+                portal.SetActive(true);
+                Debug.Log("Portal ativado: " + portal.name);
             }
         }
     }
