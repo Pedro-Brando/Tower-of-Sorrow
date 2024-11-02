@@ -61,15 +61,6 @@ public class UldrichAttackManager : MonoBehaviour
             PerformAttack();
             _lastAttackTime = Time.time;
         }
-
-        // Controle de habilidades especiais por fase
-        if (_phaseManager != null)
-        {
-            if (_phaseManager.CurrentPhase == 2 && !_aniquilarUsed && !_abilityInExecution)
-            {
-                UseAniquilar();
-            }
-        }
     }
 
     public void UseAbility(IUldrichAbility ability)
@@ -128,12 +119,6 @@ public class UldrichAttackManager : MonoBehaviour
                     _availableAbilities.Add(ImpactoEspiritual);
                 }
 
-                // Extincao Da Alma só deve ser adicionada após o Impacto Espiritual ter sido usado três vezes
-                if (_impactoEspiritualCastCount >= 3 && !_aniquilarUsed && _controller._playerInSpiritualWorld)
-                {
-                    _availableAbilities.Add(Aniquilar);
-                }
-
                 break;
 
             case 2:
@@ -149,6 +134,8 @@ public class UldrichAttackManager : MonoBehaviour
                 _availableAbilities.Add(FuriaDoFogoFatuo);
                 _availableAbilities.Add(OndaDeChamas);
                 _availableAbilities.Add(ConsumirVida);
+                break;
+            case 4:
                 break;
         }
     }
@@ -168,7 +155,6 @@ public class UldrichAttackManager : MonoBehaviour
         if (_impactoEspiritualCastCount == 3)
         {
             _controller.AtivarPortais();
-            _impactoEspiritualCastCount = 0;
         }
 
         // Habilidade Espirito Cristalizado na fase 3 após 30s, apenas uma vez
@@ -195,14 +181,6 @@ public class UldrichAttackManager : MonoBehaviour
         }
     }
 
-    public void UseAniquilar()
-    {
-        if (Aniquilar != null && Aniquilar.AbilityPermitted && Aniquilar.CooldownReady && !_aniquilarUsed && !_abilityInExecution)
-        {
-            UseAbility(Aniquilar);
-            _aniquilarUsed = true;
-        }
-    }
 
 
     public void UseExtincaoDaAlma()
@@ -241,4 +219,22 @@ public class UldrichAttackManager : MonoBehaviour
 
         Debug.Log("Habilidade concluída. Pronto para a próxima ação.");
     }
+
+    public void UnsubscribeAllAbilities()
+    {
+        // Desinscrever eventos de conclusão de todas as habilidades
+        if (TempestadeEspiritual != null) TempestadeEspiritual.OnAbilityCompleted -= OnAbilityCompleted;
+        if (Ceifar != null) Ceifar.OnAbilityCompleted -= OnAbilityCompleted;
+        if (FuriaDoFogoFatuo != null) FuriaDoFogoFatuo.OnAbilityCompleted -= OnAbilityCompleted;
+        if (ImpactoEspiritual != null) ImpactoEspiritual.OnAbilityCompleted -= OnAbilityCompleted;
+        if (OndaDeChamas != null) OndaDeChamas.OnAbilityCompleted -= OnAbilityCompleted;
+        if (ConsumirVida != null) ConsumirVida.OnAbilityCompleted -= OnAbilityCompleted;
+        if (EspiritoCristalizado != null) EspiritoCristalizado.OnAbilityCompleted -= OnAbilityCompleted;
+        if (ExtincaoDaAlma != null) ExtincaoDaAlma.OnAbilityCompleted -= OnAbilityCompleted;
+        if (Aniquilar != null) Aniquilar.OnAbilityCompleted -= OnAbilityCompleted;
+        if (TempestadeDeFogoFatuo != null) TempestadeDeFogoFatuo.OnAbilityCompleted -= OnAbilityCompleted;
+
+        Debug.Log("Todos os eventos de habilidades foram desinscritos.");
+    }
+
 }

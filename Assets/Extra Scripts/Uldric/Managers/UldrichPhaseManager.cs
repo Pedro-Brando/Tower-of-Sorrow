@@ -79,6 +79,8 @@ public class UldrichPhaseManager : MonoBehaviour
             case 3:
                 // Configurações para a Fase 3
                 break;
+            case 4:
+                break;
         }
     }
 

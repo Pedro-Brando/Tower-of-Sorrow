@@ -3,6 +3,7 @@ using System.Collections;
 using MoreMountains.CorgiEngine;
 using MoreMountains.Tools;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class UldrichController : MonoBehaviour
 {
@@ -203,20 +204,16 @@ public class UldrichController : MonoBehaviour
                 break;
 
             case 3:
+                StartPhase3();
                 if (!_espiritosAtivados)
                 {
                     ActivateEspiritos();
                 }
 
-                if (_spiritsDestroyed >= 2 && !_vulneravelNaFase3)
+                if (_spiritsDestroyed >= 2)
                 {
                     BecomeVulnerable();
-                    RestoreHealth(); // Restaura a vida de Uldrich após todos os espíritos serem destruídos
-                    if (_controller != null)
-                    {
-                        _controller.GravityActive(true);
-                    }
-                    _vulneravelNaFase3 = true;
+                    // _vulneravelNaFase3 = true;
                     MoveAwayFromPlayer();
                 }
                 else
@@ -224,6 +221,10 @@ public class UldrichController : MonoBehaviour
                     FlyToPoint(new Vector2(-38, -4));
                 }
                 
+                break;
+
+            case 4:
+                SetDeathAnimation(true);
                 break;
         }
     }
@@ -233,7 +234,10 @@ public class UldrichController : MonoBehaviour
         if (_health != null && !_vidaRestaurada)
         {
             Debug.Log("Restaurando saúde de Uldrich...");
-
+            if (_animator != null)
+            {
+                _animator.SetBool("IsDead", false);
+            }
             // Define uma quantidade de saúde a ser restaurada
             float healthToRestore = 1f; // Por exemplo, restaura 5 pontos de saúde
 
@@ -326,7 +330,6 @@ public class UldrichController : MonoBehaviour
         }
 
         // Define o estado de movimento como Idle
-        _character.MovementState.ChangeState(CharacterStates.MovementStates.Idle);
         SetFlyingAnimation(false);
 
         // Para quando atingir a posição
@@ -363,8 +366,6 @@ public class UldrichController : MonoBehaviour
             _character.MovementState.ChangeState(CharacterStates.MovementStates.Walking);
         }
     }
-
-
 
 
     public void BecomeVulnerable()
@@ -436,7 +437,6 @@ public class UldrichController : MonoBehaviour
             }
 
             BecomeVulnerable();
-            RestoreHealth();
             _vulneravelNaFase3 = true;
         }
     }
@@ -565,29 +565,30 @@ public class UldrichController : MonoBehaviour
         _playerInSpiritualWorld = false;
     }
 
-
-
-    private void OnDeath()
+    public void StartPhase3()
     {
-        if (_phaseManager.CurrentPhase == 2)
+        if (_phaseManager.CurrentPhase == 3)
         {
-            // Transição para a Fase 3
-            _phaseManager.SetPhase(3);
             // Restaura a vida de Uldrich para 1
-            if (_health != null)
-            {
-                _health.SetHealth(10, gameObject);
-            }
             Debug.Log("Uldrich Became Invulnerable");
             BecomeInvulnerable();
 
             DesativarPortais();
         }
-        else if (_phaseManager.CurrentPhase == 3)
+    }
+
+    private void OnDeath()
+    {
+
+        if (_phaseManager.CurrentPhase == 3)
         {
-            // Uldrich foi derrotado
-            SetDeathAnimation(true);
             Debug.Log("Uldrich is defeated");
+            
+            // Uldrich foi derrotado
+            _animator.SetBool("Alive", false);
+            SetDeathAnimation(true);
+            _phaseManager.SetPhase(4);
+            
             // Implementar animações ou eventos de morte
         }
     }
