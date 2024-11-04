@@ -412,7 +412,8 @@ public class UldrichController : MonoBehaviour
     }
 
     // Defina as coordenadas de teletransporte
-    [SerializeField] private Vector3 teleportDestination;
+    [SerializeField] private Vector3 teleportDestination = new Vector3(-38f, -9f, 1f);
+
 
     public void OnSpiritDeath()
     {

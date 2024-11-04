@@ -92,10 +92,6 @@ namespace MoreMountains.CorgiEngine
                 // Explodir e retornar ao pool
                 Explodir();
             }
-            else
-            {
-                Debug.Log($"Meteoro colidiu com {collision.gameObject.name}, que não é o jogador ou chão.");
-            }
         }
 
         /// <summary>

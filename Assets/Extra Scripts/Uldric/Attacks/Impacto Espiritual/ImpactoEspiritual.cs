@@ -31,6 +31,9 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
     [Tooltip("Incremento de altura da onda a cada uso")]
     public float IncrementoAlturaOnda = 1f;
 
+    [Tooltip("Largura alvo da onda de choque")]
+    public float LarguraAlvoOnda = 10f; // Novo campo adicionado
+
     [Tooltip("Lista de plataformas a serem ativadas")]
     public List<GameObject> Plataformas;
 
@@ -58,6 +61,11 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
     [Tooltip("Feedback ao ativar as plataformas")]
     public MMF_Player PlataformasAtivadasFeedback;
 
+    [Tooltip("Prefab da partícula")]
+    public GameObject ParticulaPrefab;
+
+    public float VelocidadeParticula = 5f; // Velocidade de movimento das partículas
+
     private float _lastActivationTime = -Mathf.Infinity; // Armazena o momento da última ativação
 
     public UldrichPhaseManager _phaseManager;
@@ -74,6 +82,12 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
 
     // Evento para indicar quando a habilidade foi concluída
     public event System.Action OnAbilityCompleted;
+
+    private void Awake()
+    {
+        // Inicializa a altura atual da onda com a altura inicial definida
+        _alturaAtualOnda = AlturaInicialOnda;
+    }
 
     /// <summary>
     /// Método público para ativar a habilidade Impacto Espiritual
@@ -166,32 +180,95 @@ public class ImpactoEspiritual : CharacterAbility, IUldrichAbility
 
     private void SpawnOndaDeChoque()
     {
-        // Feedback ao spawnar a onda de choque
-        if (OndaDeChoqueFeedback != null)
-        {
-            OndaDeChoqueFeedback.PlayFeedbacks();
-        }
-
-        // Posição inicial da onda de choque na base da OndaDeChoqueArea
+        // Posição de instanciação da onda de choque
         Vector2 spawnPosition = new Vector2(OndaDeChoqueArea.bounds.center.x, OndaDeChoqueArea.bounds.min.y);
 
-        // Instancia a onda de choque
-        GameObject onda = Instantiate(OndaDeChoquePrefab, spawnPosition, Quaternion.identity);
+        Debug.Log($"Spawnando OndaDeChoque na posição: {spawnPosition}");
 
-        // Configura o controlador da onda de choque
+        GameObject onda = Instantiate(OndaDeChoquePrefab, spawnPosition, Quaternion.identity);
         OndaDeChoque ondaController = onda.GetComponent<OndaDeChoque>();
         if (ondaController != null)
         {
-            
-            ondaController.Initialize(OndaDeChoqueArea, _alturaAtualOnda);
+            if (_alturaAtualOnda <= 0)
+            {
+                _alturaAtualOnda = AlturaInicialOnda;
+                Debug.LogWarning($"_alturaAtualOnda estava <= 0. Foi redefinida para {AlturaInicialOnda}");
+            }
 
-            _alturaAtualOnda += IncrementoAlturaOnda;  // Incrementa a altura da onda
+            float LarguraAlvoOnda = 28f; // Ajuste conforme necessário
+
+            ondaController.Initialize(LarguraAlvoOnda, _alturaAtualOnda);
+            Debug.Log($"Inicializando OndaDeChoque com largura {LarguraAlvoOnda} e altura {_alturaAtualOnda}");
+            _alturaAtualOnda += IncrementoAlturaOnda;
+
+            // Instancia e move as partículas
+            InstanciarParticulas(spawnPosition, LarguraAlvoOnda, ondaController);
         }
         else
         {
-            Debug.LogError("O prefab da onda de choque não possui o script OndaDeChoque!");
+            Debug.LogError("O prefab da OndaDeChoque não possui o script OndaDeChoque!");
         }
     }
+
+    private void InstanciarParticulas(Vector2 spawnPosition, float larguraAlvo, OndaDeChoque ondaController)
+    {
+        if (ParticulaPrefab != null)
+        {
+
+            Vector2 posicaoParticulas = new Vector2(
+                spawnPosition.x,
+                spawnPosition.y - (ondaController.AlturaOnda / 2f) + ondaController.OffsetVerticalParticulas
+            );
+
+            Debug.Log($"Instanciando partículas na posição: {posicaoParticulas}");
+
+            // Instancia a partícula esquerda
+            GameObject particulaEsquerda = Instantiate(ParticulaPrefab, posicaoParticulas, Quaternion.identity);
+            // Instancia a partícula direita
+            GameObject particulaDireita = Instantiate(ParticulaPrefab, posicaoParticulas, Quaternion.identity);
+
+            // Inicia as corrotinas para mover as partículas
+            StartCoroutine(MoverParticula(particulaEsquerda, Vector2.left, larguraAlvo / 2f, ondaController));
+            StartCoroutine(MoverParticula(particulaDireita, Vector2.right, larguraAlvo / 2f, ondaController));
+        }
+        else
+        {
+            Debug.LogWarning("ParticulaPrefab não está atribuído no inspetor.");
+        }
+    }
+
+
+    private IEnumerator MoverParticula(GameObject particula, Vector2 direcao, float distanciaMaxima, OndaDeChoque ondaController)
+    {
+        float distanciaPercorrida = 0f;
+        Vector3 escalaInicial = particula.transform.localScale;
+        Vector3 escalaFinal = escalaInicial * 2f; // Ajuste conforme necessário
+
+        while (distanciaPercorrida < distanciaMaxima)
+        {
+            float deslocamento = VelocidadeParticula * Time.deltaTime;
+            particula.transform.Translate(direcao * deslocamento);
+            distanciaPercorrida += deslocamento;
+
+            // Calcula a fração da distância percorrida
+            float fracaoPercorrida = distanciaPercorrida / distanciaMaxima;
+
+            // Sincroniza a escala da partícula com a largura atual da onda
+            if (ondaController != null)
+            {
+                float larguraAtual = ondaController.ObterLarguraAtual() / ondaController.LarguraAlvo; // Fração da largura
+                float escala = Mathf.Lerp(1f, 2f, larguraAtual); // Ajuste conforme necessário
+                particula.transform.localScale = escalaInicial * escala;
+            }
+
+            yield return null;
+        }
+
+        // Destrói a partícula ao chegar no final
+        Destroy(particula);
+    }
+
+
 
     public void ResetarAlturaOnda()
     {
