@@ -491,7 +491,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Velocity: {x: 0, y: -2}
   Damage: 1
-  ExplosionPrefab: {fileID: 100000, guid: 3cfe3f9255d7aa444ad3511f18f36a43, type: 3}
+  ExplosionPrefab: {fileID: 1674568081200525790, guid: ce39aad4d3c9cd04d8e92fe068dec3ec,
+    type: 3}
   CollisionFeedback: {fileID: 3412866486028790405}
   LoopingFeedback: {fileID: 0}
 --- !u!1 &9074593735535863646

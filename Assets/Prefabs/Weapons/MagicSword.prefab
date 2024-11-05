@@ -217,9 +217,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 24576
   ApplyDamageOnTriggerEnter: 1
-  ApplyDamageOnTriggerStay: 1
-  MinDamageCaused: 30
-  MaxDamageCaused: 30
+  ApplyDamageOnTriggerStay: 0
+  MinDamageCaused: 45
+  MaxDamageCaused: 45
   Knockback: 2
   KnockbackForce: {x: 10, y: 2}
   InvincibilityDuration: 0.5

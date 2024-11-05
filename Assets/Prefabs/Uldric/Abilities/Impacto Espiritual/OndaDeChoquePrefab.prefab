@@ -372,8 +372,7 @@ MonoBehaviour:
   Dano: 1
   ExpandFeedback: {fileID: 5853229912145876929}
   ImpactFeedback: {fileID: 2660383438745491758}
-  ParticulaPrefab: {fileID: 9066852985978826035, guid: d14994b164816e64a8ee1acbc8a31186,
-    type: 3}
+  OffsetVerticalParticulas: -0.5
 --- !u!61 &8195300971380140093
 BoxCollider2D:
   m_ObjectHideFlags: 0

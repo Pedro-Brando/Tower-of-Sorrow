@@ -254,7 +254,7 @@ PrefabInstance:
         type: 3}
       propertyPath: InitialWeapon
       value: 
-      objectReference: {fileID: 370080267764340582, guid: 355a32d54f1eff24eb949b1507c0ec37,
+      objectReference: {fileID: 228281532818254418, guid: d6c5ce5cabe0e2a4986eece4d4285a9d,
         type: 3}
     - target: {fileID: 5998904617943976719, guid: ddf175a720d8f8c40bd34171427f4a00,
         type: 3}
@@ -1606,12 +1606,12 @@ PrefabInstance:
     - target: {fileID: 5280284685384394567, guid: a6d340c6298297d4c8a9e4d80e59ad58,
         type: 3}
       propertyPath: Phase2HealthThreshold
-      value: 70
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 5280284685384394567, guid: a6d340c6298297d4c8a9e4d80e59ad58,
         type: 3}
       propertyPath: Phase3HealthThreshold
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5607485170784725716, guid: a6d340c6298297d4c8a9e4d80e59ad58,
         type: 3}
@@ -1724,6 +1724,16 @@ PrefabInstance:
       propertyPath: PlataformasAtivadasFeedback
       value: 
       objectReference: {fileID: 1206378812}
+    - target: {fileID: 6102655953127200912, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: InitialHealth
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6102655953127200912, guid: a6d340c6298297d4c8a9e4d80e59ad58,
+        type: 3}
+      propertyPath: MaximumHealth
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 6765233654578411102, guid: a6d340c6298297d4c8a9e4d80e59ad58,
         type: 3}
       propertyPath: m_Enabled
