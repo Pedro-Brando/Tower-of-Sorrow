@@ -134,6 +134,11 @@ public class UldrichAttackManager : MonoBehaviour
                 _availableAbilities.Add(FuriaDoFogoFatuo);
                 _availableAbilities.Add(OndaDeChamas);
                 _availableAbilities.Add(ConsumirVida);
+                
+                if (_espiritoCristalizadoUsed)
+                    _availableAbilities.Add(EspiritoCristalizado);
+
+
                 break;
             case 4:
                 break;
