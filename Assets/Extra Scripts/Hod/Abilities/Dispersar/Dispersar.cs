@@ -12,15 +12,25 @@ namespace MoreMountains.CorgiEngine
     {
         [Header("Configurações do Dispersar")]
         public GameObject HodCopyPrefab;
+
+        [Tooltip("Duração da habilidade antes de terminar automaticamente")]
         public float AbilityDuration = 5f;
+
+        [Tooltip("Duração do cooldown da habilidade")]
         public float CooldownDuration = 10f;
-        public Transform[] Positions; // Posições onde Hod e suas cópias aparecerão
+
+        [Tooltip("Posições onde Hod e suas cópias aparecerão")]
+        public Transform[] Positions;
+
+        [Tooltip("Feedback ao iniciar a habilidade Dispersar")]
         public MMF_Player DispersarFeedback;
 
-        private bool _abilityPermitted = true;
-        private bool _cooldownReady = true;
-        public new bool AbilityPermitted => _abilityPermitted;
-        public bool CooldownReady => _cooldownReady;
+        private float _lastActivationTime = -Mathf.Infinity;
+
+        public new bool AbilityPermitted => base.AbilityPermitted;
+
+        public bool CooldownReady => Time.time >= _lastActivationTime + CooldownDuration;
+
         public event System.Action OnAbilityCompleted;
 
         private HodController _hodController;
@@ -31,22 +41,33 @@ namespace MoreMountains.CorgiEngine
         {
             base.Initialization();
             _hodController = GetComponent<HodController>();
+            if (_hodController == null)
+            {
+                Debug.LogError("HodController não encontrado no GameObject!");
+            }
         }
 
+        /// <summary>
+        /// Método público para ativar a habilidade Dispersar
+        /// </summary>
         public void ActivateAbility()
         {
-            if (!_abilityPermitted || !_cooldownReady)
-                return;
-
-            StartCoroutine(DispersarRoutine());
+            if (AbilityAuthorized && CooldownReady)
+            {
+                _lastActivationTime = Time.time;
+                StartCoroutine(DispersarRoutine());
+            }
         }
 
+        /// <summary>
+        /// Coroutine que gerencia a execução da habilidade Dispersar
+        /// </summary>
         private IEnumerator DispersarRoutine()
         {
-            _abilityPermitted = false;
-            _cooldownReady = false;
+            // Início da habilidade
+            Debug.Log("Hod começou a usar Dispersar.");
 
-            // Inicia o feedback de dispersão
+            // Feedback ao iniciar a habilidade
             if (DispersarFeedback != null)
             {
                 DispersarFeedback.PlayFeedbacks();
@@ -58,41 +79,80 @@ namespace MoreMountains.CorgiEngine
             // Criar cópias e posicioná-las
             CreateCopies();
 
-            // Esperar a duração da habilidade
-            yield return new WaitForSeconds(AbilityDuration);
+            // Esperar a duração da habilidade ou até que seja finalizada
+            float elapsedTime = 0f;
+            while (elapsedTime < AbilityDuration)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
 
             // Destruir cópias e fazer Hod reaparecer
+            EndDispersar();
+        }
+
+        /// <summary>
+        /// Método para finalizar a habilidade Dispersar antecipadamente
+        /// </summary>
+        public void EndDispersar()
+        {
+            // Parar quaisquer coroutines em execução
+            StopAllCoroutines();
+
+            // Destruir cópias
             DestroyCopies();
+
+            // Reposicionar o HodController na posição da cópia verdadeira
+            if (_trueHodInstance != null)
+            {
+                _hodController.transform.position = _trueHodInstance.transform.position;
+                Destroy(_trueHodInstance);
+                _trueHodInstance = null;
+            }
+
+            // Fazer Hod reaparecer
             _hodController.SetVisible(true);
 
-            // Iniciar o cooldown
+            // Iniciar cooldown
             StartCoroutine(CooldownRoutine());
 
             // Notificar que a habilidade foi concluída
             OnAbilityCompleted?.Invoke();
         }
 
+        /// <summary>
+        /// Cria as cópias de Hod e posiciona-as nas posições definidas
+        /// </summary>
         private void CreateCopies()
         {
             int trueHodIndex = Random.Range(0, Positions.Length);
 
             for (int i = 0; i < Positions.Length; i++)
             {
-                if (i == trueHodIndex)
+                // Criar cópia
+                GameObject copy = Instantiate(HodCopyPrefab, Positions[i].position, Quaternion.identity);
+                HodCopy hodCopyScript = copy.GetComponent<HodCopy>();
+
+                if (hodCopyScript != null)
                 {
-                    // Posicionar o verdadeiro Hod
-                    _hodController.transform.position = Positions[i].position;
-                    _trueHodInstance = _hodController.gameObject;
+                    if (i == trueHodIndex)
+                    {
+                        // Configurar esta cópia como o verdadeiro Hod
+                        hodCopyScript.Initialize(true, _hodController);
+                        _trueHodInstance = copy;
+                    }
+                    else
+                    {
+                        hodCopyScript.Initialize(false);
+                    }
                 }
-                else
-                {
-                    // Criar cópia
-                    GameObject copy = Instantiate(HodCopyPrefab, Positions[i].position, Quaternion.identity);
-                    _copies.Add(copy);
-                }
+                _copies.Add(copy);
             }
         }
 
+        /// <summary>
+        /// Destroi todas as cópias criadas durante a habilidade
+        /// </summary>
         private void DestroyCopies()
         {
             foreach (var copy in _copies)
@@ -105,10 +165,12 @@ namespace MoreMountains.CorgiEngine
             _copies.Clear();
         }
 
+        /// <summary>
+        /// Inicia o cooldown da habilidade
+        /// </summary>
         private IEnumerator CooldownRoutine()
         {
             yield return new WaitForSeconds(CooldownDuration);
-            _cooldownReady = true;
         }
     }
 }

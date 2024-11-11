@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using MoreMountains.CorgiEngine;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class HodAbilityManager : MonoBehaviour
 {
@@ -9,26 +10,16 @@ public class HodAbilityManager : MonoBehaviour
     public Dispersar Dispersar;
     public Invisibilidade Invisibilidade;
     public Sobrecarga Sobrecarga;
-    // Adicionar outras habilidades conforme necessário
+    public Desmoronar Desmoronar;
+    public SobrecargaFocalizada SobrecargaFocalizada;
 
-    private HodPhaseManager _phaseManager;
+    public HodPhaseManager _phaseManager;
     private HodController _controller;
 
     private List<IHodAbility> _availableAbilities = new List<IHodAbility>();
     private float _attackCooldown = 3f;
     private float _lastAttackTime = -Mathf.Infinity;
     private bool _abilityInExecution = false;
-
-    void Awake()
-    {
-        _phaseManager = GetComponent<HodPhaseManager>();
-        _controller = GetComponent<HodController>();
-
-        if (_phaseManager == null)
-        {
-            Debug.LogError("HodPhaseManager not found on Hod!");
-        }
-    }
 
     void Start()
     {
@@ -65,9 +56,7 @@ public class HodAbilityManager : MonoBehaviour
         switch (_phaseManager.CurrentPhase)
         {
             case 1:
-                _availableAbilities.Add(Dispersar);
-                _availableAbilities.Add(Invisibilidade);
-                _availableAbilities.Add(Sobrecarga);
+                _availableAbilities.Add(Desmoronar);
                 // Adicionar outras habilidades da fase 1
                 break;
 
@@ -117,7 +106,8 @@ public class HodAbilityManager : MonoBehaviour
         if (Dispersar != null) Dispersar.OnAbilityCompleted -= OnAbilityCompleted;
         if (Invisibilidade != null) Invisibilidade.OnAbilityCompleted -= OnAbilityCompleted;
         if (Sobrecarga != null) Sobrecarga.OnAbilityCompleted -= OnAbilityCompleted;
-        // Desinscrever outras habilidades
+        if (Desmoronar != null) Desmoronar.OnAbilityCompleted -= OnAbilityCompleted;
+        if (SobrecargaFocalizada != null) SobrecargaFocalizada.OnAbilityCompleted -= OnAbilityCompleted;
 
         Debug.Log("Habilidade concluída. Pronto para a próxima ação.");
     }

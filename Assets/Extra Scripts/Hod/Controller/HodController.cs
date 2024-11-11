@@ -8,7 +8,6 @@ public class HodController : MonoBehaviour
 {
     [Header("Hod Settings")]
     public GameObject Model; // Modelo 3D ou sprite de Hod
-    public GameObject BarrierVisual; // Se houver algum visual de barreira
     public float MoveSpeed = 5f;
     public float FlySpeed = 5f;
     public Transform[] MovePoints; // Pontos de movimentação para o Hod
@@ -21,6 +20,8 @@ public class HodController : MonoBehaviour
     private Animator _animator;
     private GameObject _player;
     private CorgiController _controller;
+
+    private Dispersar dispersarAbility;
 
     private bool _isInvulnerable = false;
 
@@ -39,12 +40,12 @@ public class HodController : MonoBehaviour
             _animator = Model.GetComponent<Animator>();
             if (_animator == null)
             {
-                Debug.LogError("Animator not found on Hod's model!");
+                Debug.LogError("Animator não encontrado no modelo de Hod!");
             }
         }
         else
         {
-            Debug.LogError("Model not assigned in the inspector!");
+            Debug.LogError("Model não atribuído no inspetor!");
         }
 
         // Configurar movimentação
@@ -53,18 +54,18 @@ public class HodController : MonoBehaviour
             _horizontalMovement = _character.FindAbility<CharacterHorizontalMovement>();
             if (_horizontalMovement == null)
             {
-                Debug.LogError("CharacterHorizontalMovement ability not found on Hod!");
+                Debug.LogError("CharacterHorizontalMovement ability não encontrada no Hod!");
             }
         }
         else
         {
-            Debug.LogError("Character component not found on Hod!");
+            Debug.LogError("Componente Character não encontrado no Hod!");
         }
 
         _player = GameObject.FindGameObjectWithTag("Player");
         if (_player == null)
         {
-            Debug.LogError("Player not found in the scene!");
+            Debug.LogError("Player não encontrado na cena!");
         }
 
         if (_health != null)
@@ -73,13 +74,14 @@ public class HodController : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Health component not found on Hod!");
+            Debug.LogError("Componente Health não encontrado no Hod!");
         }
 
-        DispersarAbility = GetComponent<Dispersar>();
-        if (DispersarAbility == null)
+        // Atribuir dispersarAbility
+        dispersarAbility = GetComponent<Dispersar>();
+        if (dispersarAbility == null)
         {
-            Debug.LogError("Dispersar ability not found on HodController!");
+            Debug.LogError("Habilidade Dispersar não encontrada no HodController!");
         }
 
         // Iniciar na Fase 1
@@ -88,7 +90,7 @@ public class HodController : MonoBehaviour
 
     void Update()
     {
-        UpdateAnimatorState();
+        // UpdateAnimatorState();
         HandleMovement();
     }
 
@@ -109,23 +111,26 @@ public class HodController : MonoBehaviour
         switch (_phaseManager.CurrentPhase)
         {
             case 1:
-                // Implementar lógica de movimento da pré-fase ou Fase 1
+                // Lógica de movimento da Fase 1
                 MoveForward();
                 break;
 
             case 2:
-                // Implementar lógica de movimento da Fase 2
+                // Lógica de movimento da Fase 2
                 MoveForward();
                 break;
 
             case 3:
-                // Implementar lógica de movimento da Fase 3
+                // Lógica de movimento da Fase 3
                 // Exemplo: enfrentar o jogador diretamente
                 FacePlayer();
                 break;
         }
     }
 
+    /// <summary>
+    /// Define a visibilidade do modelo do Hod
+    /// </summary>
     public void SetVisible(bool visible)
     {
         if (Model != null)
@@ -134,34 +139,48 @@ public class HodController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Método chamado para finalizar a habilidade Dispersar
+    /// </summary>
     public void EndDispersar()
     {
-        if (DispersarAbility != null)
+        if (dispersarAbility != null)
         {
-            DispersarAbility.EndDispersar();
+            dispersarAbility.EndDispersar();
         }
         else
         {
-            Debug.LogError("DispersarAbility is not set in HodController!");
+            Debug.LogError("dispersarAbility não está configurada no HodController!");
         }
     }
 
+    /// <summary>
+    /// Para o movimento do Hod
+    /// </summary>
     public void StopMovement()
     {
         if (_horizontalMovement != null)
         {
             _horizontalMovement.MovementSpeed = 0;
+            _horizontalMovement.SetHorizontalMove(0f);
         }
     }
 
+    /// <summary>
+    /// Retoma o movimento do Hod
+    /// </summary>
     public void ResumeMovement()
     {
         if (_horizontalMovement != null)
         {
             _horizontalMovement.MovementSpeed = MoveSpeed;
+            _horizontalMovement.SetHorizontalMove(1f); // Retomar movimento para a direita
         }
     }
 
+    /// <summary>
+    /// Faz o Hod olhar na direção do jogador
+    /// </summary>
     public void LookAtPlayer()
     {
         if (_player != null)
@@ -178,6 +197,9 @@ public class HodController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Move o Hod para a frente
+    /// </summary>
     private void MoveForward()
     {
         if (_horizontalMovement != null)
@@ -187,6 +209,9 @@ public class HodController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Faz o Hod parar e olhar para o jogador
+    /// </summary>
     private void FacePlayer()
     {
         // Parar movimento horizontal
@@ -199,10 +224,13 @@ public class HodController : MonoBehaviour
         LookAtPlayer();
     }
 
+    /// <summary>
+    /// Método chamado quando o Hod é derrotado
+    /// </summary>
     private void OnDeath()
     {
         // Lógica quando Hod é derrotado
-        Debug.Log("Hod defeated!");
+        Debug.Log("Hod derrotado!");
         _phaseManager.SetPhase(4);
 
         // Implementar animação de morte ou eventos

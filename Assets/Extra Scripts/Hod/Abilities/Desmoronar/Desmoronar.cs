@@ -12,8 +12,8 @@ namespace MoreMountains.CorgiEngine
     {
         [Header("Configurações do Desmoronar")]
 
-        [Tooltip("Prefab dos escombros que caem do teto")]
-        public GameObject DebrisPrefab;
+        [Tooltip("Lista de prefabs dos escombros que caem do teto")]
+        public List<GameObject> DebrisPrefabs;
 
         [Tooltip("Intervalo entre o spawn dos escombros")]
         public float SpawnInterval = 0.5f;
@@ -36,7 +36,7 @@ namespace MoreMountains.CorgiEngine
 
         private float _lastActivationTime = -Mathf.Infinity;
 
-        private GameObject _player;
+        public GameObject _player;
         private HodController _hodController;
 
         /// <summary>
@@ -51,22 +51,6 @@ namespace MoreMountains.CorgiEngine
 
         // Evento para indicar quando a habilidade foi concluída
         public event System.Action OnAbilityCompleted;
-
-        protected override void Initialization()
-        {
-            base.Initialization();
-            _player = GameObject.FindGameObjectWithTag("Player");
-            if (_player == null)
-            {
-                Debug.LogError("Player not found in the scene!");
-            }
-
-            _hodController = GetComponent<HodController>();
-            if (_hodController == null)
-            {
-                Debug.LogError("HodController not found on the GameObject!");
-            }
-        }
 
         /// <summary>
         /// Método público para ativar a habilidade Desmoronar
@@ -83,7 +67,6 @@ namespace MoreMountains.CorgiEngine
         /// <summary>
         /// Coroutine que gerencia a execução da habilidade Desmoronar
         /// </summary>
-        /// <returns></returns>
         private IEnumerator DesmoronarRoutine()
         {
             // Início da habilidade
@@ -111,8 +94,19 @@ namespace MoreMountains.CorgiEngine
         /// </summary>
         private void SpawnDebris()
         {
+            if (DebrisPrefabs == null || DebrisPrefabs.Count == 0)
+            {
+                Debug.LogError("A lista DebrisPrefabs está vazia! Não é possível spawnar escombros.");
+                return;
+            }
+
             Vector3 spawnPosition = GetRandomSpawnPositionAbovePlayer();
-            GameObject debris = Instantiate(DebrisPrefab, spawnPosition, Quaternion.identity);
+
+            // Seleciona um prefab aleatório da lista
+            int randomIndex = Random.Range(0, DebrisPrefabs.Count);
+            GameObject selectedPrefab = DebrisPrefabs[randomIndex];
+
+            GameObject debris = Instantiate(selectedPrefab, spawnPosition, Quaternion.identity);
             Rigidbody2D rb = debris.GetComponent<Rigidbody2D>();
 
             if (rb != null)
@@ -155,9 +149,8 @@ namespace MoreMountains.CorgiEngine
         /// <summary>
         /// Visualiza a área de spawn dos escombros no editor
         /// </summary>
-        public void OnDrawGizmosSelected()
+        private void OnDrawGizmosSelected()
         {
-
             if (_player != null)
             {
                 Gizmos.color = Color.gray;
@@ -166,6 +159,32 @@ namespace MoreMountains.CorgiEngine
                 Vector3 size = new Vector3(10f, 1f, 0f); // Área de 10 unidades em X
                 Gizmos.DrawWireCube(center, size);
             }
+        }
+    }
+
+    /// <summary>
+    /// Componente para marcar o escombro como obstáculo permanente
+    /// </summary>
+    public class PermanentObstacle : MonoBehaviour
+    {
+        private void Start()
+        {
+            // Ajustar o objeto para ser um obstáculo permanente
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.velocity = Vector2.zero;
+                rb.isKinematic = true;
+            }
+
+            Collider2D collider = GetComponent<Collider2D>();
+            if (collider != null)
+            {
+                collider.isTrigger = false;
+            }
+
+            // Alterar a layer para "Obstacles" ou outra layer adequada
+            gameObject.layer = LayerMask.NameToLayer("MovingPlatforms");
         }
     }
 }

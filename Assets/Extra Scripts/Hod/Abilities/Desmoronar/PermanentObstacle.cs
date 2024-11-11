@@ -22,6 +22,6 @@ public class PermanentObstacle : MonoBehaviour
         }
 
         // Alterar a layer para "Obstacles" ou outra layer adequada
-        gameObject.layer = LayerMask.NameToLayer("Obstacles");
+        gameObject.layer = LayerMask.NameToLayer("MovingPlatforms");
     }
 }
