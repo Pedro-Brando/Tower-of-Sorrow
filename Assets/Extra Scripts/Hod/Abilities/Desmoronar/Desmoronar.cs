@@ -21,8 +21,8 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Número total de escombros a serem spawnados")]
         public int TotalDebris = 10;
 
-        [Tooltip("Velocidade dos escombros ao cair")]
-        public float DebrisSpeed = 5f;
+        [Tooltip("Velocidade dos escombros ao cair (unidades por segundo)")]
+        public float DebrisFallSpeed = 5f;
 
         [Tooltip("Chance de um escombro se tornar permanente (0 a 1)")]
         public float PermanentDebrisChance = 0.25f;
@@ -30,13 +30,16 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Duração do cooldown da habilidade")]
         public float CooldownDuration = 5f;
 
+        [Tooltip("Área onde os escombros podem aparecer (BoxCollider2D)")]
+        public BoxCollider2D SpawnArea;
+
         [Header("Feedbacks MMF Player")]
         [Tooltip("Feedback ao iniciar a habilidade Desmoronar")]
         public MMF_Player DesmoronarFeedback;
 
         private float _lastActivationTime = -Mathf.Infinity;
 
-        public GameObject _player;
+        private GameObject _player;
         private HodController _hodController;
 
         /// <summary>
@@ -51,6 +54,32 @@ namespace MoreMountains.CorgiEngine
 
         // Evento para indicar quando a habilidade foi concluída
         public event System.Action OnAbilityCompleted;
+
+        protected override void Initialization()
+        {
+            base.Initialization();
+            _player = GameObject.FindGameObjectWithTag("Player");
+            if (_player == null)
+            {
+                Debug.LogError("Player não encontrado na cena!");
+            }
+
+            _hodController = GetComponent<HodController>();
+            if (_hodController == null)
+            {
+                Debug.LogError("HodController não encontrado no GameObject!");
+            }
+
+            if (DebrisPrefabs == null || DebrisPrefabs.Count == 0)
+            {
+                Debug.LogError("A lista DebrisPrefabs está vazia! Por favor, atribua pelo menos um prefab.");
+            }
+
+            if (SpawnArea == null)
+            {
+                Debug.LogError("SpawnArea não está atribuída! Por favor, atribua um BoxCollider2D.");
+            }
+        }
 
         /// <summary>
         /// Método público para ativar a habilidade Desmoronar
@@ -90,7 +119,7 @@ namespace MoreMountains.CorgiEngine
         }
 
         /// <summary>
-        /// Spawna um escombro em uma posição aleatória acima do jogador
+        /// Spawna um escombro em uma posição aleatória dentro da área definida
         /// </summary>
         private void SpawnDebris()
         {
@@ -100,50 +129,101 @@ namespace MoreMountains.CorgiEngine
                 return;
             }
 
-            Vector3 spawnPosition = GetRandomSpawnPositionAbovePlayer();
+            Vector3 spawnPosition = GetRandomPositionInArea();
 
             // Seleciona um prefab aleatório da lista
             int randomIndex = Random.Range(0, DebrisPrefabs.Count);
             GameObject selectedPrefab = DebrisPrefabs[randomIndex];
 
+            // Instancia o escombro
             GameObject debris = Instantiate(selectedPrefab, spawnPosition, Quaternion.identity);
-            Rigidbody2D rb = debris.GetComponent<Rigidbody2D>();
-
-            if (rb != null)
-            {
-                rb.velocity = Vector2.down * DebrisSpeed;
-            }
 
             // Determinar se o escombro será permanente
             bool isPermanent = UnityEngine.Random.value <= PermanentDebrisChance;
-            if (isPermanent)
+
+            // Adicionar e configurar o script DebrisFaller para controlar a queda
+            DebrisFaller debrisFaller = debris.AddComponent<DebrisFaller>();
+            debrisFaller.FallSpeed = DebrisFallSpeed;
+            debrisFaller.IsPermanent = isPermanent;
+
+            // Definir a layer dos escombros para evitar colisões entre si
+            debris.layer = LayerMask.NameToLayer("Platforms");
+
+            // Configurar o Collider e Rigidbody com base na permanência
+            Collider2D debrisCollider = debris.GetComponent<Collider2D>();
+            if (debrisCollider != null)
             {
-                debris.AddComponent<PermanentObstacle>();
+                if (isPermanent)
+                {
+                    debrisCollider.isTrigger = false; // Collider sólido para obstáculos
+                }
+                else
+                {
+                    debrisCollider.isTrigger = true; // Collider como Trigger para detecção de colisões
+                }
             }
             else
             {
-                Destroy(debris, 5f); // Destrói o escombro após 5 segundos
+                Debug.LogError("Prefab de escombro não possui um Collider2D!");
+            }
+
+            Rigidbody2D rb = debris.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.isKinematic = true; // Tornar kinematic, pois a queda é controlada via código
+                rb.gravityScale = 0f; // Desativar a gravidade
+            }
+            else
+            {
+                Debug.LogError("Prefab de escombro não possui um Rigidbody2D!");
             }
         }
 
         /// <summary>
-        /// Obtém uma posição aleatória acima do jogador para spawnar o escombro
+        /// Obtém uma posição aleatória dentro da área de spawn
         /// </summary>
         /// <returns>Posição de spawn</returns>
-        private Vector3 GetRandomSpawnPositionAbovePlayer()
+        private Vector3 GetRandomPositionInArea()
         {
-            if (_player != null)
+            if (SpawnArea == null)
             {
-                Vector3 playerPosition = _player.transform.position;
-                float randomX = playerPosition.x + UnityEngine.Random.Range(-5f, 5f);
-                float spawnY = playerPosition.y + 10f; // Altura acima do jogador
-                return new Vector3(randomX, spawnY, playerPosition.z);
+                Debug.LogError("SpawnArea não está atribuída!");
+                return Vector3.zero;
             }
-            else
+
+            Bounds bounds = SpawnArea.bounds;
+
+            float x = Random.Range(bounds.min.x, bounds.max.x);
+            float y = bounds.max.y; // Topo da área
+
+            return new Vector3(x, y, 0f);
+        }
+
+        /// <summary>
+        /// Método para finalizar a habilidade Desmoronar antecipadamente ou após a duração
+        /// </summary>
+        public void EndDispersar()
+        {
+            // Destruir todas as cópias na cena
+            foreach (DebrisFaller debrisFaller in FindObjectsOfType<DebrisFaller>())
             {
-                // Caso o jogador não seja encontrado, spawnar em uma posição padrão
-                return transform.position + new Vector3(0f, 10f, 0f);
+                Destroy(debrisFaller.gameObject);
             }
+
+            // Fazer Hod reaparecer na posição original ou em uma posição específica
+            _hodController.SetVisible(true);
+
+            // Iniciar o cooldown
+            StartCoroutine(CooldownRoutine());
+        }
+
+        /// <summary>
+        /// Inicia o cooldown da habilidade
+        /// </summary>
+        private IEnumerator CooldownRoutine()
+        {
+            yield return new WaitForSeconds(CooldownDuration);
+            // Cooldown terminado
         }
 
         /// <summary>
@@ -151,40 +231,77 @@ namespace MoreMountains.CorgiEngine
         /// </summary>
         private void OnDrawGizmosSelected()
         {
-            if (_player != null)
+            if (SpawnArea != null)
             {
                 Gizmos.color = Color.gray;
-                Vector3 playerPosition = _player.transform.position;
-                Vector3 center = playerPosition + new Vector3(0f, 10f, 0f);
-                Vector3 size = new Vector3(10f, 1f, 0f); // Área de 10 unidades em X
-                Gizmos.DrawWireCube(center, size);
+                Gizmos.DrawWireCube(SpawnArea.bounds.center, SpawnArea.bounds.size);
             }
         }
-    }
 
-    /// <summary>
-    /// Componente para marcar o escombro como obstáculo permanente
-    /// </summary>
-    public class PermanentObstacle : MonoBehaviour
-    {
-        private void Start()
+        /// <summary>
+        /// Componente que controla a queda dos escombros e interações com o jogador
+        /// </summary>
+        public class DebrisFaller : MonoBehaviour
         {
-            // Ajustar o objeto para ser um obstáculo permanente
-            Rigidbody2D rb = GetComponent<Rigidbody2D>();
-            if (rb != null)
+            [Tooltip("Velocidade da queda (unidades por segundo)")]
+            public float FallSpeed = 5f;
+
+            [Tooltip("Determina se o escombro é permanente")]
+            public bool IsPermanent = false;
+
+            // Removido: [Tooltip("Referência ao jogador para aplicar dano")]
+            // public GameObject Player;
+
+            private bool _hasLanded = false;
+
+            void Update()
             {
-                rb.velocity = Vector2.zero;
-                rb.isKinematic = true;
+                if (!_hasLanded)
+                {
+                    // Move o escombro para baixo de forma consistente
+                    transform.Translate(Vector3.down * FallSpeed * Time.deltaTime);
+                }
             }
 
-            Collider2D collider = GetComponent<Collider2D>();
-            if (collider != null)
+            private void OnTriggerEnter2D(Collider2D collision)
             {
-                collider.isTrigger = false;
-            }
+                if (_hasLanded) return;
 
-            // Alterar a layer para "Obstacles" ou outra layer adequada
-            gameObject.layer = LayerMask.NameToLayer("MovingPlatforms");
+                Debug.Log($"{gameObject.name} entrou em trigger com {collision.gameObject.name} ({collision.tag}).");
+
+                if (collision.CompareTag("Ground") || collision.CompareTag("Wall"))
+                {
+                    _hasLanded = true;
+                    Debug.Log($"{gameObject.name} colidiu com Ground ou Wall.");
+
+                    if (!IsPermanent)
+                    {
+                        // Destruir o escombro após atingir o chão
+                        Destroy(gameObject, 5f);
+                        Debug.Log($"{gameObject.name} será destruído em 5 segundos.");
+                    }
+                }
+                else if (collision.CompareTag("Player"))
+                {
+                    _hasLanded = false; // Corrigido para true
+                    Debug.Log($"{gameObject.name} colidiu com Player.");
+
+                    // Aplicar dano ao jogador
+                    Health playerHealth = collision.GetComponent<Health>();
+                    if (playerHealth != null)
+                    {
+                        Debug.Log($"{gameObject.name} está causando dano ao jogador.");
+                        playerHealth.Damage(1f, gameObject, 0.1f, 0.5f, Vector3.zero); // Ajuste o valor de dano conforme necessário
+                    }
+                    else
+                    {
+                        Debug.LogError("Health component não encontrado no jogador!");
+                    }
+                    // Destruir o escombro imediatamente após causar dano
+                    Destroy(gameObject);
+                    Debug.Log($"{gameObject.name} foi destruído após causar dano.");
+                }
+            }
         }
     }
 }

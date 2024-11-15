@@ -33,7 +33,7 @@ namespace MoreMountains.CorgiEngine
 
         private float _lastActivationTime = -Mathf.Infinity;
         private HodController _hodController;
-        private GameObject _player;
+        public GameObject _player;
 
         /// <summary>
         /// Propriedade que indica se a habilidade está permitida (herdada de CharacterAbility)
