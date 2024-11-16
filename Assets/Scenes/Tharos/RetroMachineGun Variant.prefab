@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1000010407495960, guid: a526816ccb05b4d45b5e05608ef451dc, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 4000012754714512, guid: a526816ccb05b4d45b5e05608ef451dc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

@@ -141,43 +141,52 @@ namespace MoreMountains.CorgiEngine
             // Determinar se o escombro será permanente
             bool isPermanent = UnityEngine.Random.value <= PermanentDebrisChance;
 
-            // Adicionar e configurar o script DebrisFaller para controlar a queda
-            DebrisFaller debrisFaller = debris.AddComponent<DebrisFaller>();
-            debrisFaller.FallSpeed = DebrisFallSpeed;
-            debrisFaller.IsPermanent = isPermanent;
+            // Definir a layer dos escombros para evitar colisões com Hod
+            debris.layer = LayerMask.NameToLayer("Debris");
 
-            // Definir a layer dos escombros para evitar colisões entre si
-            debris.layer = LayerMask.NameToLayer("Platforms");
-
-            // Configurar o Collider e Rigidbody com base na permanência
+            // Configurar o Collider com base na permanência
             Collider2D debrisCollider = debris.GetComponent<Collider2D>();
             if (debrisCollider != null)
             {
                 if (isPermanent)
                 {
                     debrisCollider.isTrigger = false; // Collider sólido para obstáculos
+
+                    // Remover o Rigidbody2D para tornar o escombro estático
+                    Rigidbody2D rb = debris.GetComponent<Rigidbody2D>();
+                    if (rb != null)
+                    {
+                        Destroy(rb);
+                    }
                 }
                 else
                 {
                     debrisCollider.isTrigger = true; // Collider como Trigger para detecção de colisões
+
+                    // Adicionar e configurar o script DebrisFaller para controlar a queda
+                    DebrisFaller debrisFaller = debris.AddComponent<DebrisFaller>();
+                    debrisFaller.FallSpeed = DebrisFallSpeed;
+                    debrisFaller.IsPermanent = isPermanent;
+
+                    // Configurar Rigidbody2D para escombros temporários
+                    Rigidbody2D rb = debris.GetComponent<Rigidbody2D>();
+                    if (rb != null)
+                    {
+                        rb.isKinematic = true; // Tornar kinematic, pois a queda é controlada via código
+                        rb.gravityScale = 0f; // Desativar a gravidade
+                    }
+                    else
+                    {
+                        Debug.LogError("Prefab de escombro não possui um Rigidbody2D!");
+                    }
                 }
             }
             else
             {
                 Debug.LogError("Prefab de escombro não possui um Collider2D!");
             }
-
-            Rigidbody2D rb = debris.GetComponent<Rigidbody2D>();
-            if (rb != null)
-            {
-                rb.isKinematic = true; // Tornar kinematic, pois a queda é controlada via código
-                rb.gravityScale = 0f; // Desativar a gravidade
-            }
-            else
-            {
-                Debug.LogError("Prefab de escombro não possui um Rigidbody2D!");
-            }
         }
+
 
         /// <summary>
         /// Obtém uma posição aleatória dentro da área de spawn
@@ -269,21 +278,18 @@ namespace MoreMountains.CorgiEngine
 
                 Debug.Log($"{gameObject.name} entrou em trigger com {collision.gameObject.name} ({collision.tag}).");
 
-                if (collision.CompareTag("Ground") || collision.CompareTag("Wall"))
+                if (collision.CompareTag("Ground") || collision.gameObject.layer == LayerMask.NameToLayer("Platforms"))
                 {
                     _hasLanded = true;
                     Debug.Log($"{gameObject.name} colidiu com Ground ou Wall.");
 
-                    if (!IsPermanent)
-                    {
-                        // Destruir o escombro após atingir o chão
-                        Destroy(gameObject, 5f);
-                        Debug.Log($"{gameObject.name} será destruído em 5 segundos.");
-                    }
+                    // Destruir o escombro após atingir o chão
+                    Destroy(gameObject, 5f);
+                    Debug.Log($"{gameObject.name} será destruído em 5 segundos.");
                 }
                 else if (collision.CompareTag("Player"))
                 {
-                    _hasLanded = false; // Corrigido para true
+                    _hasLanded = true; // Corrigido para true
                     Debug.Log($"{gameObject.name} colidiu com Player.");
 
                     // Aplicar dano ao jogador

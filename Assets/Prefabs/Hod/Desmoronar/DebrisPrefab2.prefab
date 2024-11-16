@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 1411316976579587154}
   - component: {fileID: 4441300699842230332}
   - component: {fileID: 7536252757193364113}
-  - component: {fileID: 970658974309160071}
-  m_Layer: 8
+  - component: {fileID: 3299906695940289900}
+  m_Layer: 6
   m_Name: DebrisPrefab2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 803636212334490423}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -411.716, y: 4.7330213, z: -17.39246}
+  m_LocalPosition: {x: -411.716, y: 4.7330213, z: 0}
   m_LocalScale: {x: 7, y: 7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -225,7 +225,7 @@ PolygonCollider2D:
       - {x: 0.14997602, y: 0.40040025}
       - {x: 0.15055385, y: 0.41080683}
   m_UseDelaunayMesh: 0
---- !u!50 &970658974309160071
+--- !u!50 &3299906695940289900
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -233,7 +233,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 803636212334490423}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0

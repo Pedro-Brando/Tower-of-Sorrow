@@ -12,6 +12,7 @@ public class HodAbilityManager : MonoBehaviour
     public Sobrecarga Sobrecarga;
     public Desmoronar Desmoronar;
     public SobrecargaFocalizada SobrecargaFocalizada;
+    public FocalizarPoder FocalizarPoder;
 
     public HodPhaseManager _phaseManager;
     private HodController _controller;
@@ -56,7 +57,9 @@ public class HodAbilityManager : MonoBehaviour
         switch (_phaseManager.CurrentPhase)
         {
             case 1:
-                _availableAbilities.Add(Desmoronar);
+                // _availableAbilities.Add(Dispersar);
+                // _availableAbilities.Add(Desmoronar);
+                _availableAbilities.Add(FocalizarPoder);
                 // Adicionar outras habilidades da fase 1
                 break;
 

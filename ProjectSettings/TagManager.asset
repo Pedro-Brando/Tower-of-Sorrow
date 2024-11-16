@@ -13,14 +13,17 @@ TagManager:
   - SpawnArea
   - Whisps
   - Wall
+  - HodCopy
+  - PlayerAttack
+  - Beam
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Boss
   - Water
   - UI
-  - 
+  - Debris
   - 
   - Platforms
   - Player
@@ -43,7 +46,7 @@ TagManager:
   - MidHeightOneWayPlatforms
   - Pushables
   - Stairs
-  - Debris
+  - 
   - 
   - 
   m_SortingLayers:
@@ -70,4 +73,7 @@ TagManager:
     locked: 0
   - name: UI
     uniqueID: 3241408355
+    locked: 0
+  - name: Boss
+    uniqueID: 4035037063
     locked: 0

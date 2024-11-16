@@ -20,10 +20,17 @@ public class HodController : MonoBehaviour
     private Animator _animator;
     private GameObject _player;
     private CorgiController _controller;
+    public int Damage { get; set; } = 1; // Defina conforme necessário
 
     private Dispersar dispersarAbility;
 
     private bool _isInvulnerable = false;
+
+    // Referência direta ao Player
+    public GameObject Player { get; private set; }
+
+    // Evento para quando Hod é atacado
+    public event System.Action OnAttacked;
 
     void Start()
     {
@@ -66,6 +73,10 @@ public class HodController : MonoBehaviour
         if (_player == null)
         {
             Debug.LogError("Player não encontrado na cena!");
+        }
+        else
+        {
+            Player = _player;
         }
 
         if (_health != null)
@@ -112,7 +123,7 @@ public class HodController : MonoBehaviour
         {
             case 1:
                 // Lógica de movimento da Fase 1
-                MoveForward();
+                
                 break;
 
             case 2:
@@ -183,9 +194,9 @@ public class HodController : MonoBehaviour
     /// </summary>
     public void LookAtPlayer()
     {
-        if (_player != null)
+        if (Player != null)
         {
-            Vector3 direction = (_player.transform.position - transform.position).normalized;
+            Vector3 direction = (Player.transform.position - transform.position).normalized;
             if (direction.x > 0)
             {
                 _character.Face(Character.FacingDirections.Right);
@@ -235,4 +246,15 @@ public class HodController : MonoBehaviour
 
         // Implementar animação de morte ou eventos
     }
+
+    /// <summary>
+    /// Método para sinalizar que Hod foi atacado
+    /// </summary>
+    public void OnHodAttacked()
+    {
+        // Lógica quando Hod é atacado
+        OnAttacked?.Invoke();
+    }
+
+    // Outros métodos e interações conforme necessário
 }
