@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/CorgiEngine/Demos/StartScreen/SplashScreen.unity
     guid: 7b96552fd1198fa4eaae54a2f975645e
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Tharos/TestPlatforms.unity
     guid: 28e4525a8dabf4c4cb4092c8429e1614
   - enabled: 1
@@ -227,4 +227,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/CorgiEngine/ThirdParty/MoreMountains/MMTools/Core/MMSceneLoading/LoadingScreens/MMAdditiveLoadingScreenSimple.unity
     guid: 945e5b97212e8e74ebcd35bddde3970c
+  - enabled: 1
+    path: Assets/Scenes/Tharos/TestPlatforms 1.unity
+    guid: 8e88b21e5ae549544a4af53de595add1
+  - enabled: 1
+    path: Assets/Scenes/Uldric/UldricScene.unity
+    guid: f54a723de83b4a94094bce3c235cab0a
+  - enabled: 1
+    path: Assets/Scenes/Hod/HodScene.unity
+    guid: 2d9c0e4d1935c614db9089b8337df759
   m_configObjects: {}
