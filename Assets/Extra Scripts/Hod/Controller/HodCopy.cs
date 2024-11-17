@@ -25,6 +25,12 @@ public class HodCopy : MonoBehaviour
     [Tooltip("Tempo entre disparos de feixes.")]
     [SerializeField] private float beamFireInterval = 0.5f;
 
+    [Tooltip("Referência ao componente Health.")]
+    [SerializeField] private Health _health;
+
+    [Tooltip("Referência ao Corgi Controller.")]
+    [SerializeField] private CorgiController _controller;
+
     private bool canFire = true;
 
     /// <summary>
@@ -56,6 +62,7 @@ public class HodCopy : MonoBehaviour
         }
     }
 
+    
     /// <summary>
     /// Configura a cópia como falsa, alterando sua aparência ou comportamento.
     /// </summary>
@@ -82,6 +89,28 @@ public class HodCopy : MonoBehaviour
         {
             animator.enabled = false;
         }
+    }
+
+    public void BecomeInvulnerable()
+    {
+        _health.DamageDisabled();
+    }
+
+    public void BecomeVulnerable()
+    {
+        _health.DamageDisabled();
+    }
+
+
+
+    public void Canalizar()
+    {
+        _controller.enabled = false;
+    }
+
+    public void PararCanalizar()
+    {
+        _controller.enabled = true;
     }
 
     /// <summary>

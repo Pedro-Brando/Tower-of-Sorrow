@@ -21,9 +21,7 @@ public class HodController : MonoBehaviour
     private GameObject _player;
     private CorgiController _controller;
     public int Damage { get; set; } = 1; // Defina conforme necessário
-
     private Dispersar dispersarAbility;
-
     private bool _isInvulnerable = false;
 
     // Referência direta ao Player
@@ -148,6 +146,16 @@ public class HodController : MonoBehaviour
         {
             Model.SetActive(visible);
         }
+    }
+
+    public void Canalizar()
+    {
+        _controller.enabled = false;
+    }
+
+    public void PararCanalizar()
+    {
+        _controller.enabled = true;
     }
 
     /// <summary>

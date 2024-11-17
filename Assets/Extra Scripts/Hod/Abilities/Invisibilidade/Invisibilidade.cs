@@ -56,6 +56,8 @@ namespace MoreMountains.CorgiEngine
             // Tornar Hod visível novamente
             _hodController.SetVisible(true);
 
+            
+
             // Iniciar cooldown
             StartCoroutine(CooldownRoutine());
 
