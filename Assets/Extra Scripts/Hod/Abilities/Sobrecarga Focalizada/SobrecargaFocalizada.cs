@@ -27,9 +27,20 @@ namespace MoreMountains.CorgiEngine
         [Tooltip("Atraso antes de disparar os feixes após os indicadores aparecerem")]
         public float DelayBeforeBeam = 1.5f;
 
+        [Tooltip("Atraso entre o disparo de cada feixe")]
+        public float DelayBetweenBeams = 0.5f;
+
         [Header("Feedbacks MMF Player")]
         [Tooltip("Feedback ao iniciar a habilidade Sobrecarga Focalizada")]
         public MMF_Player SobrecargaFocalizadaFeedback;
+
+        [Header("Configurações de Área")]
+        [Tooltip("BoxCollider2D que define a área de efeito da habilidade.")]
+        [SerializeField] private BoxCollider2D areaCollider;
+
+        [Header("Configurações de Dano")]
+        [Tooltip("Dano que cada feixe de Hod causará.")]
+        [SerializeField] private int hodBeamDamage = 1;
 
         private float _lastActivationTime = -Mathf.Infinity;
         private HodController _hodController;
@@ -54,13 +65,18 @@ namespace MoreMountains.CorgiEngine
             _hodController = GetComponent<HodController>();
             if (_hodController == null)
             {
-                Debug.LogError("HodController not found on the GameObject!");
+                Debug.LogError("HodController não encontrado no GameObject!");
             }
 
             _player = GameObject.FindGameObjectWithTag("Player");
             if (_player == null)
             {
-                Debug.LogError("Player not found in the scene!");
+                Debug.LogError("Player não encontrado na cena!");
+            }
+
+            if (areaCollider == null)
+            {
+                Debug.LogError("BoxCollider2D não foi atribuído em SobrecargaFocalizada!");
             }
         }
 
@@ -86,13 +102,10 @@ namespace MoreMountains.CorgiEngine
             Debug.Log("Hod começou a usar Sobrecarga Focalizada.");
 
             // Feedback ao iniciar a habilidade
-            if (SobrecargaFocalizadaFeedback != null)
-            {
-                SobrecargaFocalizadaFeedback.PlayFeedbacks();
-            }
+            SobrecargaFocalizadaFeedback?.PlayFeedbacks();
 
-            // Escolher posições aleatórias para os feixes
-            Vector3[] positions = GetRandomPositions();
+            // Escolher posições particionadas na área definida
+            Vector3[] positions = GetPartitionedPositions();
 
             // Criar indicadores
             List<GameObject> indicators = new List<GameObject>();
@@ -105,10 +118,27 @@ namespace MoreMountains.CorgiEngine
             // Esperar antes de disparar os feixes
             yield return new WaitForSeconds(DelayBeforeBeam);
 
-            // Disparar feixes verticais
+            // Disparar feixes verticais com atraso entre cada um
             foreach (var pos in positions)
             {
-                Instantiate(VerticalBeamPrefab, pos, Quaternion.identity);
+                GameObject beamInstance = Instantiate(VerticalBeamPrefab, pos, Quaternion.identity);
+                Beam beamScript = beamInstance.GetComponent<Beam>();
+
+                if (beamScript != null)
+                {
+                    // Definir direção do feixe (assumindo para cima)
+                    beamScript.SetDirection(Vector3.up);
+
+                    // Definir dano do feixe
+                    beamScript.SetDamage(hodBeamDamage);
+                }
+                else
+                {
+                    Debug.LogError("Beam script não encontrado no VerticalBeamPrefab!");
+                }
+
+                // Esperar antes de disparar o próximo feixe
+                yield return new WaitForSeconds(DelayBetweenBeams);
             }
 
             // Destruir os indicadores após o uso
@@ -125,35 +155,45 @@ namespace MoreMountains.CorgiEngine
         }
 
         /// <summary>
-        /// Obtém posições aleatórias no chão para os feixes
+        /// Obtém posições particionadas igualmente ao longo do eixo X dentro da área definida pelo BoxCollider2D para os feixes
         /// </summary>
         /// <returns>Array de posições</returns>
-        private Vector3[] GetRandomPositions()
+        private Vector3[] GetPartitionedPositions()
         {
             Vector3[] positions = new Vector3[NumberOfBeams];
-            float minX = -10f; // Defina o mínimo X possível
-            float maxX = 10f;  // Defina o máximo X possível
-            float groundY = _player.transform.position.y; // Supondo que o chão está na mesma altura do jogador
+
+            if (areaCollider == null)
+            {
+                Debug.LogError("BoxCollider2D não está atribuído!");
+                return positions;
+            }
+
+            Bounds bounds = areaCollider.bounds;
+
+            float totalWidth = bounds.size.x;
+            float partitionWidth = totalWidth / NumberOfBeams;
+
+            float startX = bounds.min.x + partitionWidth / 2f; // Iniciar no centro da primeira partição
+            float yPos = bounds.center.y; // Utilizar o centro vertical da área
 
             for (int i = 0; i < NumberOfBeams; i++)
             {
-                float randomX = Random.Range(minX, maxX);
-                positions[i] = new Vector3(randomX, groundY, 0f);
+                float xPos = startX + i * partitionWidth;
+                positions[i] = new Vector3(xPos, yPos, 0f);
             }
+
             return positions;
         }
 
         /// <summary>
-        /// Visualiza as posições dos feixes no editor
+        /// Visualiza a área de efeito no editor usando Gizmos
         /// </summary>
-        public void OnDrawGizmosSelected()
+        private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.yellow;
-            Vector3[] positions = GetRandomPositions();
-
-            foreach (var pos in positions)
+            if (areaCollider != null)
             {
-                Gizmos.DrawWireSphere(pos, 0.5f);
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireCube(areaCollider.bounds.center, areaCollider.bounds.size);
             }
         }
     }

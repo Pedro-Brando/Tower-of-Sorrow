@@ -57,20 +57,28 @@ public class HodAbilityManager : MonoBehaviour
         switch (_phaseManager.CurrentPhase)
         {
             case 1:
-                // _availableAbilities.Add(Dispersar);
-                // _availableAbilities.Add(Desmoronar);
-                _availableAbilities.Add(FocalizarPoder);
-                // Adicionar outras habilidades da fase 1
+                WaitBeforeStartingAttacks();
+                _availableAbilities.Add(Dispersar);
+                _availableAbilities.Add(Desmoronar);
+                _availableAbilities.Add(Invisibilidade);
+                _availableAbilities.Add(Sobrecarga);
                 break;
 
             case 2:
+                _availableAbilities.Add(Dispersar);
+                _availableAbilities.Add(Desmoronar);
+                _availableAbilities.Add(Invisibilidade);
                 _availableAbilities.Add(Sobrecarga);
-                // Adicionar outras habilidades da fase 2
+                _availableAbilities.Add(SobrecargaFocalizada);
                 break;
 
             case 3:
+                _availableAbilities.Add(Dispersar);
+                _availableAbilities.Add(Desmoronar);
+                _availableAbilities.Add(Invisibilidade);
                 _availableAbilities.Add(Sobrecarga);
-                // Adicionar habilidades da fase 3
+                _availableAbilities.Add(SobrecargaFocalizada);
+                _availableAbilities.Add(FocalizarPoder);
                 break;
 
             case 4:

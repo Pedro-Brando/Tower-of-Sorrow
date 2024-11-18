@@ -15,7 +15,7 @@ public class HodPhaseManager : MonoBehaviour
 
     // Variável para armazenar o tempo de início da fase
     private float _phaseStartTime;
-
+    private CameraEventController _cameraController;
     // Propriedade para acessar o tempo de início da fase
     public float PhaseStartTime => _phaseStartTime;
 
@@ -64,7 +64,8 @@ public class HodPhaseManager : MonoBehaviour
         {
             Debug.LogError("_abilityManager is null in HodPhaseManager.SetPhase()!");
         }
-
+        
+        _cameraController.StartCameraChase();
         // Configurações adicionais para cada fase
         switch (CurrentPhase)
         {

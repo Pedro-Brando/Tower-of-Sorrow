@@ -61,7 +61,7 @@ namespace MoreMountains.CorgiEngine
 
         private HodController hodController;
 
-        private HodCopy hodCopyScript;
+        private HodCopy _copyController;
 
         private Coroutine focalizarPoderRoutineCoroutine;
 
@@ -191,7 +191,7 @@ namespace MoreMountains.CorgiEngine
                 // Instanciar a cópia na posição correspondente
                 copies[i] = Instantiate(copyPrefab, teleportPositions[i + 1].position, Quaternion.identity);
                 
-                hodCopyScript = copies[i].GetComponent<HodCopy>();
+                HodCopy hodCopyScript = copies[i].GetComponent<HodCopy>();
                 if (hodCopyScript != null)
                 {
                     // Inicializar a cópia como falsa

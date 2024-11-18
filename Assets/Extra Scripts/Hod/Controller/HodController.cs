@@ -126,7 +126,6 @@ public class HodController : MonoBehaviour
 
             case 2:
                 // Lógica de movimento da Fase 2
-                MoveForward();
                 break;
 
             case 3:
