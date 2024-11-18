@@ -19,6 +19,12 @@ public class UldrichPhaseManager : MonoBehaviour
     // Propriedade para acessar o tempo de início da fase
     public float PhaseStartTime => _phaseStartTime;
 
+        // Prefab que será spawnado
+    public GameObject prefab;
+
+    // Posição e rotação do spawn
+    public Transform spawnPoint;
+
     void Awake()
     {
         _controller = GetComponent<UldrichController>();
@@ -80,6 +86,7 @@ public class UldrichPhaseManager : MonoBehaviour
                 // Configurações para a Fase 3
                 break;
             case 4:
+                        Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
                 break;
         }
     }
