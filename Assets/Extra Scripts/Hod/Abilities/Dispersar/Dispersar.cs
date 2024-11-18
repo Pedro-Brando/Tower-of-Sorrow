@@ -156,7 +156,7 @@ namespace MoreMountains.CorgiEngine
             else
             {
                 Debug.Log("Tempo de cancelamento expirou. Aplicando dano ao jogador.");
-                // ApplyDamageToPlayer();
+                ApplyDamageToPlayer();
                 EndDispersar();
             }
         }

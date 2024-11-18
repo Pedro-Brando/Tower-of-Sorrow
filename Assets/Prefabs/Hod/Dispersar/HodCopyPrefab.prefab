@@ -746,6 +746,8 @@ MonoBehaviour:
   numberOfBeams: 1
   beamSpreadAngle: 0
   beamFireInterval: 0.5
+  _health: {fileID: 5943406842561516354}
+  _controller: {fileID: 4165366050097011559}
 --- !u!1 &6856113132966474100
 GameObject:
   m_ObjectHideFlags: 0

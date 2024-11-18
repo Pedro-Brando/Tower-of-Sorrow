@@ -61,6 +61,8 @@ namespace MoreMountains.CorgiEngine
 
         private HodController hodController;
 
+        private HodCopy hodCopyScript;
+
         private Coroutine focalizarPoderRoutineCoroutine;
 
         private bool isAbilityActive = false;
@@ -139,9 +141,11 @@ namespace MoreMountains.CorgiEngine
 
             // Teletransportar Hod e criar as cópias nas posições aleatórias
             TeleportHodAndCreateCopies();
-
+            hodController.Canalizar();
+            
             // Iniciar a canalização
             yield return new WaitForSeconds(channelingTime);
+            
 
             // Lançar feixes de energia
             LaunchBeams();
@@ -171,80 +175,38 @@ namespace MoreMountains.CorgiEngine
         /// </summary>
         private void TeleportHodAndCreateCopies()
         {
-            // Selecionar 3 posições aleatórias sem repetição
-            List<Transform> selectedPositions = new List<Transform>();
-            List<int> selectedIndices = new List<int>();
-
-            while (selectedPositions.Count < 3 && selectedIndices.Count < teleportPositions.Length)
-            {
-                int index = UnityEngine.Random.Range(0, teleportPositions.Length);
-                if (!selectedIndices.Contains(index))
-                {
-                    selectedIndices.Add(index);
-                    selectedPositions.Add(teleportPositions[index]);
-                }
-            }
-
-            if (selectedPositions.Count < 3)
+            // Verificar se há posições suficientes
+            if (teleportPositions.Length < 3)
             {
                 Debug.LogError("Não há posições suficientes para teletransporte!");
                 return;
             }
 
-            // Teletransportar Hod para uma das posições aleatórias
-            Transform hodTargetPosition = selectedPositions[UnityEngine.Random.Range(0, 3)];
-            hodController.transform.position = hodTargetPosition.position;
+            // Teletransportar Hod para a primeira posição definida
+            hodController.transform.position = teleportPositions[0].position;
 
-            // Criar e teletransportar as cópias
-            for (int i = 0; i < copies.Length; i++)
+            // Criar e posicionar as cópias nas posições restantes
+            for (int i = 0; i < copies.Length && i < teleportPositions.Length - 1; i++)
             {
-                copies[i] = Instantiate(copyPrefab, selectedPositions[i].position, Quaternion.identity);
-                HodCopy hodCopyScript = copies[i].GetComponent<HodCopy>();
-
+                // Instanciar a cópia na posição correspondente
+                copies[i] = Instantiate(copyPrefab, teleportPositions[i + 1].position, Quaternion.identity);
+                
+                hodCopyScript = copies[i].GetComponent<HodCopy>();
                 if (hodCopyScript != null)
                 {
-                    // Inicializar como cópia falsa
+                    // Inicializar a cópia como falsa
                     hodCopyScript.Initialize(false, hodController);
-                    ApplyFalseCopyVisuals(copies[i]);
-
-                    // Garantir que a física não afete as cópias
-                    Rigidbody2D rb = copies[i].GetComponent<Rigidbody2D>();
-                    if (rb != null)
-                    {
-                        rb.isKinematic = true;
-                        rb.simulated = false;
-                    }
+                    hodCopyScript.BecomeInvulnerable();
+                    hodCopyScript.Canalizar();
                 }
                 else
                 {
                     Debug.LogError("HodCopy script não encontrado no CopyPrefab!");
                 }
             }
-
-            // Garantir que Hod também não seja afetado pela física durante a canalização
-            Rigidbody2D hodRb = hodController.GetComponent<Rigidbody2D>();
-            if (hodRb != null)
-            {
-                hodRb.isKinematic = true;
-                hodRb.simulated = false;
-            }
         }
 
-        /// <summary>
-        /// Aplica alterações visuais às cópias falsas para diferenciá-las da verdadeira Hod
-        /// </summary>
-        /// <param name="copy">A cópia de Hod falsa.</param>
-        private void ApplyFalseCopyVisuals(GameObject copy)
-        {
-            // Exemplo: mudar a cor do Sprite Renderer para azul
-            SpriteRenderer sr = copy.GetComponent<SpriteRenderer>();
-            if (sr != null)
-            {
-                sr.color = Color.blue;
-            }
 
-            // Adicionar outros detalhes visuais conforme necessário
-        }
 
         /// <summary>
         /// Lança os feixes de energia horizontalmente a partir do canto esquerdo até o direito da tela
@@ -305,6 +267,8 @@ namespace MoreMountains.CorgiEngine
                 Destroy(beam);
             }
 
+
+            hodController.PararCanalizar();
             // Destruir cópias
             foreach (var copy in copies)
             {
