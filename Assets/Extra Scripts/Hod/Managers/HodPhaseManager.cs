@@ -65,7 +65,7 @@ public class HodPhaseManager : MonoBehaviour
             Debug.LogError("_abilityManager is null in HodPhaseManager.SetPhase()!");
         }
         
-        _cameraController.StartCameraChase();
+        // _cameraController.StartCameraChase();
         // Configurações adicionais para cada fase
         switch (CurrentPhase)
         {

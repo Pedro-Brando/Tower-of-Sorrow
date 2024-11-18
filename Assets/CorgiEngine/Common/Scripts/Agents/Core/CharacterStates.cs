@@ -51,7 +51,8 @@ namespace MoreMountains.CorgiEngine
 			FollowingPath,
 			LedgeHanging,
 			LedgeClimbing,
-			Rolling
+			Rolling,
+			Casting
 		}
 	}
 }

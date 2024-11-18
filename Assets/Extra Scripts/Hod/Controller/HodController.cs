@@ -110,8 +110,7 @@ public class HodController : MonoBehaviour
         // Atualizar os parâmetros do Animator com base no estado atual do Hod
         _animator.SetBool("Idle", _character.MovementState.CurrentState == CharacterStates.MovementStates.Idle);
         _animator.SetBool("Walking", _character.MovementState.CurrentState == CharacterStates.MovementStates.Walking);
-        _animator.SetBool("isFlying", _character.MovementState.CurrentState == CharacterStates.MovementStates.Flying);
-        _animator.SetBool("Alive", _character.ConditionState.CurrentState == CharacterStates.CharacterConditions.Normal);
+        _animator.SetBool("FocalizarPoder", _character.MovementState.CurrentState == CharacterStates.MovementStates.Casting);
         _animator.SetBool("isDead", _character.ConditionState.CurrentState == CharacterStates.CharacterConditions.Dead);
     }
 
