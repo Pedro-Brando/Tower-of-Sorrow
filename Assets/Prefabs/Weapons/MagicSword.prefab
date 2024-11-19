@@ -215,11 +215,11 @@ MonoBehaviour:
   ActiveDuration: 1
   TargetLayerMask:
     serializedVersion: 2
-    m_Bits: 24576
+    m_Bits: 24584
   ApplyDamageOnTriggerEnter: 1
   ApplyDamageOnTriggerStay: 0
-  MinDamageCaused: 45
-  MaxDamageCaused: 45
+  MinDamageCaused: 1
+  MaxDamageCaused: 1
   Knockback: 2
   KnockbackForce: {x: 10, y: 2}
   InvincibilityDuration: 0.5

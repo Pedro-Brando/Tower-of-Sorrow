@@ -6,7 +6,7 @@ public class TharosController : MonoBehaviour
 {
     [Header("Configurações do Ataque")]
     public GameObject warningPrefab; // Prefab do aviso de ataque
-    public float desvio_warningY = 1;
+    public float desvio_warningY = 1f;
     public GameObject attackPrefab;  // Prefab do ataque real
     public float intervaloAtaque = 5f; // Intervalo entre ataques
     public float tempoAntesDeAtacar = 2f; // Tempo de preparação antes do ataque
@@ -16,8 +16,17 @@ public class TharosController : MonoBehaviour
     public float flickerDuration = 0.5f; // Duração do efeito de piscada
     public float invincibilityDuration = 1f; // Duração da invulnerabilidade após o dano
 
+    [Header("Configurações de Proximidade")]
+    [Tooltip("Alcance máximo para iniciar um ataque.")]
+    public float attackRange = 10f; // Distância máxima para iniciar o ataque
+    [Tooltip("Referência ao jogador.")]
+    public Transform playerTransform; // Referência ao Transform do jogador
+
     private List<Transform> plataformasAlvo = new List<Transform>();
     private bool podeAtacar = true;
+
+    // Variável para rastrear se o jogador está dentro do Box Collider
+    private bool jogadorDentroDoCollider = false;
 
     void Start()
     {
@@ -30,6 +39,20 @@ public class TharosController : MonoBehaviour
         if (attackPrefab == null)
         {
             Debug.LogError("attackPrefab não está atribuído no Inspector.");
+        }
+
+        // Verificar se a referência ao jogador está atribuída
+        if (playerTransform == null)
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                playerTransform = player.transform;
+            }
+            else
+            {
+                Debug.LogError("TharosController: Jogador não encontrado na cena. Assegure-se de que o jogador tenha a tag 'Player'.");
+            }
         }
 
         // Encontrar todas as plataformas com a tag "PlataformaBoss"
@@ -52,7 +75,16 @@ public class TharosController : MonoBehaviour
     {
         while (podeAtacar)
         {
-            yield return StartCoroutine(AtacarPlataformas());
+            // Verificar se o jogador está dentro do Box Collider
+            if (jogadorDentroDoCollider)
+            {
+                yield return StartCoroutine(AtacarPlataformas());
+            }
+            else
+            {
+                Debug.Log("Jogador está fora da área de ataque. Aguardando para atacar.");
+            }
+
             yield return new WaitForSeconds(intervaloAtaque);
         }
     }
@@ -118,5 +150,35 @@ public class TharosController : MonoBehaviour
         podeAtacar = false;
         StopAllCoroutines();
         Debug.Log("Ataques do boss foram parados.");
+    }
+
+    // Opcional: Método para reiniciar os ataques, se necessário
+    public void IniciarAtaques()
+    {
+        if (!podeAtacar)
+        {
+            podeAtacar = true;
+            StartCoroutine(RotinaDeAtaque());
+            Debug.Log("Ataques do boss foram reiniciados.");
+        }
+    }
+
+    // Métodos de trigger para detectar a presença do jogador no Box Collider
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            jogadorDentroDoCollider = true;
+            Debug.Log("Jogador entrou na área de ataque.");
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            jogadorDentroDoCollider = false;
+            Debug.Log("Jogador saiu da área de ataque.");
+        }
     }
 }
